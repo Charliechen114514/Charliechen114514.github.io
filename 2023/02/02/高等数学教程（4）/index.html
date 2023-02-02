@@ -1,0 +1,431 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>高等数学教程（4） | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="定积分概念​    定积分是从求解曲边梯形的面积产生的：就是说求解类似于如下的图像的面积  ​        怎么搞？我们试想一下，使用如下的方式：通过把面积切成很小的小块： 由于这些面积可以近似成矩形甚至是梯形，我们可以用面积和近似代替曲边梯形的面积。  数学上是这么  假设分点:a&#x3D;x_0">
+<meta property="og:type" content="article">
+<meta property="og:title" content="高等数学教程（4）">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/02/02/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%884%EF%BC%89/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="定积分概念​    定积分是从求解曲边梯形的面积产生的：就是说求解类似于如下的图像的面积  ​        怎么搞？我们试想一下，使用如下的方式：通过把面积切成很小的小块： 由于这些面积可以近似成矩形甚至是梯形，我们可以用面积和近似代替曲边梯形的面积。  数学上是这么  假设分点:a&#x3D;x_0">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-02-02T06:26:31.000Z">
+<meta property="article:modified_time" content="2023-02-02T06:34:20.162Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="Math Works">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/02/02/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%884%EF%BC%89/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '高等数学教程（4）',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-02-02 14:34:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">高等数学教程（4）</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-02-02T06:26:31.000Z" title="发表于 2023-02-02 14:26:31">2023-02-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-02-02T06:34:20.162Z" title="更新于 2023-02-02 14:34:20">2023-02-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="高等数学教程（4）"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="定积分"><a href="#定积分" class="headerlink" title="定积分"></a>定积分</h1><h3 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h3><p>​    定积分是从求解曲边梯形的面积产生的：就是说求解类似于如下的图像的面积</p>
+<p><img src="image-20230124151114672.png" alt="image-20230124151114672"></p>
+<p>​        怎么搞？我们试想一下，使用如下的方式：通过把面积切成很小的小块：</p>
+<p>由于这些面积可以近似成矩形甚至是梯形，我们可以用面积和近似代替曲边梯形的面积。</p>
+<p><img src="image-20230124151244623.png" alt="image-20230124151244623"></p>
+<p>数学上是这么</p>
+<script type="math/tex; mode=display">
+假设分点:a=x_0<x_1<x_2...<x_{n-1}<x_n=b</script><p>产生了</p>
+<script type="math/tex; mode=display">
+\Delta x_1,\Delta x_2,...,\Delta x_n,随后令\lambda=max\{\Delta x_1,\Delta x_2,...,\Delta x_n\}</script><p>​        只要切的够小，我们就可以:$S\approx \sum_{k=1}^n \Delta x_kf(\sigma_k)$</p>
+<p>​        其中$\sigma_k$是小区间上的一个任意点。怎么逼近真实值呢？让点取的密集一些：就是令$\lambda \rightarrow 0$就好了：产生的极限就是面积。</p>
+<p>​        我们可以引入定积分了：</p>
+<p>​        定义：$f(x)$在[a,b]有界，在[a,b]上任意插入若干个分点（随便插入），产生N个小区间，其长度为:$x_k(0&lt;k\leq n)$,又在区间上任意取一点$\sigma_i$，现在取出这些区间内最大长度的长度值记成$\lambda$,也就是$\lambda=max\{\Delta x_1,\Delta x_2,…\Delta x_n\}$。这下有了假设和的极限：$\lim\limits_{\lambda \rightarrow 0} \sum_{k=1}^n \Delta x_kf(\sigma_k)$ 假设他存在：就引入这样的记号：</p>
+<script type="math/tex; mode=display">
+\int_a^b f(x)dx=\lim\limits_{\lambda \rightarrow 0} \sum_{k=1}^n \Delta x_kf(\sigma_k)</script><p>​        其中a,b叫积分下限和积分上限，被积函数是f(x),积分区间是[a,b],积分变量是x</p>
+<p>​        注意，这个值（或者说这个定积分）与积分变量无关，也就是说：</p>
+<script type="math/tex; mode=display">
+\int_a^b f(t)dt=\int_a^b f(x)dx</script><p>​        定理1：函数只要连续就一定可积。</p>
+<p>​        定理2：函数<strong>有界</strong>且<strong>有有限个间断点</strong>也可积。</p>
+<h3 id="定积分的几何意义"><a href="#定积分的几何意义" class="headerlink" title="定积分的几何意义"></a>定积分的几何意义</h3><p>​        1.$f(x)\geq0$</p>
+<p>​        <img src="image-20230124153747909.png" alt="image-20230124153747909"></p>
+<p>​        就是阴影部分面积</p>
+<p>​        2.$f(x)\leq0$</p>
+<p><img src="image-20230124153828323.png" alt="image-20230124153828323"></p>
+<p>​        注意是阴影部分面积的相反数，这是因为：</p>
+<script type="math/tex; mode=display">
+\int_a^b f(x)dx=\lim\limits_{\lambda \rightarrow 0} \sum_{k=1}^n \Delta x_kf(\sigma_k)</script><p>​        中：$f(\sigma_k)&lt;0$</p>
+<h6 id="矩阵法"><a href="#矩阵法" class="headerlink" title="矩阵法"></a>矩阵法</h6><p>​        我们使用切分成矩阵的方式来计算定积分</p>
+<p><img src="image-20230124154130711.png" alt="image-20230124154130711"></p>
+<h6 id="梯形法"><a href="#梯形法" class="headerlink" title="梯形法"></a>梯形法</h6><p><img src="image-20230124154214737.png" alt="image-20230124154214737"></p>
+<p>看看就好，不用他来计算</p>
+<h3 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h3><p>1）a=b下：$\int_a^b f(x)dx=0$</p>
+<p>2)$\int_a^b f(x)dx=-\int_b^a f(x)dx$</p>
+<p>3)$\int_a^b (\alpha f(x)+\beta g(x))dx=\alpha \int_a^b f(x)dx+\beta\int_a^b g(x)dx$</p>
+<p>4)$\int_a^b f(x)dx=\int_a^c f(x)dx+\int_c^b f(x)dx$(切成两块加)</p>
+<p>5)$f(x)\equiv 1,\int_a^b 1dx=b-a,\int_a^b kdx=k(b-a)$</p>
+<p>6)$f(x)\geq 0,\int_a^b f(x)dx\geq0$</p>
+<p>7)$f(x)\leq 0,\int_a^b f(x)dx\leq0$</p>
+<p>8)$f(x)\leq g(x),\int_a^b f(x)dx\leq\int_a^b g(x)dx$</p>
+<p>来点推论：</p>
+<p>1.</p>
+<script type="math/tex; mode=display">
+|\int_a^b f(x)dx|\leq\int_a^b |f(x)|dx</script><p>2.函数的极大值和极小值为$M,m$</p>
+<script type="math/tex; mode=display">
+m(b-a)\leq\int_a^b f(x)dx\leq M(b-a)</script><p>9)定积分中值定理：$f(x)$连续,$\exists \xi\in[a,b]$</p>
+<script type="math/tex; mode=display">
+\int_a^b f(x)dx=f(\xi)(b-a)</script><p>这个定理可以用来化简带有积分的极限</p>
+<p><img src="image-20230124155256516.png" alt="image-20230124155256516"></p>
+<h3 id="微积分的基本公式"><a href="#微积分的基本公式" class="headerlink" title="微积分的基本公式"></a>微积分的基本公式</h3><h4 id="积分上限函数"><a href="#积分上限函数" class="headerlink" title="积分上限函数"></a>积分上限函数</h4><p>我们把一个限变成一个变量，有点像把一边可以自由滑动，这样就有一个变限积分函数，我们把目光集中在x上：</p>
+<script type="math/tex; mode=display">
+\int_a^x f(t)dt</script><p>这样定积分就从一个值变成一个函数</p>
+<script type="math/tex; mode=display">
+\phi(x)=\int_a^x f(t)dt</script><p>定理1：</p>
+<script type="math/tex; mode=display">
+\phi'(x)=\frac{d}{dx}\int_a^x f(t)dt=f(x)</script><p>这样来看，$\phi(x)$就是$f(x)$的一个原函数。值得一提的是：</p>
+<script type="math/tex; mode=display">
+(\int_x^a f(t)dt)'=-f(x)</script><script type="math/tex; mode=display">
+(\int_a^{\varphi(x)} f(t)dt)'=f(\varphi(x))\varphi'(x)</script><script type="math/tex; mode=display">
+[\int_{\varphi(x)}^{\phi(x)}f(t)dt]'=f(\phi(x))\varphi'(x)-f(\varphi(x))\phi'(x)</script><p>上面那个可能太抽象，可以使用性质2）插入一个常数点a</p>
+<h4 id="牛顿莱布尼兹公式"><a href="#牛顿莱布尼兹公式" class="headerlink" title="牛顿莱布尼兹公式"></a>牛顿莱布尼兹公式</h4><script type="math/tex; mode=display">
+\int_a^bf(x)dx=F(x)|_a^b=F(b)-F(a)</script><p>​        其中$F(x)$是$f(x)$的原函数。</p>
+<p>例如：$\int_0^1 x^2dx$</p>
+<p>解：=$\frac{1}{3}x^3|_0^1=\frac{1}{3}$</p>
+<h3 id="计算方法"><a href="#计算方法" class="headerlink" title="计算方法"></a>计算方法</h3><h4 id="换元法"><a href="#换元法" class="headerlink" title="换元法"></a>换元法</h4><p>​        定理：我们令$x=\varphi(t)$使之$\varphi(\alpha)=a,\varphi(\beta)=b$</p>
+<script type="math/tex; mode=display">
+\int_a^bf(x)dx=\int_\alpha^\beta(\varphi(t))\varphi'(t)dt</script><p>例题：</p>
+<p>1）$\int_0^a\sqrt{a^2-x^2}dx$</p>
+<p>解：$令x=a\sin t$,$dx=a\cos tdt$</p>
+<p>$=\int_0^{\frac{\pi}{2}}a^2\cos^2tdt=\frac{\pi}{4}a^2$</p>
+<p>一些技巧：</p>
+<p>1）$[-a,a]$下：$f(x)$偶：$\int_{-a}^{a}f(x)dx=2\int_{0}^{a}f(x)dx$,$f(x)$奇则为0。</p>
+<p>2）$\int_{0}^{\frac{\pi}{2}}f(\sin x)dx=\int_{0}^{\frac{\pi}{2}}f(\cos x)dx$</p>
+<p>3)$\int_{0}^{\pi}xf(\sin x)dx=\frac{\pi}{2}\int_0^{\pi}f(\sin x)dx$</p>
+<p>（2）（3）怎么说？</p>
+<p>2）令：$x=\frac{\pi}{2}-t,dx=-dt$就可以了</p>
+<p>3）令：$x=\pi-t,dx=-dt$带入之后化简一下得到：</p>
+<script type="math/tex; mode=display">
+\int_{0}^{\pi}xf(\sin x)dx=\int_{0}^{\pi}(\pi-t)f(\sin t)dt=\pi\int_{0}^{\pi}f(\sin x)dx-\int_{0}^{\pi}xf(\sin x)dx</script><p>(上面中因为与积分变量无关由此可以直接替换)</p>
+<p>例题：$\int_0^{\pi}\frac{x\sin x}{1+\cos^2x}dx=\frac{\pi}{2}\int_0^{\pi}\frac{\sin x}{1+\cos^2x}dx=-\frac{\pi}{2}\arctan(\cos x)|_0^\pi=\frac{\pi^2}{4}$</p>
+<p>4)$\int_a^{a+T}f(x)dx=\int_0^Tf(x)dx$(f(x)是一个周期函数，周期是T)</p>
+<p>5）$\int_a^{a+nT}f(x)dx=n\int_0^af(x)dx$</p>
+<h4 id="分部积分"><a href="#分部积分" class="headerlink" title="分部积分"></a>分部积分</h4><p>​        首先回顾$\int udv=uv-\int vdu$这个公式，于是，在定积分的也自然就是：</p>
+<script type="math/tex; mode=display">
+\int_a^b udv=uv|_a^b - \int_a^b vdu</script><p>​        例如：$\int _0^\frac{1}{2} \arcsin xdx$</p>
+<p>​        注意到$x$也是一个函数：于是$\int _0^\frac{1}{2} \arcsin xdx=x\arcsin x|_0^\frac{1}{2} - \int_0^\frac{1}{2} \frac{x}{\sqrt {1-x^2} }dx=\frac{\pi}{12}+\frac{\sqrt 3}{2}-1$</p>
+<p>​        也有上面提到的方法一块用的积分：</p>
+<p>​        $\int_0^1 e^\sqrt{x}dx$</p>
+<p>​        令:$t=\sqrt x$, 则:$2\int_0^1 te^tdt$=$2te^t|_0^1-2\int_0^1 e^tdt=2$</p>
+<h3 id="反常积分"><a href="#反常积分" class="headerlink" title="反常积分"></a>反常积分</h3><h4 id="无穷限的反常积分"><a href="#无穷限的反常积分" class="headerlink" title="无穷限的反常积分"></a>无穷限的反常积分</h4><p>​        什么叫反常积分呢？就是说积分区域下函数在这一点反常。比如说，因为积分区域含有无穷的积分：</p>
+<script type="math/tex; mode=display">
+\int_a^{+\infty} f(x)dx</script><p>​        或者是这样的：</p>
+<script type="math/tex; mode=display">
+\int_{-\infty}^b  f(x)dx</script><p>​        这样的积分是无穷限的反常积分。我们不妨采用动态的方法：</p>
+<script type="math/tex; mode=display">
+\int_a^{+\infty} f(x)dx=\lim_\limits{t\rightarrow +\infty}\int_a^t f(x)dx</script><p>​        这下也有类似的：</p>
+<script type="math/tex; mode=display">
+\int_{-\infty}^b  f(x)dx=\lim_\limits{t\rightarrow -\infty}\int_t^b f(x)dx</script><p>​        牵扯到了极限，因此：如果上面的极限是存在的，那就：之人格积分是收敛的，反之发散。</p>
+<p>​        还有上下限均是无穷的积分，仍采用上面的处理方式。在实际求值的时候，也是直接</p>
+<script type="math/tex; mode=display">
+\int_a^{+\infty}f(x)dx=F(x)|_a^{+\infty}</script><p>​        一个结论：对于</p>
+<script type="math/tex; mode=display">
+\int_a^{+\infty}\frac{dx}{x^p}(a>0)</script><p>​        <strong>p&gt;1收敛，p$\leq 1$手来你</strong></p>
+<h4 id="反常积分：无界函数的反常积分"><a href="#反常积分：无界函数的反常积分" class="headerlink" title="反常积分：无界函数的反常积分"></a>反常积分：无界函数的反常积分</h4><p>​        什么意思？就是说函数在某一点没有定义，我们的积分区域却包含了它。比如说</p>
+<script type="math/tex; mode=display">
+\int_0^1 \frac{1}{x}dx</script><p>​        结合上一小节的类似方法，我们得到</p>
+<script type="math/tex; mode=display">
+\int_0^1 \frac{1}{x}dx=\lim\limits_{t\rightarrow 0^+}\int_t^1\frac{1}{t}dx</script><p>​        类似的： </p>
+<script type="math/tex; mode=display">
+\int_{-1}^0 \frac{1}{x}dx=\lim\limits_{t\rightarrow 0^-}\int_{-1}^t\frac{1}{t}dx</script><p>​        如果这样的点在中间，我们就拆开积分区域就好了。</p>
+<h4 id="补充：-Gamma-s-函数"><a href="#补充：-Gamma-s-函数" class="headerlink" title="补充：$\Gamma(s)$函数"></a>补充：$\Gamma(s)$函数</h4><p>​        $\Gamma(s)$函数是这样定义的：</p>
+<script type="math/tex; mode=display">
+\Gamma(s)=\int_0^{+\infty}e^{-x}x^{s-1}dx(s>0)</script><p>​        具有以下非常好推导的性质：</p>
+<script type="math/tex; mode=display">
+1)\Gamma(s+1)=s\Gamma(s)</script><script type="math/tex; mode=display">
+2)\Gamma(1)=1</script><p>基于2)，我们发现了这个函数的一个奇妙公式：</p>
+<script type="math/tex; mode=display">
+\Gamma(s+1)=s!</script><h4 id="补充：比较审敛原理"><a href="#补充：比较审敛原理" class="headerlink" title="补充：比较审敛原理"></a>补充：比较审敛原理</h4><p>​        我们假设:$f(x)$和$g(x)$在[a,$\infty$ ]上连续，$60 \leq f(x)\leq g(x)$如果：</p>
+<script type="math/tex; mode=display">
+1)\int_a^{+\infty}g(x)dx收敛\rightarrow\int_a^{+\infty}f(x)dx收敛</script><script type="math/tex; mode=display">
+1)\int_a^{+\infty}f(x)dx发散\rightarrow\int_a^{+\infty}g(x)dx发散</script><p>​        很好理解：大哥收敛小弟也收敛，小弟嚣张大哥肯定也嚣张。</p>
+<h4 id="补充：比较审敛法"><a href="#补充：比较审敛法" class="headerlink" title="补充：比较审敛法"></a>补充：比较审敛法</h4><p>​    设$f(x)$在[a,$\infty$]连续(a&gt;0)，且$f(x)\geq 0,\exists M&gt;0,p&gt;1$</p>
+<p>​        如果使得:$f(x)\leq \frac{M}{x^p}$那就$\int_a^{+\infty}f(x)dx$收敛</p>
+<p>​        反之：$f(x)\geq \frac{M}{x},$那就$\int_a^{+\infty}f(x)dx$发散</p>
+<h4 id="补充：绝对审敛法"><a href="#补充：绝对审敛法" class="headerlink" title="补充：绝对审敛法"></a>补充：绝对审敛法</h4><p>​        如果$f(x)$在设$f(x)$在[a,$\infty$]连续（a&gt;0), $\int_a^{+\infty}|f(x)|dx$收敛，那么$\int_a^{+\infty}f(x)dx$收敛。</p>
+<p>​        最后不难得到这个定理</p>
+<h4 id="补充：无界函数反常积分的审敛法"><a href="#补充：无界函数反常积分的审敛法" class="headerlink" title="补充：无界函数反常积分的审敛法"></a>补充：无界函数反常积分的审敛法</h4><p>​        回到这个积分</p>
+<script type="math/tex; mode=display">
+\int_a^b \frac{dx}{(x-a)^q}</script><p>​        $x=a$显然是一个瑕点$q&lt;1$收敛，q$\geq$1发散。</p>
+<p>​        基于这个积分，我们再次应用比较原理：</p>
+<p>​        如果$f(x)$在(a,b]连续,f(x)$\geq$0,如果$\exists M&gt;0$及其$q&lt;1$使得</p>
+<script type="math/tex; mode=display">
+1)f(x)\leq \frac{M}{(x-a)^q}收敛</script><script type="math/tex; mode=display">
+2)f(x)\geq \frac{M}{x-a}发散</script><h4 id="补充：极限审敛法"><a href="#补充：极限审敛法" class="headerlink" title="补充：极限审敛法"></a>补充：极限审敛法</h4><p>​        如果$f(x)$在(a,b]连续,f(x)$\geq$0，$x=a$为$f(x)$的瑕点</p>
+<p>​        1）$\exists 0&lt;q&lt;1$使得$\lim\limits_{x\rightarrow a^+}(x-a)^qf(x)=A$直接说明一件事：$\int_a^b f(x)dx$收敛。</p>
+<p>​        2）类比的$\lim\limits_{x\rightarrow a^+}(x-a)f(x)=A$或者是$\infty$，我们直接认为$\int_a^b f(x)dx$发散。</p>
+<h3 id="定积分的元素法"><a href="#定积分的元素法" class="headerlink" title="定积分的元素法"></a>定积分的元素法</h3><p>​        回到定积分的这个定义式：</p>
+<script type="math/tex; mode=display">
+\int_a^b f(x)dx=\lim\limits_{\lambda \rightarrow 0} \sum_{k=1}^n \Delta x_kf(\sigma_k)</script><p>​        <strong>本质上，这样的一个定积分就是描述瞬时元素在某一个维度的积累效应的量化程度</strong>，这就是说：它既可以用来描述面积，又可以描述体积，只需要我们掌握了相应的边界函数，只要对应积分即可。</p>
+<p><img src="image-20230130163127477.png" alt="image-20230130163127477"></p>
+<p>​        比如说，这个的体积就是面积函数A(x)对于高度x的积分</p>
+<script type="math/tex; mode=display">
+V=\int_{x_1}^{x_2}A(x)dx</script><h3 id="补充一下极坐标"><a href="#补充一下极坐标" class="headerlink" title="补充一下极坐标"></a>补充一下极坐标</h3><p>​        我们重新用一种全新的角度来看待坐标系：我们改用距离原点的距离+偏离X轴正方向的描述方法描述点的坐标。</p>
+<p><img src="image-20230130163636247.png" alt="image-20230130163636247"></p>
+<p>这样，一个点就总是可以表示为$A=(\rho, \theta)$，比如说极坐标下(1,1)变成了$(\sqrt 2,\frac{\pi}{4})$,现在，我们试着求：</p>
+<p><img src="image-20230130174155076.png" alt="image-20230130174155076"></p>
+<p>这个阴影面积：怎么办？延续老方法：假设点沿着曲线挪动一丁点，那么我们的产生的微小的面积则是：</p>
+<script type="math/tex; mode=display">
+dS=\frac{\rho^2d\theta}{2}</script><p>然后从哪到哪？$\alpha$到$\beta$。</p>
+<script type="math/tex; mode=display">
+S=\int_\alpha^\beta \frac{\rho^2d\theta}{2}</script><p>结束。</p>
+<h3 id="平面图形的面积"><a href="#平面图形的面积" class="headerlink" title="平面图形的面积"></a>平面图形的面积</h3><h4 id="直角坐标系"><a href="#直角坐标系" class="headerlink" title="直角坐标系"></a>直角坐标系</h4><p>​        我们说函数相交也可以产生一些面积</p>
+<p><img src="image-20230130174758444.png" alt="image-20230130174758444"></p>
+<p>​        这个怎么求呢？</p>
+<p><img src="image-20230130174916021.png" alt="image-20230130174916021"></p>
+<p>​        我们的差面积就是：</p>
+<script type="math/tex; mode=display">
+S=\int_a^bf(x)dx-\int_a^b g(x)dx=\int_a^bf(x)-g(x)dx</script><p>​        这样的差是X型的面积积分，因为我们拿X作为梯形的高</p>
+<p>​        那就还有Y型面积：</p>
+<p><img src="image-20230130175121419.png" alt="image-20230130175121419"></p>
+<p>​        类比的：</p>
+<script type="math/tex; mode=display">
+S=\int_c^d \varphi(y)-\phi(y)dy</script><p>​        也即是：</p>
+<p>​            X:$S=\int 上-下dx$</p>
+<p>​            Y:$S=\int 右-左dy$</p>
+<p>​        </p>
+<p>​        总结一下：我们对面积先大致画出来图长什么样：如果是这样的</p>
+<p>​        <img src="image-20230130175729566.png" alt="image-20230130175729566"></p>
+<p>​        就这样使用X，Y对应当打，如果不好判断，就都先试试，哪个更加容易用哪个。</p>
+<p>​        举例：求$y=\frac{1}{2}x^2$,$y=\frac{1}{1+x^2}$在$x \in [-\sqrt 3,\sqrt 3]$下的定积分。</p>
+<p>​        我们可以做出图像：</p>
+<p><img src="image-20230202133001296.png" alt="image-20230202133001296"></p>
+<p>​        砍开来看：</p>
+<script type="math/tex; mode=display">
+S=\int_{-\sqrt{3}}^{-1}(\frac{1}{2}x^2-\frac{1}{1+x^2})+\int_{-1}^1(\frac{1}{1+x^2}-\frac{1}{2}x^2)+\int_{1}^{\sqrt{3}}(\frac{1}{2}x^2-\frac{1}{1+x^2})</script><p>​        随后使用偶函数的对称性结束计算。</p>
+<p>​        求椭圆的面积：$\frac{x^2}{a^2}+\frac{y^2}{b^2}=1$</p>
+<p>​        可以拆开四分之一的部分$S_1=\int_0^aydx$</p>
+<p>​        现在，我们引入椭圆参数方程来消去参数：</p>
+<script type="math/tex; mode=display">
+\begin{equation}\left\{ \begin{aligned} x=a\cos t \\y=a\sin t \end{aligned} \right . \end{equation}</script><p>来看看变成什么了：</p>
+<script type="math/tex; mode=display">
+S_1=-\int_0^{\frac{\pi}{2}}a\sin t \times a(-\sin t)dt=\frac{\pi ab}{4}</script><p>这就是为什么：</p>
+<script type="math/tex; mode=display">
+S=\pi ab</script><h4 id="极坐标下"><a href="#极坐标下" class="headerlink" title="极坐标下"></a>极坐标下</h4><p>​        回忆前面所叙述的：对于方程$R=\rho (\theta)$</p>
+<script type="math/tex; mode=display">
+S=\frac{1}{2}\int_{\alpha}^{\beta}(\rho (\theta))^2d\theta</script><p>​        比如说：$\rho=a\theta$</p>
+<script type="math/tex; mode=display">
+S=\frac{1}{2}\int_0^{2\pi}(a\theta)^2d\theta=\frac{4}{3}a^2\pi^3</script><h3 id="旋转体体积求法"><a href="#旋转体体积求法" class="headerlink" title="旋转体体积求法"></a>旋转体体积求法</h3><p>说白了可以切成以$f(x)$为半径的圆，在叠起来（求积分）</p>
+<script type="math/tex; mode=display">
+V=\int_{h_1}^{h_2}\pi f^2(x)dx</script><p> 是通过</p>
+<script type="math/tex; mode=display">
+V=\int_{h_1}^{h_2} A(x)dx</script><p>​        派生来的，只是因为面积恰好是圆。</p>
+<p>​        但是，这样的体积求解的是绕X轴的。绕Y轴的怎么办哪？</p>
+<p>​        简单：那就改写方程为$x=x(y)$就好了：</p>
+<script type="math/tex; mode=display">
+V=\int_{h_1}^{h_2}x^2(y)dy</script><h3 id="弧长的求解"><a href="#弧长的求解" class="headerlink" title="弧长的求解"></a>弧长的求解</h3><h4 id="通用："><a href="#通用：" class="headerlink" title="通用："></a>通用：</h4><p>回来看看这个参数方程：</p>
+<script type="math/tex; mode=display">
+\begin{equation}\left\{ \begin{aligned} x=\varphi(t) \\y=\phi(t)\end{aligned} \right . \end{equation}</script><p>​        弧微分很容易说：</p>
+<script type="math/tex; mode=display">
+ds=\sqrt{(dx)^2+(dy)^2}dt=\sqrt{(\varphi'(t))^2+(\phi'(t))^2}dt</script><p>​        于是：</p>
+<script type="math/tex; mode=display">
+L=\int_\alpha^\beta \sqrt{(\varphi'(t))^2+(\phi'(t))^2}dt</script><p>​        作为积分结果，就是弧长。</p>
+<p>​        以此为源头，开始推广其他的公式：</p>
+<h4 id="直角坐标系下"><a href="#直角坐标系下" class="headerlink" title="直角坐标系下"></a>直角坐标系下</h4><p>​        假如参数方程很容易被表达为$y=y(x)$，那我们就：</p>
+<script type="math/tex; mode=display">
+\begin{equation}\left\{ \begin{aligned} x=x \\
+ y=y(x)\\
+\end{aligned} \right . \end{equation}</script><p>​        那带入：</p>
+<script type="math/tex; mode=display">
+ds=\sqrt{1+y'^2(x)}dx</script><p>​        再积分：</p>
+<script type="math/tex; mode=display">
+L=\int_a^b\sqrt{1+y'^2(x)}dx</script><h4 id="极坐标系下"><a href="#极坐标系下" class="headerlink" title="极坐标系下"></a>极坐标系下</h4><p>​        如果不知道的话：科普一下</p>
+<script type="math/tex; mode=display">
+\begin{equation}\left\{ \begin{aligned} x=\rho(\theta)\cos \theta \\
+ y=\rho(\theta)\sin \theta\\
+\end{aligned} \right . \end{equation}</script><p>​        所有呢，求个导：</p>
+<script type="math/tex; mode=display">
+\begin{equation}\left\{ \begin{aligned} 
+x'=\rho'(\theta)\cos \theta- \rho(\theta)\sin \theta\\
+ y'=\rho(\theta)\cos \theta+\rho'(\theta)\sin \theta\\
+\end{aligned} \right . \end{equation}</script><p>​        老样子：</p>
+<script type="math/tex; mode=display">
+ds=\sqrt{(x'^2+y'^2)} d\theta=\sqrt{\rho^2(\theta)+\rho'^2(\theta)d\theta}</script><p>​         嘛，不就完事了！</p>
+<script type="math/tex; mode=display">
+L=\int_\alpha^\beta\sqrt{\rho^2(\theta)+\rho'^2(\theta)d\theta}</script></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/02/02/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%884%EF%BC%89/">http://charliechen114514.github.io/2023/02/02/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%884%EF%BC%89/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Math-Works/">Math Works</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/01/31/Opencv-in-Pycharm%EF%BC%882%EF%BC%89/" title="Opencv in Pycharm（2）"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Opencv in Pycharm（2）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/01/28/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%881%EF%BC%89/" title="高等数学教程（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-28</div><div class="title">高等数学教程（1）</div></div></a></div><div><a href="/2023/01/31/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%882%EF%BC%89/" title="高等数学教程（2）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-31</div><div class="title">高等数学教程（2）</div></div></a></div><div><a href="/2023/01/31/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%883%EF%BC%89/" title="高等数学教程（3）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-31</div><div class="title">高等数学教程（3）</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">8</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">更新！基本C教程和opencv-python</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%AE%9A%E7%A7%AF%E5%88%86"><span class="toc-number">1.</span> <span class="toc-text">定积分</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E5%BF%B5"><span class="toc-number">1.0.1.</span> <span class="toc-text">概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%A7%AF%E5%88%86%E7%9A%84%E5%87%A0%E4%BD%95%E6%84%8F%E4%B9%89"><span class="toc-number">1.0.2.</span> <span class="toc-text">定积分的几何意义</span></a><ol class="toc-child"><li class="toc-item toc-level-6"><a class="toc-link" href="#%E7%9F%A9%E9%98%B5%E6%B3%95"><span class="toc-number">1.0.2.0.0.1.</span> <span class="toc-text">矩阵法</span></a></li><li class="toc-item toc-level-6"><a class="toc-link" href="#%E6%A2%AF%E5%BD%A2%E6%B3%95"><span class="toc-number">1.0.2.0.0.2.</span> <span class="toc-text">梯形法</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%A7%E8%B4%A8"><span class="toc-number">1.0.3.</span> <span class="toc-text">性质</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BE%AE%E7%A7%AF%E5%88%86%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%85%AC%E5%BC%8F"><span class="toc-number">1.0.4.</span> <span class="toc-text">微积分的基本公式</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A7%AF%E5%88%86%E4%B8%8A%E9%99%90%E5%87%BD%E6%95%B0"><span class="toc-number">1.0.4.1.</span> <span class="toc-text">积分上限函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%9B%E9%A1%BF%E8%8E%B1%E5%B8%83%E5%B0%BC%E5%85%B9%E5%85%AC%E5%BC%8F"><span class="toc-number">1.0.4.2.</span> <span class="toc-text">牛顿莱布尼兹公式</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95"><span class="toc-number">1.0.5.</span> <span class="toc-text">计算方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8D%A2%E5%85%83%E6%B3%95"><span class="toc-number">1.0.5.1.</span> <span class="toc-text">换元法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E9%83%A8%E7%A7%AF%E5%88%86"><span class="toc-number">1.0.5.2.</span> <span class="toc-text">分部积分</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%8D%E5%B8%B8%E7%A7%AF%E5%88%86"><span class="toc-number">1.0.6.</span> <span class="toc-text">反常积分</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%97%A0%E7%A9%B7%E9%99%90%E7%9A%84%E5%8F%8D%E5%B8%B8%E7%A7%AF%E5%88%86"><span class="toc-number">1.0.6.1.</span> <span class="toc-text">无穷限的反常积分</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%8D%E5%B8%B8%E7%A7%AF%E5%88%86%EF%BC%9A%E6%97%A0%E7%95%8C%E5%87%BD%E6%95%B0%E7%9A%84%E5%8F%8D%E5%B8%B8%E7%A7%AF%E5%88%86"><span class="toc-number">1.0.6.2.</span> <span class="toc-text">反常积分：无界函数的反常积分</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9A-Gamma-s-%E5%87%BD%E6%95%B0"><span class="toc-number">1.0.6.3.</span> <span class="toc-text">补充：$\Gamma(s)$函数</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9A%E6%AF%94%E8%BE%83%E5%AE%A1%E6%95%9B%E5%8E%9F%E7%90%86"><span class="toc-number">1.0.6.4.</span> <span class="toc-text">补充：比较审敛原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9A%E6%AF%94%E8%BE%83%E5%AE%A1%E6%95%9B%E6%B3%95"><span class="toc-number">1.0.6.5.</span> <span class="toc-text">补充：比较审敛法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9A%E7%BB%9D%E5%AF%B9%E5%AE%A1%E6%95%9B%E6%B3%95"><span class="toc-number">1.0.6.6.</span> <span class="toc-text">补充：绝对审敛法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9A%E6%97%A0%E7%95%8C%E5%87%BD%E6%95%B0%E5%8F%8D%E5%B8%B8%E7%A7%AF%E5%88%86%E7%9A%84%E5%AE%A1%E6%95%9B%E6%B3%95"><span class="toc-number">1.0.6.7.</span> <span class="toc-text">补充：无界函数反常积分的审敛法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%EF%BC%9A%E6%9E%81%E9%99%90%E5%AE%A1%E6%95%9B%E6%B3%95"><span class="toc-number">1.0.6.8.</span> <span class="toc-text">补充：极限审敛法</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E7%A7%AF%E5%88%86%E7%9A%84%E5%85%83%E7%B4%A0%E6%B3%95"><span class="toc-number">1.0.7.</span> <span class="toc-text">定积分的元素法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A1%A5%E5%85%85%E4%B8%80%E4%B8%8B%E6%9E%81%E5%9D%90%E6%A0%87"><span class="toc-number">1.0.8.</span> <span class="toc-text">补充一下极坐标</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B9%B3%E9%9D%A2%E5%9B%BE%E5%BD%A2%E7%9A%84%E9%9D%A2%E7%A7%AF"><span class="toc-number">1.0.9.</span> <span class="toc-text">平面图形的面积</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B4%E8%A7%92%E5%9D%90%E6%A0%87%E7%B3%BB"><span class="toc-number">1.0.9.1.</span> <span class="toc-text">直角坐标系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%81%E5%9D%90%E6%A0%87%E4%B8%8B"><span class="toc-number">1.0.9.2.</span> <span class="toc-text">极坐标下</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%8B%E8%BD%AC%E4%BD%93%E4%BD%93%E7%A7%AF%E6%B1%82%E6%B3%95"><span class="toc-number">1.0.10.</span> <span class="toc-text">旋转体体积求法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%A7%E9%95%BF%E7%9A%84%E6%B1%82%E8%A7%A3"><span class="toc-number">1.0.11.</span> <span class="toc-text">弧长的求解</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%80%9A%E7%94%A8%EF%BC%9A"><span class="toc-number">1.0.11.1.</span> <span class="toc-text">通用：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%B4%E8%A7%92%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%8B"><span class="toc-number">1.0.11.2.</span> <span class="toc-text">直角坐标系下</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%81%E5%9D%90%E6%A0%87%E7%B3%BB%E4%B8%8B"><span class="toc-number">1.0.11.3.</span> <span class="toc-text">极坐标系下</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/02/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%884%EF%BC%89/" title="高等数学教程（4）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="高等数学教程（4）"/></a><div class="content"><a class="title" href="/2023/02/02/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%884%EF%BC%89/" title="高等数学教程（4）">高等数学教程（4）</a><time datetime="2023-02-02T06:26:31.000Z" title="发表于 2023-02-02 14:26:31">2023-02-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/31/Opencv-in-Pycharm%EF%BC%882%EF%BC%89/" title="Opencv in Pycharm（2）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Opencv in Pycharm（2）"/></a><div class="content"><a class="title" href="/2023/01/31/Opencv-in-Pycharm%EF%BC%882%EF%BC%89/" title="Opencv in Pycharm（2）">Opencv in Pycharm（2）</a><time datetime="2023-01-31T10:15:38.000Z" title="发表于 2023-01-31 18:15:38">2023-01-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/31/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%883%EF%BC%89/" title="高等数学教程（3）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="高等数学教程（3）"/></a><div class="content"><a class="title" href="/2023/01/31/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%883%EF%BC%89/" title="高等数学教程（3）">高等数学教程（3）</a><time datetime="2023-01-31T01:10:02.000Z" title="发表于 2023-01-31 09:10:02">2023-01-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/31/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%882%EF%BC%89/" title="高等数学教程（2）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="高等数学教程（2）"/></a><div class="content"><a class="title" href="/2023/01/31/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%882%EF%BC%89/" title="高等数学教程（2）">高等数学教程（2）</a><time datetime="2023-01-31T00:46:40.000Z" title="发表于 2023-01-31 08:46:40">2023-01-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/30/%E7%AE%97%E6%B3%95%EF%BC%881%EF%BC%89/" title="算法（1）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="算法（1）"/></a><div class="content"><a class="title" href="/2023/01/30/%E7%AE%97%E6%B3%95%EF%BC%881%EF%BC%89/" title="算法（1）">算法（1）</a><time datetime="2023-01-30T11:33:08.000Z" title="发表于 2023-01-30 19:33:08">2023-01-30</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
