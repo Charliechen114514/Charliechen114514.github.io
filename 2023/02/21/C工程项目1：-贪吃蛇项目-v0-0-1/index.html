@@ -1,0 +1,901 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>C工程项目1： 贪吃蛇项目 v0_0_1 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="贪吃蛇制作详解1文档v0.0.1​        很有趣的是，这是我制作的第一个 C 语言的小项目，我清楚的记得这是我在逸夫楼第三阶梯花费了3个小时的时间构思+ coding 的，作为一个入门编程的萌新而言，这有点许些不容易，不管怎么说，我还是完成了它！ 基础结构​        我们将会使用 EasyX 这个入门的图形库。 ​        描述贪吃蛇这个游戏，那很显然，要有蛇，要有食物，也要有">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C工程项目1： 贪吃蛇项目 v0_0_1">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/02/21/C%E5%B7%A5%E7%A8%8B%E9%A1%B9%E7%9B%AE1%EF%BC%9A-%E8%B4%AA%E5%90%83%E8%9B%87%E9%A1%B9%E7%9B%AE-v0-0-1/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="贪吃蛇制作详解1文档v0.0.1​        很有趣的是，这是我制作的第一个 C 语言的小项目，我清楚的记得这是我在逸夫楼第三阶梯花费了3个小时的时间构思+ coding 的，作为一个入门编程的萌新而言，这有点许些不容易，不管怎么说，我还是完成了它！ 基础结构​        我们将会使用 EasyX 这个入门的图形库。 ​        描述贪吃蛇这个游戏，那很显然，要有蛇，要有食物，也要有">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-02-21T04:34:07.000Z">
+<meta property="article:modified_time" content="2023-02-21T04:36:10.370Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/02/21/C%E5%B7%A5%E7%A8%8B%E9%A1%B9%E7%9B%AE1%EF%BC%9A-%E8%B4%AA%E5%90%83%E8%9B%87%E9%A1%B9%E7%9B%AE-v0-0-1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'C工程项目1： 贪吃蛇项目 v0_0_1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-02-21 12:36:10'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">C工程项目1： 贪吃蛇项目 v0_0_1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-02-21T04:34:07.000Z" title="发表于 2023-02-21 12:34:07">2023-02-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-02-21T04:36:10.370Z" title="更新于 2023-02-21 12:36:10">2023-02-21</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>18分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="C工程项目1： 贪吃蛇项目 v0_0_1"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="贪吃蛇制作详解1"><a href="#贪吃蛇制作详解1" class="headerlink" title="贪吃蛇制作详解1"></a>贪吃蛇制作详解1</h1><h2 id="文档v0-0-1"><a href="#文档v0-0-1" class="headerlink" title="文档v0.0.1"></a>文档v0.0.1</h2><p>​        很有趣的是，这是我制作的第一个 C 语言的小项目，我清楚的记得这是我在逸夫楼第三阶梯花费了3个小时的时间构思+ coding 的，作为一个入门编程的萌新而言，这有点许些不容易，不管怎么说，我还是完成了它！</p>
+<h2 id="基础结构"><a href="#基础结构" class="headerlink" title="基础结构"></a>基础结构</h2><p>​        我们将会使用 EasyX 这个入门的图形库。</p>
+<p>​        描述贪吃蛇这个游戏，那很显然，要有蛇，要有食物，也要有减肥餐（认真）。但是，我们要在一个二维的平面刻画他们的关系，那我们就需要一个二维的平面来刻画这样的关系：</p>
+<p>​        我们当然可以类似 Opencv 里的 Point 类来高仿一个轮子,来刻画一个平面，不如说是一个二维点</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">typedef struct _PointPlat_&#123;
+	int x;
+    int y;
+ &#125;PointPlat;
+&#x2F;&#x2F;允许我使用int而不是double,我们只是用它来给我们的对象刻画位置的<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        那么下面，就是刻画工程的主角：蛇了：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">typedef struct _Snake_&#123;
+    size_t segmentSize;				&#x2F;&#x2F; 蛇的节数
+    char directions;				&#x2F;&#x2F; 蛇的方向
+    PointPlat segPlace[MAX_SEGMENT];  &#x2F;&#x2F; 蛇的节段坐标数组（懒得动态）
+&#125;Snake；<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我想这样蛇就OK了</p>
+<p>​        以及我们的两类食物：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">typedef struct _Food_&#123;
+    PointPlat foodXY;		&#x2F;&#x2F; 食物在哪里
+    int score;				&#x2F;&#x2F; 吃了多少分
+    bool whetherFoodExist; 	&#x2F;&#x2F;它现在在吗？我们有必要在下一次循环中来生成一个食物
+&#125;Food;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        还有一个：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">_LoseWeightFood_</span><span class="token punctuation">&#123;</span>
+    PointPlat loseWeightFoodXY<span class="token punctuation">;</span>		<span class="token comment">// 食物在哪里</span>
+	<span class="token keyword">int</span> score<span class="token punctuation">;</span>						<span class="token comment">// 吃了多少分</span>
+	bool whetherLWF_Exist<span class="token punctuation">;</span>			<span class="token comment">//它现在在吗？我们有必要在下一次循环中来生成一个食物</span>
+<span class="token punctuation">&#125;</span>LoseWeightFood<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="开始设计菜单"><a href="#开始设计菜单" class="headerlink" title="开始设计菜单"></a>开始设计菜单</h2><p>​        我们先不搞花里胡哨的，先使用 initgraph 函数（In EaxyX）来生成一个窗口：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">initgraph</span><span class="token punctuation">(</span><span class="token keyword">int</span> Length<span class="token punctuation">,</span> <span class="token keyword">int</span> Height<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        当然，太难看了</p>
+<pre class="line-numbers language-none"><code class="language-none">setbkcolor(RGB(0,0,255));<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        生成一个纯蓝背景（先别急，俺也知道不好看哈哈哈）好吧，我们写一个插入图片的版本，</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">IMAGE pic<span class="token punctuation">;</span>
+<span class="token function">loadimage</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pic<span class="token punctuation">,</span><span class="token function">_T</span><span class="token punctuation">(</span><span class="token string">"PATH"</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token keyword">int</span> height<span class="token punctuation">,</span><span class="token keyword">int</span> width<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        设计一个菜单,显然他是一个既不需要输入也不需要输出的函数！</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">void menu();<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        不过，似乎现在没什么需要显示的必要，先空在这里！</p>
+<h2 id="开始放点东西！"><a href="#开始放点东西！" class="headerlink" title="开始放点东西！"></a>开始放点东西！</h2><p>​        我们要开始给我们的窗体布置东西了！我们首先先试着放东西：    </p>
+<h3 id="蛇"><a href="#蛇" class="headerlink" title="蛇"></a>蛇</h3><p>​        我们开始给我们的蛇做一点初始化：</p>
+<p>​        我们的蛇最好是有三个字节：那就是说首先我们的结构体成员变量：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">psnake -&gt; segmentSize &#x3D; 3;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        其次，也有准备初始化相关的坐标：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">	psnake-&gt;segPlace[2].x &#x3D; 20;
+	psnake-&gt;segPlace[2].y &#x3D; 0;
+	psnake-&gt;segPlace[1].x &#x3D; 30;
+	psnake-&gt;segPlace[1].y &#x3D; 0;
+	psnake-&gt;segPlace[0].x &#x3D; 40;
+	psnake-&gt;segPlace[0].y &#x3D; 0;
+&#x2F;&#x2F;他们都是右上角的点的坐标，后面的绘图问题我们将单独引入一个 EaxyX库来绘图<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        最后，蛇当前的方向应该要被制定：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">psnake-&gt;directions &#x3D; Right;&#x2F;&#x2F; temperately this. we will define them later<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        这样我们的初始化就完成了：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">void initSnack(Snake* psnake)
+&#123;
+	psnake-&gt;segPlace[2].x &#x3D; 20;
+	psnake-&gt;segPlace[2].y &#x3D; 0;
+	psnake-&gt;segPlace[1].x &#x3D; 30;
+	psnake-&gt;segPlace[1].y &#x3D; 0;
+	psnake-&gt;segPlace[0].x &#x3D; 40;
+	psnake-&gt;segPlace[0].y &#x3D; 0;
+	psnake -&gt; segmentSize &#x3D; 3;
+	psnake-&gt;directions &#x3D; Right;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="食物与减肥餐"><a href="#食物与减肥餐" class="headerlink" title="食物与减肥餐"></a>食物与减肥餐</h3><p>​        我们还是注意到食物应当是任意出现的，这就涉及到随机库的使用，在C语言中，我们需要手动制定一个随机工厂函数：</p>
+<p>​        以随机返回一个 int 类型的作为一个例子</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">getRandNum</span><span class="token punctuation">(</span><span class="token keyword">int</span> minRange<span class="token punctuation">,</span> <span class="token keyword">int</span> maxRange<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token function">srand</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span><span class="token punctuation">)</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> maxRange <span class="token operator">+</span> minRange<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        扩展以下，如果希望快速产生不一样的随机数，请使用这个模板，因为前者以秒作为刷新单位，后者则是以CPU时间作为基准计算</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">getQuickContiniousRandNum</span><span class="token punctuation">(</span><span class="token keyword">int</span> minRange<span class="token punctuation">,</span> <span class="token keyword">int</span> maxRange<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+    <span class="token function">srand</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span><span class="token punctuation">)</span><span class="token function">clock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> maxRange <span class="token operator">+</span> minRange<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这样，我们就拿到了随机数，可以确定我们生成食物的位置了！</p>
+<p>​        注意到：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">randInitFoodPos</span><span class="token punctuation">(</span>Food<span class="token operator">*</span> pfood<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">srand</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span><span class="token punctuation">)</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">650</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">30</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">30</span><span class="token punctuation">;</span>
+	pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>y <span class="token operator">=</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">480</span><span class="token punctuation">;</span>
+	pfood<span class="token operator">-></span>whetherFoodExist <span class="token operator">=</span> TRUE<span class="token punctuation">;</span> <span class="token comment">// this row</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">void</span> <span class="token function">randInitLWFoodPos</span><span class="token punctuation">(</span>LoseWeightFood<span class="token operator">*</span> pLWFood<span class="token punctuation">)</span> 
+<span class="token punctuation">&#123;</span>
+	<span class="token function">srand</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span><span class="token punctuation">)</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	pLWFood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">650</span><span class="token punctuation">;</span>
+	pLWFood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>y <span class="token operator">=</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">480</span><span class="token punctuation">;</span>
+	pLWFood<span class="token operator">-></span>whetherLWF_Exist <span class="token operator">=</span> TRUE<span class="token punctuation">;</span> <span class="token comment">// this row</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我们将在后面阐述为什么设置这个状态栏（剧透：确定是否需要刷新食物）</p>
+<h3 id="绘制"><a href="#绘制" class="headerlink" title="绘制"></a>绘制</h3><p>​        我们的绘制是采用 EasyX 库来完成的！</p>
+<p>​        首先介绍以下窗口幕布：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">initgraph</span><span class="token punctuation">(</span><span class="token keyword">int</span> height<span class="token punctuation">,</span> <span class="token keyword">int</span> width<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        这个函数向我们的屏幕投影一个 height 高 weight 宽的一个窗口，显然，是黑色的</p>
+<p><img src="image-20230221111851289.png" alt="image-20230221111851289"></p>
+<p>​        好像不大好看，但是正如前面所讲，我们可以插入一个图片来解决这个问题：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">#define PATH &quot;&#x2F;*你的图片地址*&#x2F;&quot;
+loadimage(&amp;pic,_T(PATH),int picHeight,int picWidth);
+putimage(0, 0, &amp;pic);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        这样就好了！</p>
+<p><img src="image-20230221113213376.png" alt="image-20230221113213376"></p>
+<p>​        随后，让我们来看看画一下蛇和食物！</p>
+<p>​        针对一个一个节段，我们设置，随后使用一个for循环来完成我们的工作就OK了</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">drawSnake</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> psnake<span class="token operator">-></span>segmentSize<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		<span class="token function">setlinecolor</span><span class="token punctuation">(</span>YELLOW<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//边框色</span>
+		<span class="token function">setfillcolor</span><span class="token punctuation">(</span>RED<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">fillrectangle</span><span class="token punctuation">(</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>x<span class="token punctuation">,</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>y<span class="token punctuation">,</span> psnake  <span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">+</span> <span class="token number">10</span><span class="token punctuation">,</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">+</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span> 
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">drawFood</span><span class="token punctuation">(</span>Food<span class="token operator">*</span> pfood<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">setlinecolor</span><span class="token punctuation">(</span>RED<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//边框色</span>
+	<span class="token function">setfillcolor</span><span class="token punctuation">(</span>YELLOW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">solidcircle</span><span class="token punctuation">(</span>pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>x<span class="token punctuation">,</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>y<span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">drawLWFood</span><span class="token punctuation">(</span>LoseWeightFood<span class="token operator">*</span> LWFood<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">setlinecolor</span><span class="token punctuation">(</span>GREEN<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//边框色</span>
+	<span class="token function">setfillcolor</span><span class="token punctuation">(</span>GREEN<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">solidcircle</span><span class="token punctuation">(</span>LWFood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>x<span class="token punctuation">,</span> LWFood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>y<span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230221113411612.png" alt="image-20230221113411612"></p>
+<p>​        上图就是把程序放在一起编译运行产生的结果！</p>
+<h2 id="动起来"><a href="#动起来" class="headerlink" title="动起来"></a>动起来</h2><p>​        下面，我们准备开始写游戏的逻辑了</p>
+<h3 id="1-让蛇动起来先"><a href="#1-让蛇动起来先" class="headerlink" title="1.让蛇动起来先"></a>1.让蛇动起来先</h3><p>​        让蛇动起来，这是个难题，因为蛇的运动是要有方向的！我们先不考虑我们如何操纵蛇的移动，因为那需要与键盘直接交互（注意到 scanf 是肯定不可以的！那样的话游戏操作性太差了）</p>
+<p>​        我们使用 For 程式的递归，让一条蛇退化成一节蛇！这样我们就可以把目光放在第一节来处理了！</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> pSnake<span class="token operator">-></span>segmentSize <span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    pSnake <span class="token operator">-></span> segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">=</span> pSnake <span class="token operator">-></span> segPlace<span class="token punctuation">[</span>i<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x<span class="token punctuation">;</span>
+    pSnake <span class="token operator">-></span> segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">=</span> pSnake <span class="token operator">-></span> segPlace<span class="token punctuation">[</span>i<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        目光放在第一节来处理了！注意到，如果我们的方向是向右，那么：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">if (derections &#x3D;&#x3D; RIGHT)&#123;
+	pSnake -&gt; segPlace[0].x +&#x3D; 10;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        我们的蛇的头就向右走，同样的，我们这里是有四个方向的。于是这里使用 switch-case语句比较好</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">switch</span><span class="token punctuation">(</span>pSnake <span class="token operator">-></span> directions<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token keyword">case</span> RIGHT<span class="token operator">:</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">+=</span> <span class="token number">10</span><span class="token punctuation">;</span> <span class="token keyword">break</span><span class="token punctuation">;</span>
+		<span class="token keyword">case</span> LEFT<span class="token operator">:</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">-=</span> <span class="token number">10</span><span class="token punctuation">;</span> <span class="token keyword">break</span><span class="token punctuation">;</span>
+		<span class="token keyword">case</span> UP<span class="token operator">:</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">+=</span> <span class="token number">10</span><span class="token punctuation">;</span> <span class="token keyword">break</span><span class="token punctuation">;</span>
+		<span class="token keyword">case</span> DOWN<span class="token operator">:</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">-=</span> <span class="token number">10</span><span class="token punctuation">;</span> <span class="token keyword">break</span><span class="token punctuation">;</span>
+		<span class="token keyword">default</span><span class="token operator">:</span><span class="token keyword">break</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        对于边界的处理，有人判定是到边界直接寄，但是我们这里是直接从另一边出来比较好：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">></span> <span class="token number">640</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token number">640</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">></span> <span class="token number">480</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">&lt;</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">=</span> <span class="token number">480</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="键盘交互"><a href="#键盘交互" class="headerlink" title="键盘交互"></a>键盘交互</h3><p>​        我们的蛇一旦程序跑起来，你会发现他只能一直往一个方向跑路，没办法掉头，这是件不好的事情！那么我们就：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;conio,h></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        来引入我们键盘对控制台的直接交互.使用这个函数:</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">char</span> getter <span class="token operator">=</span> <span class="token function">_getch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        这样我们就可以直接向程序中输入东西了！了解到我们的蛇不可以掉头，那。。。加个if直接处理掉就好了！ </p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">keyReact</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">char</span> key <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	key <span class="token operator">=</span> <span class="token function">_getch</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">switch</span> <span class="token punctuation">(</span>key<span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+	<span class="token keyword">case</span> right<span class="token operator">:</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>direction <span class="token operator">!=</span> left<span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			psnake<span class="token operator">-></span>direction <span class="token operator">=</span> right<span class="token punctuation">;</span><span class="token comment">//禁止掉头</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> left<span class="token operator">:</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>direction <span class="token operator">!=</span> right<span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			psnake<span class="token operator">-></span>direction <span class="token operator">=</span> left<span class="token punctuation">;</span><span class="token comment">//禁止掉头</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> up<span class="token operator">:</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>direction <span class="token operator">!=</span> down<span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			psnake<span class="token operator">-></span>direction <span class="token operator">=</span> up<span class="token punctuation">;</span><span class="token comment">//禁止掉头</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">case</span> down<span class="token operator">:</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>direction <span class="token operator">!=</span> up<span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			psnake<span class="token operator">-></span>direction <span class="token operator">=</span> down<span class="token punctuation">;</span><span class="token comment">//禁止掉头</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token keyword">default</span><span class="token operator">:</span> <span class="token keyword">break</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        当然，我们查一下键盘上：↑↓←→的ACSII值：在枚举以下就好了：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">enum</span> <span class="token class-name">Directions</span> <span class="token punctuation">&#123;</span>
+	RIGHT <span class="token operator">=</span> <span class="token number">77</span><span class="token punctuation">,</span>
+	LEFT <span class="token operator">=</span> <span class="token number">75</span><span class="token punctuation">,</span>
+	DOWN <span class="token operator">=</span> <span class="token number">80</span><span class="token punctuation">,</span>
+	UP <span class="token operator">=</span> <span class="token number">72</span><span class="token punctuation">,</span><span class="token comment">//对应keypress</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="恰饭处理"><a href="#恰饭处理" class="headerlink" title="恰饭处理"></a>恰饭处理</h3><p>​        恰饭了！这怎么处理呢？</p>
+<p>​        首先，那必然是蛇的节数要++了：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">psnake<span class="token operator">-></span>segmentSize<span class="token operator">++</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        食物的状态要准备更新了：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">pfood<span class="token operator">-></span>whetherFoodExist <span class="token operator">=</span> false<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        判定的条件是几乎重合：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">srand</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span><span class="token punctuation">)</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>
+   psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">-</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>x <span class="token operator">&lt;</span> <span class="token number">10</span> 
+<span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">-</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>y <span class="token operator">&lt;</span> <span class="token number">10</span> 
+<span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">-</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>x <span class="token operator">></span> <span class="token operator">-</span><span class="token number">10</span> 
+<span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">-</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>y <span class="token operator">></span><span class="token operator">-</span><span class="token number">10</span>
+<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	psnake<span class="token operator">-></span>segmentSize<span class="token operator">++</span><span class="token punctuation">;</span>
+	pfood<span class="token operator">-></span>whetherFoodExist <span class="token operator">=</span> false<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        当然想加分的话那就：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">srand</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span><span class="token punctuation">)</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>
+	   psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">-</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>x <span class="token operator">&lt;</span> <span class="token number">10</span> 
+	<span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">-</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>y <span class="token operator">&lt;</span> <span class="token number">10</span>
+    <span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">-</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>x <span class="token operator">></span> <span class="token operator">-</span><span class="token number">10</span> 
+    <span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">-</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>y <span class="token operator">></span> <span class="token operator">-</span><span class="token number">10</span>
+    <span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		psnake<span class="token operator">-></span>segmentSize<span class="token operator">++</span><span class="token punctuation">;</span>
+		pfood<span class="token operator">-></span>score <span class="token operator">+=</span> <span class="token number">10</span><span class="token punctuation">;</span>
+		pfood<span class="token operator">-></span>whetherFoodExist <span class="token operator">=</span> false<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        对于减肥餐那也是一样的：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">void</span> <span class="token function">eatLWFood</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">,</span> LoseWeightFood<span class="token operator">*</span> plossfood<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">-</span> plossfood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>x<span class="token operator">&lt;</span><span class="token number">10</span> <span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">-</span> plossfood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>y<span class="token operator">&lt;</span><span class="token number">10</span> <span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">-</span> plossfood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>x <span class="token operator">></span> <span class="token operator">-</span><span class="token number">10</span> <span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">-</span> plossfood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>y <span class="token operator">></span><span class="token operator">-</span><span class="token number">10</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		psnake<span class="token operator">-></span>segmentSize<span class="token operator">--</span><span class="token punctuation">;</span>
+		plossfood<span class="token operator">-></span>score <span class="token operator">+=</span> <span class="token number">100</span><span class="token punctuation">;</span>
+		plossfood<span class="token operator">-></span>whetherLWF_Exist <span class="token operator">=</span> false<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="嗝屁判断"><a href="#嗝屁判断" class="headerlink" title="嗝屁判断"></a>嗝屁判断</h3><p>​        注意，我们的目光滞留在第一个节段，如果第一个节段同其他位置重复了，那就是嗝屁了！</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">deathJudge</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> psnake<span class="token operator">-></span>segmentSize<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">==</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">==</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token punctuation">)</span><span class="token comment">//</span>
+		<span class="token punctuation">&#123;</span>
+			<span class="token keyword">return</span> QUIT<span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> MOVE_ON<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="主程序架构"><a href="#主程序架构" class="headerlink" title="主程序架构"></a>主程序架构</h2><p>​        积木打好了，准备并结成主程序了！</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">"Structure.h"</span></span>
+<span class="token keyword">int</span> judge <span class="token operator">=</span> MOVE_ON<span class="token punctuation">;</span>
+<span class="token keyword">int</span> total_score <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">//我们的分数</span>
+<span class="token keyword">int</span> input_game_start <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">//定义速度</span>
+<span class="token keyword">int</span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">//这里下面说</span>
+Snake snake1<span class="token punctuation">;</span>
+Food food1<span class="token punctuation">;</span>
+LoseWeightFood lossfood1<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我们可以构建起选择蛇速度的程序，因为我们的程序本质上使用while循环来执行，使用Windows库里的Sleep函数可以让程序空余若干秒</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">Sleep(int milisecondTime)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">menu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"请输入你想要的速度：>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">scanf_s</span><span class="token punctuation">(</span><span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>input_game_start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> input <span class="token operator">=</span> <span class="token function">chooseSpeed</span><span class="token punctuation">(</span>input_game_start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">getchar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// to prevent the slash n get into the scanner!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        准备对象</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">Snake snake1<span class="token punctuation">;</span>
+Food food1<span class="token punctuation">;</span>
+LoseWeightFood lossfood1<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        为主屏幕的东西设置与初始化</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">randInitFoodPos</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>food1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">randInitLWFoodPos</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>lossfood1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+food1<span class="token punctuation">.</span>whetherFoodExist <span class="token operator">=</span> true<span class="token punctuation">;</span>
+lossfood1<span class="token punctuation">.</span>whetherLWF_Exist <span class="token operator">=</span> false<span class="token punctuation">;</span>
+
+<span class="token function">initBackGround</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">cleardevice</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token function">initSnake</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+IMAGE pic<span class="token punctuation">;</span>
+<span class="token function">loadimage</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pic<span class="token punctuation">,</span> <span class="token function">_T</span><span class="token punctuation">(</span>PATH<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">640</span><span class="token punctuation">,</span> <span class="token number">480</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">while</span><span class="token punctuation">(</span>judge <span class="token operator">==</span> MOVE_ON<span class="token punctuation">)</span>
+   <span class="token punctuation">&#123;</span>
+       
+   <span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        先刷新屏幕，去除上次的东西：</p>
+<p>​        准备放上图片，判断食物有没有，没有就放上！</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">cleardevice</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">putimage</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>pic<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>food1<span class="token punctuation">.</span>whetherFoodExist<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">randInitFoodPos</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>food1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token function">drawFood</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>food1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>count <span class="token operator">==</span> <span class="token number">1</span> <span class="token operator">||</span> count <span class="token operator">%</span> <span class="token number">10</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>lossfood1<span class="token punctuation">.</span>whetherLWF_Exist<span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		<span class="token function">randInitLWFoodPos</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>lossfood1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>lossfood1<span class="token punctuation">.</span>whetherLWF_Exist<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">drawLWFood</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>lossfood1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这个count 就是用来描述我们什么时候生成lossFood的！</p>
+<p>​        判断有没有吃到，有没有跟键盘交互：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">eatLWFood</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">,</span> <span class="token operator">&amp;</span>lossfood1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+count <span class="token operator">=</span> <span class="token function">eatFood</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">,</span> <span class="token operator">&amp;</span>food1<span class="token punctuation">,</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">drawSnake</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token function">_kbhit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">keyReact</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        挪动蛇屁股：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">moveSnake</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+judge <span class="token operator">=</span> <span class="token function">deathJudge</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">Sleep</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+total_score <span class="token operator">=</span> food1<span class="token punctuation">.</span>score <span class="token operator">+</span> lossfood1<span class="token punctuation">.</span>score<span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        后续处理：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token function">closegraph</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"你得到了分数！：%d\n"</span><span class="token punctuation">,</span> food1<span class="token punctuation">.</span>score <span class="token operator">+</span> lossfood1<span class="token punctuation">.</span>score<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"敲击q退出游戏！\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">char</span> quit <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword">while</span> <span class="token punctuation">(</span>quit <span class="token operator">!=</span> <span class="token char">'q'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%c"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>quit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">getchar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="源文件一览："><a href="#源文件一览：" class="headerlink" title="源文件一览："></a>源文件一览：</h1><h2 id="主程序："><a href="#主程序：" class="headerlink" title="主程序："></a>主程序：</h2><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_CRT_SECURE_NO_WARNINGS</span> <span class="token expression"><span class="token number">1</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">"Structure.h"</span></span>
+<span class="token keyword">int</span> judge <span class="token operator">=</span> MOVE_ON<span class="token punctuation">;</span>
+<span class="token keyword">int</span> total_score <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> input_game_start <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> count <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+Snake snake1<span class="token punctuation">;</span>
+Food food1<span class="token punctuation">;</span>
+LoseWeightFood lossfood1<span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">menu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"请输入你想要的速度：>"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">scanf_s</span><span class="token punctuation">(</span><span class="token string">"%d"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>input_game_start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">int</span> input <span class="token operator">=</span> <span class="token function">chooseSpeed</span><span class="token punctuation">(</span>input_game_start<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">getchar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">randInitFoodPos</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>food1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">randInitLWFoodPos</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>lossfood1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	food1<span class="token punctuation">.</span>whetherFoodExist <span class="token operator">=</span> true<span class="token punctuation">;</span>
+	lossfood1<span class="token punctuation">.</span>whetherLWF_Exist <span class="token operator">=</span> false<span class="token punctuation">;</span>
+	<span class="token function">initBackGround</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">cleardevice</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">initSnake</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	IMAGE pic<span class="token punctuation">;</span>
+	<span class="token function">loadimage</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pic<span class="token punctuation">,</span> <span class="token function">_T</span><span class="token punctuation">(</span>PATH<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token number">640</span><span class="token punctuation">,</span> <span class="token number">480</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">while</span> <span class="token punctuation">(</span>judge <span class="token operator">==</span> MOVE_ON<span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		<span class="token function">cleardevice</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">putimage</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>pic<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>food1<span class="token punctuation">.</span>whetherFoodExist<span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			<span class="token function">randInitFoodPos</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>food1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token function">drawFood</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>food1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>count <span class="token operator">==</span> <span class="token number">1</span> <span class="token operator">||</span> count <span class="token operator">%</span> <span class="token number">10</span> <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>lossfood1<span class="token punctuation">.</span>whetherLWF_Exist<span class="token punctuation">)</span>
+			<span class="token punctuation">&#123;</span>
+				<span class="token function">randInitLWFoodPos</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>lossfood1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+			<span class="token punctuation">&#125;</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>lossfood1<span class="token punctuation">.</span>whetherLWF_Exist<span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			<span class="token function">drawLWFood</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>lossfood1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token function">eatLWFood</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">,</span> <span class="token operator">&amp;</span>lossfood1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		count <span class="token operator">=</span> <span class="token function">eatFood</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">,</span> <span class="token operator">&amp;</span>food1<span class="token punctuation">,</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">drawSnake</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token function">_kbhit</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+		<span class="token punctuation">&#123;</span>
+			<span class="token function">keyReact</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+		<span class="token function">moveSnake</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		judge <span class="token operator">=</span> <span class="token function">deathJudge</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>snake1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">Sleep</span><span class="token punctuation">(</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		total_score <span class="token operator">=</span> food1<span class="token punctuation">.</span>score <span class="token operator">+</span> lossfood1<span class="token punctuation">.</span>score<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token function">closegraph</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"你得到了分数！：%d\n"</span><span class="token punctuation">,</span> food1<span class="token punctuation">.</span>score <span class="token operator">+</span> lossfood1<span class="token punctuation">.</span>score<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"敲击q退出游戏！\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">char</span> quit <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	<span class="token keyword">while</span> <span class="token punctuation">(</span>quit <span class="token operator">!=</span> <span class="token char">'q'</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+		<span class="token function">scanf</span><span class="token punctuation">(</span><span class="token string">"%c"</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>quit<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">getchar</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="objbehavior-cpp"><a href="#objbehavior-cpp" class="headerlink" title="objbehavior.cpp"></a>objbehavior.cpp</h2><pre class="line-numbers language-C" data-language="C"><code class="language-C">#define _CRT_SECURE_NO_WARNINGS 1
+#include&quot;Structure.h&quot;
+void moveSnake(Snake* psnake)
+&#123;
+	&#x2F;&#x2F;分批次处理：
+	&#x2F;&#x2F;使用For递归处理2~N节数 的蛇
+	for (int i &#x3D; psnake-&gt;segmentSize - 1; i &gt; 0; i--)
+	&#123;
+		psnake-&gt;segPlace[i].x &#x3D; psnake-&gt;segPlace[i - 1].x;
+		psnake-&gt;segPlace[i].y &#x3D; psnake-&gt;segPlace[i - 1].y;
+	&#125;
+	switch (psnake-&gt;direction)
+	&#123;
+		&#x2F;&#x2F;72上 80下 75左 77右
+		case 77:psnake-&gt;segPlace[0].x +&#x3D; 10; break;
+		case 75:psnake-&gt;segPlace[0].x -&#x3D; 10; break;
+		case 80:psnake-&gt;segPlace[0].y +&#x3D; 10; break;
+		case 72:psnake-&gt;segPlace[0].y -&#x3D; 10; break;
+		default:break;
+	&#125;
+	if (psnake-&gt;segPlace[0].x &gt; 640)
+	&#123;
+		psnake-&gt;segPlace[0].x &#x3D; 0;
+	&#125;
+	if (psnake-&gt;segPlace[0].x &lt; 0)
+	&#123;
+		psnake-&gt;segPlace[0].x &#x3D; 640;
+	&#125;
+	if (psnake-&gt;segPlace[0].y &gt; 480)
+	&#123;
+		psnake-&gt;segPlace[0].y &#x3D; 0;
+	&#125;
+	if (psnake-&gt;segPlace[0].y &lt; 0)
+	&#123;
+		psnake-&gt;segPlace[0].y &#x3D; 480;
+	&#125;
+
+&#125;
+
+void eatLWFood(Snake* psnake, LoseWeightFood* plossfood)
+&#123;
+	if (psnake-&gt;segPlace[0].x - plossfood-&gt;loseWeightFoodXY.x&lt;10 &amp;&amp; psnake-&gt;segPlace[0].y - plossfood-&gt;loseWeightFoodXY.y&lt;10 &amp;&amp; psnake-&gt;segPlace[0].x - plossfood-&gt;loseWeightFoodXY.x &gt; -10 &amp;&amp; psnake-&gt;segPlace[0].y - plossfood-&gt;loseWeightFoodXY.y &gt;-10)
+	&#123;
+		psnake-&gt;segmentSize--;
+		plossfood-&gt;score +&#x3D; 100;
+		plossfood-&gt;whetherLWF_Exist &#x3D; false;
+	&#125;
+&#125;
+
+
+int eatFood(Snake* psnake, Food* pfood, int count)
+&#123;
+	srand((unsigned)time(NULL));
+	if (psnake-&gt;segPlace[0].x - pfood-&gt;foodXY.x&lt;10 &amp;&amp; psnake-&gt;segPlace[0].y - pfood-&gt;foodXY.y&lt;10 &amp;&amp; psnake-&gt;segPlace[0].x - pfood-&gt;foodXY.x &gt; -10 &amp;&amp; psnake-&gt;segPlace[0].y - pfood-&gt;foodXY.y &gt;-10)
+	&#123;
+		psnake-&gt;segmentSize++;
+		pfood-&gt;score +&#x3D; 10;
+		pfood-&gt;whetherFoodExist &#x3D; false;
+		return count + 1;
+	&#125;
+&#125;
+
+void keyReact(Snake* psnake)
+&#123;
+	char key &#x3D; 0;
+	key &#x3D; _getch();
+	switch (key)
+	&#123;
+	case RIGHT:
+		if (psnake-&gt;direction !&#x3D; LEFT)
+		&#123;
+			psnake-&gt;direction &#x3D; RIGHT;&#x2F;&#x2F;禁止掉头
+		&#125;
+		break;
+	case LEFT:
+		if (psnake-&gt;direction !&#x3D; RIGHT)
+		&#123;
+			psnake-&gt;direction &#x3D; LEFT;&#x2F;&#x2F;禁止掉头
+		&#125;
+		break;
+	case UP:
+		if (psnake-&gt;direction !&#x3D; DOWN)
+		&#123;
+			psnake-&gt;direction &#x3D; UP;&#x2F;&#x2F;禁止掉头
+		&#125;
+		break;
+	case DOWN:
+		if (psnake-&gt;direction !&#x3D; UP)
+		&#123;
+			psnake-&gt;direction &#x3D; DOWN;&#x2F;&#x2F;禁止掉头
+		&#125;
+		break;
+	default: break;
+	&#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="MENUfunc-cpp"><a href="#MENUfunc-cpp" class="headerlink" title="MENUfunc.cpp"></a>MENUfunc.cpp</h2><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_CRT_SECURE_NO_WARNINGS</span> <span class="token expression"><span class="token number">1</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">"Structure.h"</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
+
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">DEFAULT</span> <span class="token expression"><span class="token number">100</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">SLOW</span> <span class="token expression"><span class="token number">50</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">FAST</span> <span class="token expression"><span class="token number">20</span>   </span></span>
+
+<span class="token comment">//MenuFunctions</span>
+<span class="token keyword">void</span> <span class="token function">menu</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+	<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"----------------------------------------------------------------------------"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"请选择你想要的难度！"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"0:正常 1.放慢 2.加速 3.自定义"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">puts</span><span class="token punctuation">(</span><span class="token string">"----------------------------------------------------------------------------"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">int</span> <span class="token function">chooseSpeed</span><span class="token punctuation">(</span><span class="token keyword">int</span> input<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">switch</span> <span class="token punctuation">(</span>input<span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+	<span class="token keyword">case</span> <span class="token number">0</span><span class="token operator">:</span> <span class="token keyword">return</span> DEFAULT<span class="token punctuation">;</span>
+	<span class="token keyword">case</span> <span class="token number">1</span><span class="token operator">:</span> <span class="token keyword">return</span> SLOW<span class="token punctuation">;</span>
+	<span class="token keyword">case</span> <span class="token number">2</span><span class="token operator">:</span> <span class="token keyword">return</span> FAST<span class="token punctuation">;</span>
+	<span class="token keyword">default</span><span class="token operator">:</span><span class="token keyword">return</span> input<span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="initgameFunc-cpp"><a href="#initgameFunc-cpp" class="headerlink" title="initgameFunc.cpp"></a>initgameFunc.cpp</h2><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_CRT_SECURE_NO_WARNINGS</span> <span class="token expression"><span class="token number">1</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">"Structure.h"</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
+
+<span class="token keyword">void</span> <span class="token function">initBackGround</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	IMAGE pic<span class="token punctuation">;</span>
+	<span class="token function">initgraph</span><span class="token punctuation">(</span><span class="token number">640</span><span class="token punctuation">,</span> <span class="token number">480</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">loadimage</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>pic<span class="token punctuation">,</span> <span class="token function">_T</span><span class="token punctuation">(</span><span class="token string">"D:/Clion/default.png"</span><span class="token punctuation">)</span><span class="token punctuation">,</span><span class="token number">640</span><span class="token punctuation">,</span><span class="token number">480</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">putimage</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token operator">&amp;</span>pic<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">void</span> <span class="token function">initSnake</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token number">20</span><span class="token punctuation">;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token number">30</span><span class="token punctuation">;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token number">40</span><span class="token punctuation">;</span>
+	psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+	psnake<span class="token operator">-></span>segmentSize <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+	psnake<span class="token operator">-></span>direction <span class="token operator">=</span> RIGHT<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="InitFoodFunc-cpp"><a href="#InitFoodFunc-cpp" class="headerlink" title="InitFoodFunc.cpp"></a>InitFoodFunc.cpp</h2><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_CRT_SECURE_NO_WARNINGS</span> <span class="token expression"><span class="token number">1</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">"Structure.h"</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
+
+<span class="token keyword">void</span> <span class="token function">randInitFoodPos</span><span class="token punctuation">(</span>Food<span class="token operator">*</span> pfood<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">srand</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span><span class="token punctuation">)</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">650</span> <span class="token operator">*</span> <span class="token punctuation">(</span><span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">30</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">30</span><span class="token punctuation">;</span>
+	pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>y <span class="token operator">=</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">480</span><span class="token punctuation">;</span>
+	pfood<span class="token operator">-></span>whetherFoodExist <span class="token operator">=</span> TRUE<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">void</span> <span class="token function">randInitLWFoodPos</span><span class="token punctuation">(</span>LoseWeightFood<span class="token operator">*</span> pLWFood<span class="token punctuation">)</span> 
+<span class="token punctuation">&#123;</span>
+	<span class="token function">srand</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">int</span><span class="token punctuation">)</span><span class="token function">time</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	pLWFood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>x <span class="token operator">=</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">650</span><span class="token punctuation">;</span>
+	pLWFood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>y <span class="token operator">=</span> <span class="token function">rand</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">%</span> <span class="token number">480</span><span class="token punctuation">;</span>
+	pLWFood<span class="token operator">-></span>whetherLWF_Exist <span class="token operator">=</span> TRUE<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="draw-cpp"><a href="#draw-cpp" class="headerlink" title="draw.cpp"></a>draw.cpp</h2><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_CRT_SECURE_NO_WARNINGS</span> <span class="token expression"><span class="token number">1</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">"Structure.h"</span></span>
+
+
+<span class="token keyword">void</span> <span class="token function">drawSnake</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> psnake<span class="token operator">-></span>segmentSize<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		<span class="token function">setlinecolor</span><span class="token punctuation">(</span>YELLOW<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//边框色</span>
+		<span class="token function">setfillcolor</span><span class="token punctuation">(</span>RED<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">fillrectangle</span><span class="token punctuation">(</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>x<span class="token punctuation">,</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>y<span class="token punctuation">,</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">+</span> <span class="token number">10</span><span class="token punctuation">,</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">+</span> <span class="token number">10</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span> 
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">void</span> <span class="token function">drawFood</span><span class="token punctuation">(</span>Food<span class="token operator">*</span> pfood<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">setlinecolor</span><span class="token punctuation">(</span>RED<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//边框色</span>
+	<span class="token function">setfillcolor</span><span class="token punctuation">(</span>YELLOW<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">solidcircle</span><span class="token punctuation">(</span>pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>x<span class="token punctuation">,</span> pfood<span class="token operator">-></span>foodXY<span class="token punctuation">.</span>y<span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+<span class="token keyword">void</span> <span class="token function">drawLWFood</span><span class="token punctuation">(</span>LoseWeightFood<span class="token operator">*</span> LWFood<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token function">setlinecolor</span><span class="token punctuation">(</span>GREEN<span class="token punctuation">)</span><span class="token punctuation">;</span><span class="token comment">//边框色</span>
+	<span class="token function">setfillcolor</span><span class="token punctuation">(</span>GREEN<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">solidcircle</span><span class="token punctuation">(</span>LWFood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>x<span class="token punctuation">,</span> LWFood<span class="token operator">-></span>loseWeightFoodXY<span class="token punctuation">.</span>y<span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="deathJugde-cpp"><a href="#deathJugde-cpp" class="headerlink" title="deathJugde.cpp"></a>deathJugde.cpp</h2><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_CRT_SECURE_NO_WARNINGS</span> <span class="token expression"><span class="token number">1</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">"Structure.h"</span></span>
+
+<span class="token keyword">int</span> <span class="token function">deathJudge</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> psnake<span class="token operator">-></span>segmentSize<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span>
+	<span class="token punctuation">&#123;</span>
+		<span class="token keyword">if</span> <span class="token punctuation">(</span>psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">==</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>x <span class="token operator">&amp;&amp;</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token operator">==</span> psnake<span class="token operator">-></span>segPlace<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>y <span class="token punctuation">)</span><span class="token comment">//</span>
+		<span class="token punctuation">&#123;</span>
+			<span class="token keyword">return</span> QUIT<span class="token punctuation">;</span>
+		<span class="token punctuation">&#125;</span>
+	<span class="token punctuation">&#125;</span>
+	<span class="token keyword">return</span> MOVE_ON<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="Structure-h"><a href="#Structure-h" class="headerlink" title="Structure.h"></a>Structure.h</h2><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">_CRT_SECURE_NO_WARNINGS</span> <span class="token expression"><span class="token number">1</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">MAX_SEGMENT</span> <span class="token expression"><span class="token number">256</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;stdlib.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;graphics.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;conio.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;time.h></span></span>
+
+
+<span class="token comment">//config</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">QUIT</span> <span class="token expression"><span class="token number">2</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">MOVE_ON</span> <span class="token expression"><span class="token number">1</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PATH</span> <span class="token string">"D:/Clion/default.png"</span></span>
+
+<span class="token comment">//定义二维平面</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">_PointPlat_</span> <span class="token punctuation">&#123;</span>
+	<span class="token keyword">int</span> x<span class="token punctuation">;</span>
+	<span class="token keyword">int</span> y<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>PointPlat<span class="token punctuation">;</span>
+
+<span class="token comment">//定义蛇这个对象</span>
+<span class="token comment">//</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">_Snake_</span> <span class="token punctuation">&#123;</span>
+	<span class="token class-name">size_t</span> segmentSize<span class="token punctuation">;</span>				<span class="token comment">// 定义蛇的节数</span>
+	<span class="token keyword">char</span> direction<span class="token punctuation">;</span>					<span class="token comment">// 定义当前蛇的前进方向</span>
+	PointPlat segPlace<span class="token punctuation">[</span>MAX_SEGMENT<span class="token punctuation">]</span><span class="token punctuation">;</span><span class="token comment">// 定义蛇的段坐标</span>
+<span class="token punctuation">&#125;</span>Snake<span class="token punctuation">;</span>
+
+<span class="token comment">//食物</span>
+<span class="token comment">//</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">_Food_</span> <span class="token punctuation">&#123;</span>
+	PointPlat foodXY<span class="token punctuation">;</span>
+	<span class="token keyword">int</span> score<span class="token punctuation">;</span>
+	bool whetherFoodExist<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>Food<span class="token punctuation">;</span>
+
+<span class="token comment">//来点减肥餐</span>
+<span class="token comment">//</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token class-name">_LoseWeightFood_</span> <span class="token punctuation">&#123;</span>
+	PointPlat loseWeightFoodXY<span class="token punctuation">;</span>
+	<span class="token keyword">int</span> score<span class="token punctuation">;</span>
+	bool whetherLWF_Exist<span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>LoseWeightFood<span class="token punctuation">;</span>
+
+<span class="token comment">//定义一下方向</span>
+<span class="token comment">//</span>
+<span class="token keyword">enum</span> <span class="token class-name">Directions</span> <span class="token punctuation">&#123;</span>
+	RIGHT <span class="token operator">=</span> <span class="token number">77</span><span class="token punctuation">,</span>
+	LEFT <span class="token operator">=</span> <span class="token number">75</span><span class="token punctuation">,</span>
+	DOWN <span class="token operator">=</span> <span class="token number">80</span><span class="token punctuation">,</span>
+	UP <span class="token operator">=</span> <span class="token number">72</span><span class="token punctuation">,</span><span class="token comment">//对应keypress</span>
+<span class="token punctuation">&#125;</span><span class="token punctuation">;</span>
+
+<span class="token comment">//Menu函数</span>
+<span class="token keyword">void</span> <span class="token function">menu</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">chooseSpeed</span><span class="token punctuation">(</span><span class="token keyword">int</span> input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//生成食物函数</span>
+<span class="token keyword">void</span> <span class="token function">randInitFoodPos</span><span class="token punctuation">(</span>Food<span class="token operator">*</span> pfood<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">randInitLWFoodPos</span><span class="token punctuation">(</span>LoseWeightFood<span class="token operator">*</span> pLWFood<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+
+<span class="token comment">//生成地图函数</span>
+<span class="token keyword">void</span> <span class="token function">initBackGround</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">initSnake</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//基于EasyX的绘画函数</span>
+<span class="token keyword">void</span> <span class="token function">drawSnake</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">drawFood</span><span class="token punctuation">(</span>Food<span class="token operator">*</span> pfood<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">drawLWFood</span><span class="token punctuation">(</span>LoseWeightFood<span class="token operator">*</span> LWFood<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//对象行为</span>
+<span class="token keyword">void</span> <span class="token function">moveSnake</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">eatFood</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">,</span> Food<span class="token operator">*</span> pfood<span class="token punctuation">,</span> <span class="token keyword">int</span> count<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">eatLWFood</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">,</span> LoseWeightFood<span class="token operator">*</span> plossfood<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">void</span> <span class="token function">keyReact</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">//游戏判定</span>
+<span class="token keyword">int</span> <span class="token function">deathJudge</span><span class="token punctuation">(</span>Snake<span class="token operator">*</span> psnake<span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/02/21/C%E5%B7%A5%E7%A8%8B%E9%A1%B9%E7%9B%AE1%EF%BC%9A-%E8%B4%AA%E5%90%83%E8%9B%87%E9%A1%B9%E7%9B%AE-v0-0-1/">http://charliechen114514.github.io/2023/02/21/C%E5%B7%A5%E7%A8%8B%E9%A1%B9%E7%9B%AE1%EF%BC%9A-%E8%B4%AA%E5%90%83%E8%9B%87%E9%A1%B9%E7%9B%AE-v0-0-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C/">C/C++</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/02/20/Note-%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0-%EF%BC%88Day-1%EF%BC%89/" title="Note : 线性代数 （Day 1）"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Note : 线性代数 （Day 1）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/01/28/C%E7%AE%80%E5%8D%95%E6%95%99%E7%A8%8B%EF%BC%881%EF%BC%89/" title="C简单教程（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-28</div><div class="title">C简单教程（1）</div></div></a></div><div><a href="/2023/01/30/%E7%AE%97%E6%B3%95%EF%BC%881%EF%BC%89/" title="算法（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-30</div><div class="title">算法（1）</div></div></a></div><div><a href="/2023/02/07/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%9A%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%EF%BC%881%EF%BC%89%E5%A4%B4%E6%96%87%E4%BB%B6-%E6%BA%90%E4%BB%A3%E7%A0%81-%E6%B5%8B%E8%AF%95/" title="C语言数据结构模拟：动态数组（1）头文件+源代码+测试"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">C语言数据结构模拟：动态数组（1）头文件+源代码+测试</div></div></a></div><div><a href="/2023/02/07/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%881%EF%BC%89%EF%BC%9A%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84API%E8%AF%A6%E8%A7%A3/" title="C语言数据结构模拟（1）：动态数组API详解"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">C语言数据结构模拟（1）：动态数组API详解</div></div></a></div><div><a href="/2023/02/09/C-extension-Learning-%EF%BC%881%EF%BC%89-%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%8C%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6%E5%92%8C%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A8/" title="C extension Learning （1） 位运算符，逻辑运算符和简单应用"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-09</div><div class="title">C extension Learning （1） 位运算符，逻辑运算符和简单应用</div></div></a></div><div><a href="/2023/02/09/C%E8%AF%AD%E8%A8%80%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%EF%BC%881%EF%BC%89string-h%E7%B3%BB%E5%88%97/" title="C语言常用函数（1）string.h系列"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-09</div><div class="title">C语言常用函数（1）string.h系列</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">28</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">9</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">大更新！这下上了简单的数据结构的C实现，如果只对思路感兴趣看思路即可，如果想查看API实现就取看详解</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B4%AA%E5%90%83%E8%9B%87%E5%88%B6%E4%BD%9C%E8%AF%A6%E8%A7%A31"><span class="toc-number">1.</span> <span class="toc-text">贪吃蛇制作详解1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E6%A1%A3v0-0-1"><span class="toc-number">1.1.</span> <span class="toc-text">文档v0.0.1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%A1%80%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.</span> <span class="toc-text">基础结构</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E8%AE%BE%E8%AE%A1%E8%8F%9C%E5%8D%95"><span class="toc-number">1.3.</span> <span class="toc-text">开始设计菜单</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E6%94%BE%E7%82%B9%E4%B8%9C%E8%A5%BF%EF%BC%81"><span class="toc-number">1.4.</span> <span class="toc-text">开始放点东西！</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%9B%87"><span class="toc-number">1.4.1.</span> <span class="toc-text">蛇</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A3%9F%E7%89%A9%E4%B8%8E%E5%87%8F%E8%82%A5%E9%A4%90"><span class="toc-number">1.4.2.</span> <span class="toc-text">食物与减肥餐</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%98%E5%88%B6"><span class="toc-number">1.4.3.</span> <span class="toc-text">绘制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8A%A8%E8%B5%B7%E6%9D%A5"><span class="toc-number">1.5.</span> <span class="toc-text">动起来</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E8%AE%A9%E8%9B%87%E5%8A%A8%E8%B5%B7%E6%9D%A5%E5%85%88"><span class="toc-number">1.5.1.</span> <span class="toc-text">1.让蛇动起来先</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%94%AE%E7%9B%98%E4%BA%A4%E4%BA%92"><span class="toc-number">1.5.2.</span> <span class="toc-text">键盘交互</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%81%B0%E9%A5%AD%E5%A4%84%E7%90%86"><span class="toc-number">1.5.3.</span> <span class="toc-text">恰饭处理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%97%9D%E5%B1%81%E5%88%A4%E6%96%AD"><span class="toc-number">1.5.4.</span> <span class="toc-text">嗝屁判断</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E7%A8%8B%E5%BA%8F%E6%9E%B6%E6%9E%84"><span class="toc-number">1.6.</span> <span class="toc-text">主程序架构</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%BA%90%E6%96%87%E4%BB%B6%E4%B8%80%E8%A7%88%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">源文件一览：</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BB%E7%A8%8B%E5%BA%8F%EF%BC%9A"><span class="toc-number">2.1.</span> <span class="toc-text">主程序：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#objbehavior-cpp"><span class="toc-number">2.2.</span> <span class="toc-text">objbehavior.cpp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MENUfunc-cpp"><span class="toc-number">2.3.</span> <span class="toc-text">MENUfunc.cpp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#initgameFunc-cpp"><span class="toc-number">2.4.</span> <span class="toc-text">initgameFunc.cpp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#InitFoodFunc-cpp"><span class="toc-number">2.5.</span> <span class="toc-text">InitFoodFunc.cpp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#draw-cpp"><span class="toc-number">2.6.</span> <span class="toc-text">draw.cpp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#deathJugde-cpp"><span class="toc-number">2.7.</span> <span class="toc-text">deathJugde.cpp</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Structure-h"><span class="toc-number">2.8.</span> <span class="toc-text">Structure.h</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/02/21/C%E5%B7%A5%E7%A8%8B%E9%A1%B9%E7%9B%AE1%EF%BC%9A-%E8%B4%AA%E5%90%83%E8%9B%87%E9%A1%B9%E7%9B%AE-v0-0-1/" title="C工程项目1： 贪吃蛇项目 v0_0_1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="C工程项目1： 贪吃蛇项目 v0_0_1"/></a><div class="content"><a class="title" href="/2023/02/21/C%E5%B7%A5%E7%A8%8B%E9%A1%B9%E7%9B%AE1%EF%BC%9A-%E8%B4%AA%E5%90%83%E8%9B%87%E9%A1%B9%E7%9B%AE-v0-0-1/" title="C工程项目1： 贪吃蛇项目 v0_0_1">C工程项目1： 贪吃蛇项目 v0_0_1</a><time datetime="2023-02-21T04:34:07.000Z" title="发表于 2023-02-21 12:34:07">2023-02-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/20/Note-%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0-%EF%BC%88Day-1%EF%BC%89/" title="Note : 线性代数 （Day 1）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Note : 线性代数 （Day 1）"/></a><div class="content"><a class="title" href="/2023/02/20/Note-%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0-%EF%BC%88Day-1%EF%BC%89/" title="Note : 线性代数 （Day 1）">Note : 线性代数 （Day 1）</a><time datetime="2023-02-20T08:42:03.000Z" title="发表于 2023-02-20 16:42:03">2023-02-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/16/Cmake-%E7%AE%80%E5%8D%95%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/" title="Cmake 简单笔记 （1）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Cmake 简单笔记 （1）"/></a><div class="content"><a class="title" href="/2023/02/16/Cmake-%E7%AE%80%E5%8D%95%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/" title="Cmake 简单笔记 （1）">Cmake 简单笔记 （1）</a><time datetime="2023-02-16T13:16:16.000Z" title="发表于 2023-02-16 21:16:16">2023-02-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/15/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%882%EF%BC%89%E5%8D%95%E9%93%BE%E8%A1%A8API%E8%AF%A6%E8%A7%A3/" title="C语言数据结构 （2） 单链表API详解"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="C语言数据结构 （2） 单链表API详解"/></a><div class="content"><a class="title" href="/2023/02/15/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%882%EF%BC%89%E5%8D%95%E9%93%BE%E8%A1%A8API%E8%AF%A6%E8%A7%A3/" title="C语言数据结构 （2） 单链表API详解">C语言数据结构 （2） 单链表API详解</a><time datetime="2023-02-15T08:14:40.000Z" title="发表于 2023-02-15 16:14:40">2023-02-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/13/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%888%EF%BC%89/" title="高等数学教程 （8）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="高等数学教程 （8）"/></a><div class="content"><a class="title" href="/2023/02/13/%E9%AB%98%E7%AD%89%E6%95%B0%E5%AD%A6%E6%95%99%E7%A8%8B%EF%BC%888%EF%BC%89/" title="高等数学教程 （8）">高等数学教程 （8）</a><time datetime="2023-02-13T15:11:03.000Z" title="发表于 2023-02-13 23:11:03">2023-02-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
