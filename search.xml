@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>线性代数基本教程（3）</title>
+      <link href="/2023/02/28/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0%E5%9F%BA%E6%9C%AC%E6%95%99%E7%A8%8B%EF%BC%883%EF%BC%89/"/>
+      <url>/2023/02/28/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0%E5%9F%BA%E6%9C%AC%E6%95%99%E7%A8%8B%EF%BC%883%EF%BC%89/</url>
+      
+        <content type="html"><![CDATA[<h1 id="矩阵的概念"><a href="#矩阵的概念" class="headerlink" title="矩阵的概念"></a>矩阵的概念</h1><p>​        本质上是一个数表，一个矩阵可以表达为：$m\times n$矩阵，元素可以使用$a_{ij}$</p><script type="math/tex; mode=display">\left [\begin{matrix}1&2&3 \\1&1&1\end{matrix}\right ]</script><p>​        这是一个$2\times 3$矩阵，记作$A_{2\times 3}$</p><h2 id="负矩阵"><a href="#负矩阵" class="headerlink" title="负矩阵"></a>负矩阵</h2><script type="math/tex; mode=display">B =-A</script><h2 id="N-阶矩阵"><a href="#N-阶矩阵" class="headerlink" title="N 阶矩阵"></a>N 阶矩阵</h2><p>​        定义<strong>行数等于列数的矩阵</strong>是<strong>一个方阵</strong></p><script type="math/tex; mode=display">\left [\begin{matrix}1&2 \\1&1\end{matrix}\right ]</script><h2 id="单位阵"><a href="#单位阵" class="headerlink" title="单位阵"></a>单位阵</h2><p>​        基于 N 阶方阵，如果只有主对角线元素不为0的方阵是单位阵</p><script type="math/tex; mode=display">\left [\begin{matrix}1&0 \\0&1\end{matrix}\right ]</script><h2 id="矩阵相等的前提是同型矩阵"><a href="#矩阵相等的前提是同型矩阵" class="headerlink" title="矩阵相等的前提是同型矩阵"></a>矩阵相等的前提是同型矩阵</h2><p>​        矩阵相等的前提是同型矩阵，接下来才会一 一对比元素！所以两个 0 矩阵不一定相等！</p><h2 id="运算律"><a href="#运算律" class="headerlink" title="运算律"></a>运算律</h2><h3 id="加法"><a href="#加法" class="headerlink" title="加法"></a>加法</h3><p>​        首先矩阵的加法只能发生在同型矩阵之中：加法是对应元素相加：</p><p>EG:</p><script type="math/tex; mode=display">\left [\begin{matrix}1&2&3 \\1&1&1\end{matrix}\right ]+\left [\begin{matrix}1&2&3 \\1&1&1\end{matrix}\right ]=\left [\begin{matrix}2&4&6 \\2&2&2\end{matrix}\right ]</script><h3 id="减法"><a href="#减法" class="headerlink" title="减法"></a>减法</h3><p>​        一致的：</p><script type="math/tex; mode=display">\left [\begin{matrix}1&2&3 \\1&1&1\end{matrix}\right ]-\left [\begin{matrix}1&2&3 \\1&1&1\end{matrix}\right ]=\left [\begin{matrix}0&0&0\\0&0&0\end{matrix}\right ]</script><h3 id="基本的运算律"><a href="#基本的运算律" class="headerlink" title="基本的运算律"></a>基本的运算律</h3><p>1）$A+B = B+A$</p><p>2)$(A+B)+C=A+(B+C)$</p><h3 id="数乘"><a href="#数乘" class="headerlink" title="数乘"></a>数乘</h3><p>​        定义：数子相乘把每个元素乘以数</p><script type="math/tex; mode=display">k\left [\begin{matrix}1&2&3 \\1&1&1\end{matrix}\right ]+=\left [\begin{matrix}k&2k&3k \\k&k&k\end{matrix}\right ]</script><p>​        这个操作可以反过来：叫提公因子：要求<strong>矩阵所有元素都有公因子，才会往外提一次</strong></p><p>对比的：<strong>一行（列）有公因子就提一次</strong></p><p>1）$k(A+B)=kA+kB$</p><p>2）$(k+l)A=kA+lA$</p><p>3)$k(lA)=(kl)A$</p><h3 id="矩阵的乘法"><a href="#矩阵的乘法" class="headerlink" title="矩阵的乘法"></a>矩阵的乘法</h3><p>​        注意矩阵的乘法要注意的：一个矩阵的行数要等于另一个矩阵的列数！</p><script type="math/tex; mode=display">C(i,j)=A(i,1)×B(1,j)+A(i,2)×B(2,j)+...A(r,1)×B(r,j)</script><p>​        结果就是：</p><p>​        <strong>中间相等，取两边，形状就是A的行B的列的矩阵</strong></p><p>​        注意：</p><p>1）$AB\neq BA$,况且AB有意义，BA不一定有意义！</p><p>2）AB = 0 <strong>无法推理出</strong>：$A = 0$或者$B=0$</p><p>3)$AB=AC,A\neq 0$<strong>推理不出</strong>：$B=C$!</p><p>与单位矩阵相乘等于其本身！</p><p>1）$(AB)C=A(BC)$</p><p>2）$(A+B)C=AC+BC$</p><p>3）$C(A+B)=CA+CB$</p><p>4）$k(AB)=(kA)B=A(kB)$</p><h3 id="矩阵的幂"><a href="#矩阵的幂" class="headerlink" title="矩阵的幂"></a>矩阵的幂</h3><p>​        定义幂的计算是如下的：</p><script type="math/tex; mode=display">A^k = AAA...A</script><p>1)$A^{k_1}A^{k_2}=A^{k_1+k_2}$</p><p>2)$(A^{k_1})^{k_2}=A^{k_1 k_2}$</p><h2 id="特殊矩阵"><a href="#特殊矩阵" class="headerlink" title="特殊矩阵"></a>特殊矩阵</h2><h3 id="数量矩阵"><a href="#数量矩阵" class="headerlink" title="数量矩阵"></a>数量矩阵</h3><script type="math/tex; mode=display">\left\{\begin{matrix}a&0&0&0&0&0\\0&a&0&0&0&0\\0&0&a&0&0&0\\.&.&.&.&.&.\\0&0&0&0&0&a\end{matrix}\right \}=a\left\{\begin{matrix}1&0&0&0&0&0\\0&1&0&0&0&0\\0&0&1&0&0&0\\.&.&.&.&.&.\\0&0&0&0&0&1\end{matrix}\right \}</script><h3 id="对角型矩阵"><a href="#对角型矩阵" class="headerlink" title="对角型矩阵"></a>对角型矩阵</h3><p>​        如果一个矩阵只有对角线的元素非零，那我们简单的写作</p><script type="math/tex; mode=display">diag(a_1,a_2,a_3,...,a_n)</script><h3 id="对称矩阵"><a href="#对称矩阵" class="headerlink" title="对称矩阵"></a>对称矩阵</h3><p>定义满足$a_{ij}=a_{ji}$的矩阵是对称矩阵，其性质是：$A^T=A$</p><p>1)$(A+B)^T=A^T+B^T$</p><p>2)$(kA)^T=kA^T$</p><p>3)$(AB)^T=B^TA^T=BA$</p><h3 id="反对称矩阵"><a href="#反对称矩阵" class="headerlink" title="反对称矩阵"></a>反对称矩阵</h3><p>满足：$a_{ij}=-a_{ji}$且，$a_{ii}=0$的矩阵</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Math Works </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>QT 1</title>
       <link href="/2023/02/28/QT-1/"/>
       <url>/2023/02/28/QT-1/</url>
