@@ -1,0 +1,581 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Opencv in Visual Studio C++ | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Opencv with Visual StudioC++ Version1.环境配置问题​        我们首先下好 Opencv 4.5.1 的包，安装好 Cmake 之后开始使用！ ​        下面为了配置好 Opencv 的开发环境：我们必须书写一个 CmakeLists来链接库： cmake_minimum_required(VERSION 2.8) project(def) #">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Opencv in Visual Studio C++">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/03/05/Opencv-in-Visual-Studio-C/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="Opencv with Visual StudioC++ Version1.环境配置问题​        我们首先下好 Opencv 4.5.1 的包，安装好 Cmake 之后开始使用！ ​        下面为了配置好 Opencv 的开发环境：我们必须书写一个 CmakeLists来链接库： cmake_minimum_required(VERSION 2.8) project(def) #">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-03-05T08:13:00.000Z">
+<meta property="article:modified_time" content="2023-03-05T08:15:04.734Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="Opencv">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/03/05/Opencv-in-Visual-Studio-C/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Opencv in Visual Studio C++',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-03-05 16:15:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">35</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Opencv in Visual Studio C++</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-03-05T08:13:00.000Z" title="发表于 2023-03-05 16:13:00">2023-03-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-03-05T08:15:04.734Z" title="更新于 2023-03-05 16:15:04">2023-03-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>14分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Opencv in Visual Studio C++"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Opencv-with-Visual-Studio"><a href="#Opencv-with-Visual-Studio" class="headerlink" title="Opencv with Visual Studio"></a>Opencv with Visual Studio</h1><h2 id="C-Version"><a href="#C-Version" class="headerlink" title="C++ Version"></a>C++ Version</h2><h2 id="1-环境配置问题"><a href="#1-环境配置问题" class="headerlink" title="1.环境配置问题"></a>1.环境配置问题</h2><p>​        我们首先下好 Opencv 4.5.1 的包，安装好 Cmake 之后开始使用！</p>
+<p>​        下面为了配置好 Opencv 的开发环境：我们必须书写一个 CmakeLists来链接库：</p>
+<pre class="line-numbers language-Cmake" data-language="Cmake"><code class="language-Cmake">cmake_minimum_required(VERSION 2.8)
+project(def) # 工程名称
+ 
+set(SOURCES
+    default.cpp # 源文件
+)
+ 
+set(HEADERS
+    #main.hpp # 头文件
+)
+ 
+add_executable(Main #产生可执行区域
+    $&#123;SOURCES&#125;
+    $&#123;HEADERS&#125;
+)
+ 
+set(OpenCV_DIR &quot;D:&#x2F;Opencv4.5.1&#x2F;opencv&#x2F;build&#x2F;x64&#x2F;vc15&#x2F;lib&quot;) # 找到二进制的坤文件
+find_package(OpenCV REQUIRED)
+if(OpenCV_FOUND)
+    target_include_directories(Main PUBLIC $&#123;OpenCV_INCLUDE_DIRS&#125;)
+    target_link_libraries(Main $&#123;OpenCV_LIBS&#125;)
+    # 上面两行代码把 Opencv 库所需要的文件和程序链接
+ 
+endif()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        随后，点击Cmake 把工作区和二进制生成文件的地址传进去</p>
+<p><img src="image-20230305134917646.png" alt="image-20230305134917646"></p>
+<p>​        平台选择 64 位，点击 Configure 随后点击 Generate :留意有没有报错！</p>
+<p>​        如果一切没有问题，那么，回到你的工作文件夹，选择BUILD文件夹，打开，随后找到：def.sIn文件，单击启动项目，当然我们需要更改启动项</p>
+<p><img src="image-20230305135524174.png" alt="image-20230305135524174"></p>
+<p>​        选择Main启动项即可！</p>
+<p>​        当然可以使用以下代码测试你的环境！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;opencv2&#x2F;opencv.hpp&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+using namespace cv;
+
+int main()
+&#123;
+	string path &#x3D; &quot;C:\\Users\\陈冠豪\\Pictures\\Camera Roll\\2022-06-20_16.14.20.png&quot;;
+	Mat img &#x3D; imread(path);
+	if (img.empty()) &#123;
+		return -1;
+	&#125;
+	imshow(&quot;1&quot;, img);
+	waitKey(0);
+	return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="项目入门1："><a href="#项目入门1：" class="headerlink" title="项目入门1："></a>项目入门1：</h2><p>​        我们首先来了解什么是图像：这很简单！我们在计算机中用一个矩阵，向里面填入色块实现图像的显示，我们的图像越高清，就说明我们的矩阵划分的越密集，这样，表现出来的就越是清晰！</p>
+<p>​        在黑白图中，我们使用 8 位图来刻画我们的黑白图！0代表黑色，255 则是白色。</p>
+<p><img src="image-20230305140523343.png" alt="image-20230305140523343"></p>
+<p>​        对于彩色图像，我们使用 BGR 三色图，以不同的比例的亮度来叠加在一起。</p>
+<h3 id="显示一个图像"><a href="#显示一个图像" class="headerlink" title="显示一个图像"></a>显示一个图像</h3><p>​        下面我们来使用一个函数 imread 和 imshow!</p>
+<p>​        先来引入头文件</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;opencv2&#x2F;opencv.hpp&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+using namespace cv;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​         现在看一下，有没有报错，一般而言成功了的环境是不会报错的！正是如此！</p>
+<p>​        如果你有幸浏览到了 opencv  的文档，你会注意到 imread 表示的是从程序外面读取一个图像，并且将对象返回给一个叫做 Mat 的类型！函数需要一个string，表示的是图像的地址</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++"># 这里找到一个图像的地址：
+string path &#x3D; &quot;path_DIR&quot;;
+
+# 然后传进去：
+Mat img &#x3D; imread(path);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这个 Mat 就是一个矩阵，存储着图像的信息。显示图像也是简单的：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">imshow(&quot;NameWindows&quot;,img);
+waitKey(0);&#x2F;&#x2F; 防止图像一闪而过<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>Examples:</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;opencv2&#x2F;opencv.hpp&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+using namespace cv;
+
+int main()
+&#123;
+	string path &#x3D; &quot;C:\\Users\\陈冠豪\\Pictures\\Camera Roll\\2022-06-20_16.14.20.png&quot;;
+	Mat img &#x3D; imread(path);
+	if (img.empty()) &#123;
+		return -1;
+	&#125;
+	imshow(&quot;1&quot;, img);
+	waitKey(0);
+	return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230305141742942.png" alt="image-20230305141742942"></p>
+<p>​        效果如上！</p>
+<h3 id="显示一个视频"><a href="#显示一个视频" class="headerlink" title="显示一个视频"></a>显示一个视频</h3><p>​        视频的本质是一帧一帧图像的播放，基于此，我们可以导入，以及导出一个视频：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">string path &#x3D; &quot;C:\\Users\\陈冠豪\\Videos\\2023-03-05 14-24-15.mp4&quot;;
+VideoCapture videocap(path);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        我们的 Opencv 里有一个专门搞视频的类型：</p>
+<pre class="line-numbers language-none"><code class="language-none">VideoCapture <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        类型，支持这样的构造：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">VideoCapture videocap(path)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        随后声明一个矩阵，他将会存储我们的视频中一帧的图片：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">Mat img;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        我们视频的读取是这样的：读取每一帧，然后显示，直到视频结束或者我们人为的退出：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">while(1)
+&#123;
+	videocap.read(img);
+    imshow(&quot;Video&quot;,img);
+    waitKey(1); &#x2F;&#x2F; 我们在这里决定了延迟是如何的，这里实现倍速或者是慢速播放
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;opencv2&#x2F;opencv.hpp&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+using namespace cv;
+
+int main()
+&#123;
+	string path &#x3D; &quot;C:\\Users\\陈冠豪\\Videos\\2023-03-05 14-31-23.mp4&quot;;
+	VideoCapture videocap(path);
+	Mat img;
+	while (1)
+	&#123;
+		videocap.read(img);
+		imshow(&quot;1&quot;, img);
+		waitKey(20);
+	&#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        你当然可以选择你的摄像头！电脑的默认头是0，这意味着：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;opencv2&#x2F;opencv.hpp&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+using namespace cv;
+
+int main()
+&#123;
+	VideoCapture videocap(0);
+	Mat img;
+	while (1)
+	&#123;
+		videocap.read(img);
+		imshow(&quot;1&quot;, img);
+		waitKey(20);
+	&#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        就可以看到你自己了！</p>
+<p><img src="image-20230305144156399.png" alt="image-20230305144156399"></p>
+<p>​        很好。</p>
+<h2 id="项目入门2：图像处理"><a href="#项目入门2：图像处理" class="headerlink" title="项目入门2：图像处理"></a>项目入门2：图像处理</h2><p>​        下面，我们来一 一介绍函数的图像处理：</p>
+<p>​        1）转化为灰度图：</p>
+<p>来看这个函数：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">cvtColor(imgSrc,imgDst,code);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        这个函数把源图像转化为目标图像，以及转化方式：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;opencv2&#x2F;opencv.hpp&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+using namespace cv;
+
+int main()
+&#123;
+	Mat imgSrc, imgDst;
+	string path &#x3D; &quot;C:\\Users\\陈冠豪\\Pictures\\Camera Roll\\2022-06-20_16.14.20.png&quot;;
+	imgSrc &#x3D; imread(path);
+	cvtColor(imgSrc, imgDst, COLOR_BGR2GRAY);
+	imshow(&quot;gray&quot;, imgDst);
+	waitKey(0);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230305145310719.png" alt="image-20230305145310719"></p>
+<h2 id="图像模糊（高斯模糊）"><a href="#图像模糊（高斯模糊）" class="headerlink" title="图像模糊（高斯模糊）"></a>图像模糊（高斯模糊）</h2><p>​        使用函数 GaussainBlur 来实现！</p>
+<p>​        小技巧，如果你不知道这个函数是干什么的，传什么样的参数：可以Ctrl+单击</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">CV_EXPORTS_W void GaussianBlur( InputArray src, OutputArray dst, Size ksize,
+                                double sigmaX, double sigmaY &#x3D; 0,
+                                int borderType &#x3D; BORDER_DEFAULT );
+
+&#x2F;** @brief Applies the bilateral filter to an image.
+
+The function applies bilateral filtering to the input image, as described in
+http:&#x2F;&#x2F;www.dai.ed.ac.uk&#x2F;CVonline&#x2F;LOCAL_COPIES&#x2F;MANDUCHI1&#x2F;Bilateral_Filtering.html
+bilateralFilter can reduce unwanted noise very well while keeping edges fairly sharp. However, it is
+very slow compared to most filters.
+
+_Sigma values_: For simplicity, you can set the 2 sigma values to be the same. If they are small (\&lt;
+10), the filter will not have much effect, whereas if they are large (\&gt; 150), they will have a very
+strong effect, making the image look &quot;cartoonish&quot;.
+
+_Filter size_: Large filters (d \&gt; 5) are very slow, so it is recommended to use d&#x3D;5 for real-time
+applications, and perhaps d&#x3D;9 for offline applications that need heavy noise filtering.
+
+This filter does not work inplace.
+@param src Source 8-bit or floating-point, 1-channel or 3-channel image.
+@param dst Destination image of the same size and type as src .
+@param d Diameter of each pixel neighborhood that is used during filtering. If it is non-positive,
+it is computed from sigmaSpace.
+@param sigmaColor Filter sigma in the color space. A larger value of the parameter means that
+farther colors within the pixel neighborhood (see sigmaSpace) will be mixed together, resulting
+in larger areas of semi-equal color.
+@param sigmaSpace Filter sigma in the coordinate space. A larger value of the parameter means that
+farther pixels will influence each other as long as their colors are close enough (see sigmaColor
+). When d\&gt;0, it specifies the neighborhood size regardless of sigmaSpace. Otherwise, d is
+proportional to sigmaSpace.
+@param borderType border mode used to extrapolate pixels outside of the image, see #BorderTypes
+ *&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        可以看到，这个函数需要源图像，目标图像和高斯核的大小，以及两个方差（其中有一个是必须的）</p>
+<p><img src="image-20230305150011615.png" alt="image-20230305150011615"></p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;opencv2&#x2F;opencv.hpp&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+using namespace cv;
+
+int main()
+&#123;
+	Mat imgSrc,imgBlur;
+	string path &#x3D; &quot;C:\\Users\\陈冠豪\\Pictures\\Camera Roll\\2022-06-20_16.14.20.png&quot;;
+	imgSrc &#x3D; imread(path);
+	GaussianBlur(imgSrc, imgBlur, Size(7, 7), 5, 0);
+	imshow(&quot;1&quot;, imgBlur);
+	imshow(&quot;org&quot;, imgSrc);
+	waitKey(0);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="图像边缘检测"><a href="#图像边缘检测" class="headerlink" title="图像边缘检测"></a>图像边缘检测</h3><p>​        下面我们要使用函数Canny 来给我们的图像进行检测！</p>
+<p>​        <strong>我们在使用 Canny 检测的时候，往往还会在之前使用模糊来更好的检测！！！</strong></p>
+<p>​        通读一下函数需求：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">CV_EXPORTS_W void Canny( InputArray image, OutputArray edges,
+                         double threshold1, double threshold2,
+                         int apertureSize &#x3D; 3, bool L2gradient &#x3D; false );
+
+&#x2F;** \overload
+
+Finds edges in an image using the Canny algorithm with custom image gradient.
+
+@param dx 16-bit x derivative of input image (CV_16SC1 or CV_16SC3).
+@param dy 16-bit y derivative of input image (same type as dx).
+@param edges output edge map; single channels 8-bit image, which has the same size as image .
+@param threshold1 first threshold for the hysteresis procedure.
+@param threshold2 second threshold for the hysteresis procedure.
+@param L2gradient a flag, indicating whether a more accurate \f$L_2\f$ norm
+\f$&#x3D;\sqrt&#123;(dI&#x2F;dx)^2 + (dI&#x2F;dy)^2&#125;\f$ should be used to calculate the image gradient magnitude (
+L2gradient&#x3D;true ), or whether the default \f$L_1\f$ norm \f$&#x3D;|dI&#x2F;dx|+|dI&#x2F;dy|\f$ is enough (
+L2gradient&#x3D;false ).
+ *&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        可以看到，我们需要源图像，目标图像，两个阈值</p>
+<p><img src="image-20230305150945109.png" alt="image-20230305150945109"></p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;opencv2&#x2F;opencv.hpp&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+using namespace cv;
+
+int main()
+&#123;
+	Mat imgSrc,imgBlur,imgCanny;
+	string path &#x3D; &quot;C:\\Users\\陈冠豪\\Pictures\\Camera Roll\\2022-06-20_16.14.20.png&quot;;
+	imgSrc &#x3D; imread(path);
+	GaussianBlur(imgSrc, imgBlur, Size(7, 7), 5, 0);
+	Canny(imgBlur,imgCanny,50,150);
+	imshow(&quot;org&quot;, imgSrc);
+	imshow(&quot;canny&quot;, imgCanny);
+	waitKey(0);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我们用这个来检测阈值，当然，阈值越低，对边界越敏感：</p>
+<p><img src="image-20230305151111912.png" alt="image-20230305151111912"></p>
+<p>​        下调阈值为 25,75后的结果！</p>
+<h3 id="图像膨胀"><a href="#图像膨胀" class="headerlink" title="图像膨胀"></a>图像膨胀</h3><p>​        当我们的图像特征不明显的时候，我们可以放大特征来便于我们的检测：</p>
+<p>​        使用的是函数 dilate:</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">CV_EXPORTS_W void dilate( InputArray src, 
+                         OutputArray dst, 
+                         InputArray kernel,
+                          Point anchor &#x3D; Point(-1,-1), 
+                         int iterations &#x3D; 1,
+                          int borderType &#x3D; BORDER_CONSTANT,
+                          const Scalar&amp; borderValue &#x3D; 											morphologyDefaultBorderValue() 
+                        );
+
+&#x2F;** @brief Performs advanced morphological transformations.
+
+The function cv::morphologyEx can perform advanced morphological transformations using an erosion and dilation as
+basic operations.
+
+Any of the operations can be done in-place. In case of multi-channel images, each channel is
+processed independently.
+
+@param src Source image. The number of channels can be arbitrary. The depth should be one of
+CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
+@param dst Destination image of the same size and type as source image.
+@param op Type of a morphological operation, see #MorphTypes
+@param kernel Structuring element. It can be created using #getStructuringElement.
+@param anchor Anchor position with the kernel. Negative values mean that the anchor is at the
+kernel center.
+@param iterations Number of times erosion and dilation are applied.
+@param borderType Pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not supported.
+@param borderValue Border value in case of a constant border. The default value has a special
+meaning.
+@sa  dilate, erode, getStructuringElement
+@note The number of iterations is the number of times erosion or dilatation operation will be applied.
+For instance, an opening operation (#MORPH_OPEN) with two iterations is equivalent to apply
+successively: erode -&gt; erode -&gt; dilate -&gt; dilate (and not erode -&gt; dilate -&gt; erode -&gt; dilate).
+ *&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        在我们使用完Canny之后：</p>
+<p>​        我们的核怎么来呢？专门使用函数 getStructuringElement来完成我们的工作</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">Mat kernel &#x3D; getStructuringElement(MORPH_RECT,Size(5,5));
+# 这个核越大膨胀越厉害<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><img src="image-20230305151930037.png" alt="image-20230305151930037"></p>
+<p>​        特征被明显的放大了！</p>
+<h3 id="图像侵蚀"><a href="#图像侵蚀" class="headerlink" title="图像侵蚀"></a>图像侵蚀</h3><p>​        我们使用的函数是 Erode:</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">CV_EXPORTS_W void erode( InputArray src, OutputArray dst, InputArray kernel,
+                         Point anchor &#x3D; Point(-1,-1), int iterations &#x3D; 1,
+                         int borderType &#x3D; BORDER_CONSTANT,
+                         const Scalar&amp; borderValue &#x3D; morphologyDefaultBorderValue() );
+
+&#x2F;** @example samples&#x2F;cpp&#x2F;tutorial_code&#x2F;ImgProc&#x2F;Morphology_1.cpp
+Erosion and Dilation sample code
+![Sample Screenshot-Erosion](Morphology_1_Tutorial_Erosion_Result.jpg)![Sample Screenshot-Dilation](Morphology_1_Tutorial_Dilation_Result.jpg)
+Check @ref tutorial_erosion_dilatation &quot;the corresponding tutorial&quot; for more details
+*&#x2F;
+
+&#x2F;** @brief Dilates an image by using a specific structuring element.
+
+The function dilates the source image using the specified structuring element that determines the
+shape of a pixel neighborhood over which the maximum is taken:
+\f[\texttt&#123;dst&#125; (x,y) &#x3D;  \max _&#123;(x&#39;,y&#39;):  \, \texttt&#123;element&#125; (x&#39;,y&#39;) \ne0 &#125; \texttt&#123;src&#125; (x+x&#39;,y+y&#39;)\f]
+
+The function supports the in-place mode. Dilation can be applied several ( iterations ) times. In
+case of multi-channel images, each channel is processed independently.
+
+@param src input image; the number of channels can be arbitrary, but the depth should be one of
+CV_8U, CV_16U, CV_16S, CV_32F or CV_64F.
+@param dst output image of the same size and type as src.
+@param kernel structuring element used for dilation; if elemenat&#x3D;Mat(), a 3 x 3 rectangular
+structuring element is used. Kernel can be created using #getStructuringElement
+@param anchor position of the anchor within the element; default value (-1, -1) means that the
+anchor is at the element center.
+@param iterations number of times dilation is applied.
+@param borderType pixel extrapolation method, see #BorderTypes. #BORDER_WRAP is not suported.
+@param borderValue border value in case of a constant border
+@sa  erode, morphologyEx, getStructuringElement
+ *&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230305152314781.png" alt="image-20230305152314781"></p>
+<p>代码一览：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;opencv2&#x2F;opencv.hpp&gt;
+#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+using namespace cv;
+
+int main()
+&#123;
+	Mat imgSrc,imgBlur,imgCanny,imgDial,imgErode;
+	string path &#x3D; &quot;C:\\Users\\陈冠豪\\Pictures\\Camera Roll\\2022-06-20_16.14.20.png&quot;;
+	imgSrc &#x3D; imread(path);
+	GaussianBlur(imgSrc, imgBlur, Size(7, 7), 5, 0);
+	Canny(imgBlur,imgCanny,50,150);
+	Mat kernel &#x3D; getStructuringElement(MORPH_RECT, Size(5, 5));
+	dilate(imgCanny, imgDial, kernel);
+	erode(imgDial, imgErode, kernel);
+	imshow(&quot;org&quot;, imgSrc);
+	imshow(&quot;dilate&quot;, imgDial);
+	imshow(&quot;erode&quot;, imgErode);
+	waitKey(0);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="图像大小调整与变换"><a href="#图像大小调整与变换" class="headerlink" title="图像大小调整与变换"></a>图像大小调整与变换</h3><p>​        很容易猜到重新设定大小的函数就是Resize:</p>
+<p>​        我们首先学习一下怎样查看图像的大小：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">cout &lt;&lt; img.size()&lt;&lt;endl;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20230305153228802.png" alt="image-20230305153228802"></p>
+<p>​        现在我们可以调整大小了：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">resize(img,imgResize,Size(640,480));<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20230305153352540.png" alt="image-20230305153352540"></p>
+<p>​        如果希望是等比例的放缩，可以采用这样的方式：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">resize(img,imgResize,Size(),xRatio,yRatio);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​         我们也可以裁剪图像：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">Rect roi(100,100,200,300); &#x2F;&#x2F; 这里产生一个区域矩形
+imgCrop &#x3D; img(roi);&#x2F;&#x2F;从图像中生成子图像<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    <img src="image-20230305154148790.png" alt="image-20230305154148790"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/03/05/Opencv-in-Visual-Studio-C/">http://charliechen114514.github.io/2023/03/05/Opencv-in-Visual-Studio-C/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C/">C/C++</a><a class="post-meta__tags" href="/tags/Opencv/">Opencv</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/03/04/ROS-%E5%9F%BA%E4%BA%8EVScode%E7%9A%84%E8%8A%82%E7%82%B9%E8%B0%83%E8%AF%95/" title="ROS 基于VScode的节点调试"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">ROS 基于VScode的节点调试</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/01/28/C%E7%AE%80%E5%8D%95%E6%95%99%E7%A8%8B%EF%BC%881%EF%BC%89/" title="C简单教程（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-28</div><div class="title">C简单教程（1）</div></div></a></div><div><a href="/2023/01/30/%E7%AE%97%E6%B3%95%EF%BC%881%EF%BC%89/" title="算法（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-30</div><div class="title">算法（1）</div></div></a></div><div><a href="/2023/02/07/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%9A%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%EF%BC%881%EF%BC%89%E5%A4%B4%E6%96%87%E4%BB%B6-%E6%BA%90%E4%BB%A3%E7%A0%81-%E6%B5%8B%E8%AF%95/" title="C语言数据结构模拟：动态数组（1）头文件+源代码+测试"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">C语言数据结构模拟：动态数组（1）头文件+源代码+测试</div></div></a></div><div><a href="/2023/02/07/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%881%EF%BC%89%EF%BC%9A%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84API%E8%AF%A6%E8%A7%A3/" title="C语言数据结构模拟（1）：动态数组API详解"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">C语言数据结构模拟（1）：动态数组API详解</div></div></a></div><div><a href="/2023/02/09/C-extension-Learning-%EF%BC%881%EF%BC%89-%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%8C%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6%E5%92%8C%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A8/" title="C extension Learning （1） 位运算符，逻辑运算符和简单应用"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-09</div><div class="title">C extension Learning （1） 位运算符，逻辑运算符和简单应用</div></div></a></div><div><a href="/2023/02/09/C%E8%AF%AD%E8%A8%80%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%EF%BC%881%EF%BC%89string-h%E7%B3%BB%E5%88%97/" title="C语言常用函数（1）string.h系列"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-09</div><div class="title">C语言常用函数（1）string.h系列</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">35</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">12</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">大更新！这下上了简单的数据结构的C实现，如果只对思路感兴趣看思路即可，如果想查看API实现就取看详解</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Opencv-with-Visual-Studio"><span class="toc-number">1.</span> <span class="toc-text">Opencv with Visual Studio</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#C-Version"><span class="toc-number">1.1.</span> <span class="toc-text">C++ Version</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E9%97%AE%E9%A2%98"><span class="toc-number">1.2.</span> <span class="toc-text">1.环境配置问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%85%A5%E9%97%A81%EF%BC%9A"><span class="toc-number">1.3.</span> <span class="toc-text">项目入门1：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%BE%E7%A4%BA%E4%B8%80%E4%B8%AA%E5%9B%BE%E5%83%8F"><span class="toc-number">1.3.1.</span> <span class="toc-text">显示一个图像</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%98%BE%E7%A4%BA%E4%B8%80%E4%B8%AA%E8%A7%86%E9%A2%91"><span class="toc-number">1.3.2.</span> <span class="toc-text">显示一个视频</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%A1%B9%E7%9B%AE%E5%85%A5%E9%97%A82%EF%BC%9A%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86"><span class="toc-number">1.4.</span> <span class="toc-text">项目入门2：图像处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%BE%E5%83%8F%E6%A8%A1%E7%B3%8A%EF%BC%88%E9%AB%98%E6%96%AF%E6%A8%A1%E7%B3%8A%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">图像模糊（高斯模糊）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E5%83%8F%E8%BE%B9%E7%BC%98%E6%A3%80%E6%B5%8B"><span class="toc-number">1.5.1.</span> <span class="toc-text">图像边缘检测</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E5%83%8F%E8%86%A8%E8%83%80"><span class="toc-number">1.5.2.</span> <span class="toc-text">图像膨胀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E5%83%8F%E4%BE%B5%E8%9A%80"><span class="toc-number">1.5.3.</span> <span class="toc-text">图像侵蚀</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%BE%E5%83%8F%E5%A4%A7%E5%B0%8F%E8%B0%83%E6%95%B4%E4%B8%8E%E5%8F%98%E6%8D%A2"><span class="toc-number">1.5.4.</span> <span class="toc-text">图像大小调整与变换</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/03/05/Opencv-in-Visual-Studio-C/" title="Opencv in Visual Studio C++"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Opencv in Visual Studio C++"/></a><div class="content"><a class="title" href="/2023/03/05/Opencv-in-Visual-Studio-C/" title="Opencv in Visual Studio C++">Opencv in Visual Studio C++</a><time datetime="2023-03-05T08:13:00.000Z" title="发表于 2023-03-05 16:13:00">2023-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/04/ROS-%E5%9F%BA%E4%BA%8EVScode%E7%9A%84%E8%8A%82%E7%82%B9%E8%B0%83%E8%AF%95/" title="ROS 基于VScode的节点调试"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROS 基于VScode的节点调试"/></a><div class="content"><a class="title" href="/2023/03/04/ROS-%E5%9F%BA%E4%BA%8EVScode%E7%9A%84%E8%8A%82%E7%82%B9%E8%B0%83%E8%AF%95/" title="ROS 基于VScode的节点调试">ROS 基于VScode的节点调试</a><time datetime="2023-03-04T15:34:04.000Z" title="发表于 2023-03-04 23:34:04">2023-03-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/02/ROS-%E8%8A%82%E7%82%B9%E7%9A%84%E5%88%9B%E5%BB%BA%EF%BC%8C%E7%BC%96%E7%A8%8B%EF%BC%8C%E7%BC%96%E8%AF%91%E4%B8%8E%E8%BF%90%E8%A1%8C/" title="ROS 节点的创建，编程，编译与运行"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROS 节点的创建，编程，编译与运行"/></a><div class="content"><a class="title" href="/2023/03/02/ROS-%E8%8A%82%E7%82%B9%E7%9A%84%E5%88%9B%E5%BB%BA%EF%BC%8C%E7%BC%96%E7%A8%8B%EF%BC%8C%E7%BC%96%E8%AF%91%E4%B8%8E%E8%BF%90%E8%A1%8C/" title="ROS 节点的创建，编程，编译与运行">ROS 节点的创建，编程，编译与运行</a><time datetime="2023-03-02T15:05:38.000Z" title="发表于 2023-03-02 23:05:38">2023-03-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/03/01/51%E5%8D%95%E7%89%87%E6%9C%BA%E5%85%A5%E9%97%A8-1/" title="51单片机入门 1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="51单片机入门 1"/></a><div class="content"><a class="title" href="/2023/03/01/51%E5%8D%95%E7%89%87%E6%9C%BA%E5%85%A5%E9%97%A8-1/" title="51单片机入门 1">51单片机入门 1</a><time datetime="2023-03-01T12:38:33.000Z" title="发表于 2023-03-01 20:38:33">2023-03-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/28/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0%E5%9F%BA%E6%9C%AC%E6%95%99%E7%A8%8B%EF%BC%883%EF%BC%89/" title="线性代数基本教程（3）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="线性代数基本教程（3）"/></a><div class="content"><a class="title" href="/2023/02/28/%E7%BA%BF%E6%80%A7%E4%BB%A3%E6%95%B0%E5%9F%BA%E6%9C%AC%E6%95%99%E7%A8%8B%EF%BC%883%EF%BC%89/" title="线性代数基本教程（3）">线性代数基本教程（3）</a><time datetime="2023-02-28T13:56:01.000Z" title="发表于 2023-02-28 21:56:01">2023-02-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
