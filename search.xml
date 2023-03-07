@@ -4,27 +4,6 @@
   
     
     <entry>
-      <title>test</title>
-      <link href="/2023/03/07/test/"/>
-      <url>/2023/03/07/test/</url>
-      
-        <content type="html"><![CDATA[<h1 id="this-is-a-test"><a href="#this-is-a-test" class="headerlink" title="this is a test"></a>this is a test</h1><p><img src="2022-06-20_16.14.20.png" alt="2022-06-20_16.14.20"></p><script type="math/tex; mode=display">\int_1^2 f(x)dx</script><p>$\int_1^2 f(x)dx$</p>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> C/C++ </tag>
-            
-            <tag> Machine Learning </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Opencv in Visual Studio C++</title>
       <link href="/2023/03/05/Opencv-in-Visual-Studio-C/"/>
       <url>/2023/03/05/Opencv-in-Visual-Studio-C/</url>
