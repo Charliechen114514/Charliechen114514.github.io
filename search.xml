@@ -4,6 +4,44 @@
   
     
     <entry>
+      <title>Deep Learning in English 2</title>
+      <link href="/2023/03/29/Deep-Learning-in-English-2/"/>
+      <url>/2023/03/29/Deep-Learning-in-English-2/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Deep-Learning-2"><a href="#Deep-Learning-2" class="headerlink" title="Deep Learning 2"></a>Deep Learning 2</h1><h2 id="Supervised-learning-with-Neural-Networks"><a href="#Supervised-learning-with-Neural-Networks" class="headerlink" title="Supervised learning with Neural Networks"></a>Supervised learning with Neural Networks</h2><p>​    Recently, with a rapid dedvelopment of Artificial Intelligence, it has already created a large amount of economic benefit to society. Supervised learning, as a part of machine learning, has a large propotions of the benefit created by AI.</p><p>​    Supervised learning can be considered as a type of machine learning that requires exact features and specific targets which was set by human beings . It can be considered as  a semi - automatic  learning methods as we need to input specific data by humans</p><p>​    To be exact, we need to tell the machine what is input, and what is the output to get a model of predictions. Like nowadays, we need to make predictions of our real estate or differatiating the images like photo tagging. (I recently make classifications of kinds of flowers by making machines gather features of variaty kinds of flowers and make classifications according to the features it get), or make precises and pretty translations among languages. Perhaps the most lucrative applications of it is Online advertising. By collecting your personal informations and detecting whether you click the ads, the machines learn whether you get favor of this kind of ads . As returned, it will offer you the ads you likely like more.</p><p>​    These kinds of applications all use the relatively standard neural networks. There are several kind of NN( NN stands for Nerual networks). The traditional one is SNN(Standard NN). and also, we use  CNN(Convolutional NN)(卷积)  in image processing . RNN(Recurrent NN) is fit for one- dimensional sequence data that has maybe a temporal component.</p><p><img src="image-20230321113600065.png" alt="image-20230321113600065"></p><p>​        Supervised learning can deal with Structured data and Unstructured data. Structured data is a kind of data that has been quantified in database, while unstructured data involves audio ,images , texts and so on. Computers is harder to deal with unstructured data, but with a development of AI , computers are getting a better understanding of unstructured data.</p><p>​        So, NN has a deep effect on machine learning, so how should we make NN work properly? Let’s go to the next page!</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Deep-Learning </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Deep Learning in English 1</title>
+      <link href="/2023/03/29/Deep-Learning-in-English-1/"/>
+      <url>/2023/03/29/Deep-Learning-in-English-1/</url>
+      
+        <content type="html"><![CDATA[<h1 id="Deep-Learning-Notes"><a href="#Deep-Learning-Notes" class="headerlink" title="Deep Learning Notes"></a>Deep Learning Notes</h1><p>​        Here, I want to write a passage that related to deep learning in English,which  undoubtedly aims to practice my English writing and improve my English expressions.</p><p>​        （Passage in this series has already been basically proofread! You can read it for free!）</p><h2 id="What-is-a-deep-learning"><a href="#What-is-a-deep-learning" class="headerlink" title="What is a deep learning"></a>What is a deep learning</h2><p>​    To start with, we can simply say that deep learning  refers to training neural networks. In this case,to get a deep understanding of neural network, let’s take the prediction of house price as an example:</p><p>​    Often, we point the such Price - size relationship on the tablet,and , I mean , if we are good at linear regressions, we will choose to use linear functions , in other words, the functions that can be described as  $kx+b$ to what we call as “FIT” in machine learning. So we definitely get a line if we draw in the figure.</p><p><img src="image-20230319210045067.png" alt="image-20230319210045067"></p><p>​        We can already finish this simple work when we are in high school. But let’s review this process in another way. I mean , Let’s take the size of house as imput because it affects the price of house. So relatively, we treat price as the output. The functions that make fitting can be called: <strong>neural </strong>, as it is single when we establish the model of predictions</p><p><img src="image-20230319210353903.png" alt="image-20230319210353903"></p><p>But what we should get mentioned is that price can’t be negative as it will create finacial wonder(just kidding), so we do need to rectify the line.</p><p><img src="image-20230319220650497.png" alt="image-20230319220650497"></p><p>​        This kind of new line can be called rectified functions , in short, ReLU. But we should also be recognized that the affect can’t be singled. Instead, it should be mutiplied .</p><p>​        Let’s take the advanced example. We  usually take : size ,zip code ,wealth or even whether the house have lavatory as the target.</p><p><img src="image-20230319223411804.png" alt="image-20230319223411804"></p><p>​        We can build up the network by compounding the single neural. We just input the data and train to get the weight.</p><p>​        Let’s sum it up!</p><p><img src="image-20230319223731215.png" alt="image-20230319223731215"></p><p> The input is treated as input features and the neural network is aimed to predict the price, and on the next sections , we will offer more examples of this kind of neural networks</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> Deep-Learning </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>2023展望与开发事宜（试行版）</title>
       <link href="/2023/03/24/2023%E5%B1%95%E6%9C%9B%E4%B8%8E%E5%BC%80%E5%8F%91%E4%BA%8B%E5%AE%9C%EF%BC%88%E8%AF%95%E8%A1%8C%E7%89%88%EF%BC%89/"/>
       <url>/2023/03/24/2023%E5%B1%95%E6%9C%9B%E4%B8%8E%E5%BC%80%E5%8F%91%E4%BA%8B%E5%AE%9C%EF%BC%88%E8%AF%95%E8%A1%8C%E7%89%88%EF%BC%89/</url>
