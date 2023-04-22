@@ -1,0 +1,453 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Modern-C-SmartPtr-2-SharedPtrAndWeakPtr | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="C++智能指针shared_ptr 与计数机制​        shared_ptr作为现代C++智能指针的一种，又被译作计数指针（按照原名是共享指针），于是，不同于unique_ptr那样， shared_ptr字如其名的——可以共享数据！我们可以复制这个指针，让多个指针都指向同一块内存！ ​        但是让shared_ptr独特于裸指针的是：它引入了计数机制！也就是说，wrap了一个计">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Modern-C-SmartPtr-2-SharedPtrAndWeakPtr">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/04/22/Modern-C-SmartPtr-2-SharedPtrAndWeakPtr/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="C++智能指针shared_ptr 与计数机制​        shared_ptr作为现代C++智能指针的一种，又被译作计数指针（按照原名是共享指针），于是，不同于unique_ptr那样， shared_ptr字如其名的——可以共享数据！我们可以复制这个指针，让多个指针都指向同一块内存！ ​        但是让shared_ptr独特于裸指针的是：它引入了计数机制！也就是说，wrap了一个计">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-04-22T14:42:26.000Z">
+<meta property="article:modified_time" content="2023-04-22T14:43:44.646Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/04/22/Modern-C-SmartPtr-2-SharedPtrAndWeakPtr/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Modern-C-SmartPtr-2-SharedPtrAndWeakPtr',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-22 22:43:44'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Modern-C-SmartPtr-2-SharedPtrAndWeakPtr</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-04-22T14:42:26.000Z" title="发表于 2023-04-22 22:42:26">2023-04-22</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-22T14:43:44.646Z" title="更新于 2023-04-22 22:43:44">2023-04-22</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Modern-C-SmartPtr-2-SharedPtrAndWeakPtr"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="C-智能指针"><a href="#C-智能指针" class="headerlink" title="C++智能指针"></a>C++智能指针</h1><h2 id="shared-ptr-与计数机制"><a href="#shared-ptr-与计数机制" class="headerlink" title="shared_ptr 与计数机制"></a>shared_ptr 与计数机制</h2><p>​        <code>shared_ptr</code>作为现代C++智能指针的一种，又被译作计数指针（按照原名是共享指针），于是，不同于<code>unique_ptr</code>那样， <code>shared_ptr</code>字如其名的——可以共享数据！我们可以复制这个指针，让多个指针都指向同一块内存！</p>
+<p>​        但是让<code>shared_ptr</code>独特于裸指针的是：它引入了计数机制！也就是说，wrap了一个计数器与类对象所指向的内存相关联起来！</p>
+<p>​        我们对其的copy行为在运行中发生一侧，计数器就+1，销毁一次就-1，对外界的接口就是调用方法：<code>use_count()</code>来查看</p>
+<h3 id="常量类型的shared-ptr"><a href="#常量类型的shared-ptr" class="headerlink" title="常量类型的shared_ptr"></a>常量类型的shared_ptr</h3><p>​        下面呢：我们来搞一下shared_ptr来指向经典对象的demo:</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">shared_ptr&lt;int&gt; i_pInt1 &#x3D; make_shared&lt;int&gt;(10);
+
+cout &lt;&lt; &quot;val:&gt;&quot; &lt;&lt; *i_pInt1;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        <img src="image-20230422212238727.png" alt="image-20230422212238727"></p>
+<p>​        试试use_count:</p>
+<pre class="line-numbers language-none"><code class="language-none">cout &lt;&lt;&quot;use_count:&gt;&quot;&lt;&lt;i_pInt1.use_count()&lt;&lt;endl;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20230422212438039.png" alt="image-20230422212438039"></p>
+<p>​        那我们说的copy究竟是啥呢？正是类似于浅拷贝那样，announce 一个指针，直接将地址复制给这个新指针，只是将地址传递给了新指针而没有为这块数据本身做任何拷贝！</p>
+<p><img src="image-20230422212644498.png" alt="image-20230422212644498"></p>
+<p>​        可以看到，这下<code>use_count</code>变成2了！</p>
+<p>​        那就显然了！如果我们通过i_pInt1来改变值，当我们解析i_pInt2的时候，值一定也会变！    </p>
+<pre><code>//change the val by Path *pVal1 = 20;
+
+*i_pInt1 = 1000;
+cout &lt;&lt; &quot;val:&gt;&quot; &lt;&lt; *i_pInt2 &lt;&lt; endl;
+</code></pre><p><img src="image-20230422212859311.png" alt="image-20230422212859311"></p>
+<p>​        那现在我们的指针的计数还是2，怎么让他减少呢？让其中一个不再指向这块内存就好了！</p>
+<pre class="line-numbers language-none"><code class="language-none">i_pInt2 &#x3D; nullptr;
+cout &lt;&lt; &quot;use_count:&gt;&quot; &lt;&lt; i_pInt1.use_count() &lt;&lt; endl;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><img src="image-20230422213103231.png" alt="image-20230422213103231"></p>
+<p>​        同时，我们注意，那个被指向nullptr的共享指针，他的计数就是0了！因为他这个时候不在指向任何东西！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">shared_ptr&lt;int&gt; i_pInt3 &#x3D; i_pInt1;
+shared_ptr&lt;int&gt; i_pInt4 &#x3D; i_pInt1;
+shared_ptr&lt;int&gt; i_pInt5 &#x3D; i_pInt1;
+shared_ptr&lt;int&gt; i_pInt6 &#x3D; i_pInt1;
+&#x2F;&#x2F; erase i_pInt2;
+i_pInt2 &#x3D; nullptr;
+cout &lt;&lt; &quot;use_count:&gt;&quot; &lt;&lt; i_pInt2.use_count() &lt;&lt; endl;
+cout &lt;&lt; &quot;use_count:&gt;&quot; &lt;&lt; i_pInt1.use_count() &lt;&lt; endl;
+cout &lt;&lt; &quot;use_count:&gt;&quot; &lt;&lt; i_pInt3.use_count() &lt;&lt; endl;
+cout &lt;&lt; &quot;use_count:&gt;&quot; &lt;&lt; i_pInt4.use_count() &lt;&lt; endl;
+cout &lt;&lt; &quot;use_count:&gt;&quot; &lt;&lt; i_pInt5.use_count() &lt;&lt; endl;
+cout &lt;&lt; &quot;use_count:&gt;&quot; &lt;&lt; i_pInt6.use_count() &lt;&lt; endl;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230422213428144.png" alt="image-20230422213428144"></p>
+<h3 id="自定义类型的shared-ptr"><a href="#自定义类型的shared-ptr" class="headerlink" title="自定义类型的shared_ptr"></a>自定义类型的shared_ptr</h3><pre class="line-numbers language-none"><code class="language-none">shared_ptr&lt;dog&gt; pDog1 &#x3D; make_shared&lt;dog&gt;(dog(&quot;111&quot;, 100));
+*pDog1 &lt;&lt; *pDog1;
+
+shared_ptr&lt;dog&gt; pDog2 &#x3D; pDog1;
+shared_ptr&lt;dog&gt; pDog3 &#x3D; pDog1;
+shared_ptr&lt;dog&gt; pDog4 &#x3D; pDog1;
+cout &lt;&lt; pDog1.use_count() &lt;&lt; &quot; &quot; &lt;&lt; pDog2.use_count() &lt;&lt; &quot; &quot; &lt;&lt; pDog3.use_count() &lt;&lt; &quot; &quot; &lt;&lt; pDog4.use_count();<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230422214020516.png" alt="image-20230422214020516"></p>
+<p>​        当shared_ptr 中没人指向内存的时候自动释放内存！可以使用reset方法来置空指针为 nullptr!</p>
+<h2 id="shared-ptr与函数"><a href="#shared-ptr与函数" class="headerlink" title="shared_ptr与函数"></a>shared_ptr与函数</h2><h3 id="值传递"><a href="#值传递" class="headerlink" title="值传递"></a>值传递</h3><p>​        我们使用值传递的时候，我们是使用了copy的，这个时候在函数内部来use_count就会发现计数器+1了，但是当函数结束调用时，指针析构，计数器-1！</p>
+<p><img src="image-20230422214825448.png" alt="image-20230422214825448"></p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&quot;dog.h&quot;
+#include&lt;iostream&gt;
+
+using namespace std;
+
+void passByVal(shared_ptr&lt;dog&gt; pDog)
+&#123;
+	pDog-&gt;showDogInfo();
+	cout &lt;&lt; pDog.use_count() &lt;&lt; endl;
+	return;
+&#125;
+
+int main()
+&#123;
+	shared_ptr&lt;dog&gt; pDog1 &#x3D; make_shared&lt;dog&gt;(&quot;111&quot;, 100);
+	cout &lt;&lt; pDog1.use_count() &lt;&lt; endl;
+	passByVal(pDog1);
+	cout &lt;&lt; pDog1.use_count() &lt;&lt; endl;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="引用传递"><a href="#引用传递" class="headerlink" title="引用传递"></a>引用传递</h3><p><img src="image-20230422215220588.png" alt="image-20230422215220588"></p>
+<p>​        </p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">"dog.h"</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;iostream></span></span>
+
+<span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
+
+<span class="token keyword">void</span> <span class="token function">passByVal</span><span class="token punctuation">(</span>shared_ptr<span class="token operator">&lt;</span>dog<span class="token operator">></span> pDog<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	pDog<span class="token operator">-></span><span class="token function">showDogInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	cout <span class="token operator">&lt;&lt;</span> pDog<span class="token punctuation">.</span><span class="token function">use_count</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+	<span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">void</span> <span class="token function">passByRef</span><span class="token punctuation">(</span>shared_ptr<span class="token operator">&lt;</span>dog<span class="token operator">></span><span class="token operator">&amp;</span> pDog<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	pDog<span class="token operator">-></span><span class="token function">showDogInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	pDog<span class="token punctuation">.</span><span class="token function">reset</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token function">dog</span><span class="token punctuation">(</span><span class="token string">"222"</span><span class="token punctuation">,</span><span class="token number">222</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">return</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span>
+
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	shared_ptr<span class="token operator">&lt;</span>dog<span class="token operator">></span> pDog1 <span class="token operator">=</span> <span class="token generic-function"><span class="token function">make_shared</span><span class="token generic class-name"><span class="token operator">&lt;</span>dog<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token string">"111"</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	cout <span class="token operator">&lt;&lt;</span> pDog1<span class="token punctuation">.</span><span class="token function">use_count</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+	<span class="token function">passByVal</span><span class="token punctuation">(</span>pDog1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	cout <span class="token operator">&lt;&lt;</span> pDog1<span class="token punctuation">.</span><span class="token function">use_count</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> endl<span class="token punctuation">;</span>
+	<span class="token function">passByRef</span><span class="token punctuation">(</span>pDog1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	pDog1<span class="token operator">-></span><span class="token function">showDogInfo</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        显然，我们使用引用并更改之（reset方法）后，资源本身也被更改！因此，倘若我们不想让程序无意间更改资源本身，请在函数参数列表中做出如下的修改，那就是：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void passByRef(const shared_ptr&lt;dog&gt;&amp; pDog)
+&#123;
+	pDog-&gt;showDogInfo();
+	&#x2F;&#x2F; pDog.reset(new dog(&quot;222&quot;,222));
+	return;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230422215456331.png" alt="image-20230422215456331"></p>
+<p>​        这样就修改不了了！</p>
+<h3 id="做返回值"><a href="#做返回值" class="headerlink" title="做返回值"></a>做返回值</h3><p>​        同普通指针类似，这里不做过多的讲解</p>
+<h2 id="和unique-ptr的区别"><a href="#和unique-ptr的区别" class="headerlink" title="和unique_ptr的区别"></a>和unique_ptr的区别</h2><p>​        我们可以将unique_ptr转化为shared_ptr,只需使用std::move就好了！但是反之不能！就像只指向一个内存的一个指针可以用多个指针一同指向它！而反之不能！这里，当我们的函数需要返回一个开辟的地址时，强烈建议返回的指针时unique_ptr！这样方便我们使用！随时可以转化为shared_ptr或者给其他指针赋值，反之很困难！</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">"dog.h"</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span><span class="token string">&lt;iostream></span></span>
+
+<span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
+
+unique_ptr<span class="token operator">&lt;</span>dog<span class="token operator">></span> <span class="token function">getUniPtr</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+
+	<span class="token keyword">return</span> <span class="token generic-function"><span class="token function">make_unique</span><span class="token generic class-name"><span class="token operator">&lt;</span>dog<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token string">"111"</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+
+	unique_ptr<span class="token operator">&lt;</span>dog<span class="token operator">></span> pUniDog <span class="token operator">=</span> <span class="token function">getUniPtr</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	shared_ptr<span class="token operator">&lt;</span>dog<span class="token operator">></span> pSharedDog <span class="token operator">=</span> std<span class="token double-colon punctuation">::</span><span class="token function">move</span><span class="token punctuation">(</span>pUniDog<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        还是值得注意的是：unique_ptr向shared_ptr 转化的时候是隐式转化的！</p>
+<p><img src="image-20230422220750213.png" alt="image-20230422220750213"></p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&quot;dog.h&quot;
+#include&lt;iostream&gt;
+
+using namespace std;
+
+unique_ptr&lt;dog&gt; getUniPtr() &#123;
+
+	return make_unique&lt;dog&gt;(&quot;111&quot;, 100);
+
+&#125;
+
+int main()
+&#123;
+
+	unique_ptr&lt;dog&gt; pUniDog &#x3D; getUniPtr();
+	shared_ptr&lt;dog&gt; pSharedDog &#x3D; std::move(pUniDog);
+
+	shared_ptr&lt;dog&gt; pTransform &#x3D; getUniPtr();
+	if (!pTransform) &#123;
+		return -1;
+	&#125;
+
+	pTransform-&gt;showDogInfo();
+	cout &lt;&lt; pTransform.use_count() &lt;&lt; endl;
+
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="weak-ptr"><a href="#weak-ptr" class="headerlink" title="weak_ ptr"></a>weak_ ptr</h2><p>​        这是弱指针！很有趣的是 weak_ptr不可以调用-&gt;和*，因为它压根就没有内存的所有权！那他为什么存在？</p>
+<h3 id="一个循环引用的例子"><a href="#一个循环引用的例子" class="headerlink" title="一个循环引用的例子"></a>一个循环引用的例子</h3><p>​        下面我们修改dog.h</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void setFriend(std::shared_ptr&lt;dog&gt; dog) &#123;
+		this-&gt;friends &#x3D; dog;
+	&#125;
+&#x2F;&#x2F;
+
+private:
+std::shared_ptr&lt;dog&gt; friends;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        </p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&quot;dog.h&quot;
+#include&lt;iostream&gt;
+&#x2F;&#x2F;ERROR!!!!!!!!!!!!!!!!!!!!!
+using namespace std;
+int main()
+&#123;
+	shared_ptr&lt;dog&gt; pDog1 &#x3D; make_shared&lt;dog&gt;(&quot;111&quot;, 111);
+
+	weak_ptr&lt;dog&gt; weak_one(pDog1);
+
+	cout &lt;&lt; &quot;see:&gt;weak_ptr:&quot; &lt;&lt; weak_one.use_count() &lt;&lt; &quot; while:&gt; &quot; &lt;&lt; pDog1.use_count()&lt;&lt;endl;
+
+	shared_ptr&lt;dog&gt; pDogLock &#x3D; weak_one.lock();
+
+	cout &lt;&lt; pDog1.use_count() &lt;&lt; endl;
+	cout &lt;&lt; weak_one.use_count() &lt;&lt; endl;
+	cout &lt;&lt; pDogLock.use_count() &lt;&lt; endl;
+
+
+	shared_ptr&lt;dog&gt; pDog3 &#x3D; make_shared&lt;dog&gt;(&quot;333&quot;, 3);
+	shared_ptr&lt;dog&gt; pDog4 &#x3D; make_shared&lt;dog&gt;(&quot;444&quot;, 4);
+	pDog3-&gt;setFriend(pDog4);
+	pDog4-&gt;setFriend(pDog3);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230422223254134.png" alt="image-20230422223254134"></p>
+<p>​        马上发现问题了！好家伙，333和444没被析构！正确的，因为此时他们循环调用导致计数器失灵！</p>
+<p>​        上述问题可以简化为：</p>
+<p>​        当我们有一个类A，需要存储其他A类的对象的信息的时候，倘若我们使用shared_ptr，就会在销毁的时候遇到循环依赖的问题！比若说</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include &lt;iostream&gt;
+#include &lt;memory&gt;
+using namespace std;
+class A &#123;
+public:
+	std::shared_ptr&lt;B&gt; bptr;
+	~A() &#123;
+		cout &lt;&lt; &quot;A is deleted&quot; &lt;&lt; endl;
+	&#125;
+&#125;;
+class B &#123;
+public:
+	std::shared_ptr&lt;A&gt; aptr;
+	~B() &#123;
+		cout &lt;&lt; &quot;B is deleted&quot; &lt;&lt; endl;
+	&#125;
+&#125;;
+int main()
+&#123;
+    
+	&#123;
+		std::shared_ptr&lt;A&gt; ap(new A);
+		std::shared_ptr&lt;B&gt; bp(new B);
+		ap-&gt;bptr &#x3D; bp;
+		bp-&gt;aptr &#x3D; ap;
+	&#125;
+    
+	cout&lt;&lt; &quot;Job unfinished,but sadly quit!&quot; endl; &#x2F;&#x2F; 循环引用导致ap bp退出了作用域都没有析构!
+	return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        那怎么办？使用weak_ptr就好了</p>
+<p><img src="image-20230422223544954.png" alt="image-20230422223544954"></p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">&#x2F;&#x2F;std::shared_ptr&lt;dog&gt; friends;
+std::weak_ptr&lt;dog&gt; friends;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="构造一个weak-ptr"><a href="#构造一个weak-ptr" class="headerlink" title="构造一个weak_ptr"></a>构造一个weak_ptr</h3><p>​        我们注意到，weak_ptr作为shared_ptr的伴生物，其构造从shared_ptr来！</p>
+<pre class="line-numbers language-cpp" data-language="cpp"><code class="language-cpp"><span class="token keyword">using</span> <span class="token keyword">namespace</span> std<span class="token punctuation">;</span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	shared_ptr<span class="token operator">&lt;</span>dog<span class="token operator">></span> pDog1 <span class="token operator">=</span> <span class="token generic-function"><span class="token function">make_shared</span><span class="token generic class-name"><span class="token operator">&lt;</span>dog<span class="token operator">></span></span></span><span class="token punctuation">(</span><span class="token string">"111"</span><span class="token punctuation">,</span> <span class="token number">111</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	weak_ptr<span class="token operator">&lt;</span>dog<span class="token operator">></span> <span class="token function">weak_one</span><span class="token punctuation">(</span>pDog1<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	cout <span class="token operator">&lt;&lt;</span> <span class="token string">"see:>weak_ptr:"</span> <span class="token operator">&lt;&lt;</span> weak_one<span class="token punctuation">.</span><span class="token function">use_count</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> <span class="token string">" while:> "</span> <span class="token operator">&lt;&lt;</span> pDog1<span class="token punctuation">.</span><span class="token function">use_count</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">&lt;&lt;</span>endl<span class="token punctuation">;</span>
+
+
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230422222035184.png" alt="image-20230422222035184"></p>
+<p>​        看到了嘛。我们的weak_ptr当被赋予了同样的地址之后，两者的计数器都不会+1！于是，想要解决上面的问题，只需要把其中一个指针改成weak_ptr就好了！</p>
+<p>​        那么，weak_ptr可不可以转化成shared_ptr呢？可以！调用方法lock() 就OK了！</p>
+<p><img src="image-20230422222447965.png" alt="image-20230422222447965"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/04/22/Modern-C-SmartPtr-2-SharedPtrAndWeakPtr/">http://charliechen114514.github.io/2023/04/22/Modern-C-SmartPtr-2-SharedPtrAndWeakPtr/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C/">C/C++</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/04/22/ROS-%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%8F%91-2/" title="ROS 正式开发 2"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">ROS 正式开发 2</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/01/28/C%E7%AE%80%E5%8D%95%E6%95%99%E7%A8%8B%EF%BC%881%EF%BC%89/" title="C简单教程（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-28</div><div class="title">C简单教程（1）</div></div></a></div><div><a href="/2023/01/30/%E7%AE%97%E6%B3%95%EF%BC%881%EF%BC%89/" title="算法（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-30</div><div class="title">算法（1）</div></div></a></div><div><a href="/2023/02/07/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%9A%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%EF%BC%881%EF%BC%89%E5%A4%B4%E6%96%87%E4%BB%B6-%E6%BA%90%E4%BB%A3%E7%A0%81-%E6%B5%8B%E8%AF%95/" title="C语言数据结构模拟：动态数组（1）头文件+源代码+测试"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">C语言数据结构模拟：动态数组（1）头文件+源代码+测试</div></div></a></div><div><a href="/2023/02/07/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%881%EF%BC%89%EF%BC%9A%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84API%E8%AF%A6%E8%A7%A3/" title="C语言数据结构模拟（1）：动态数组API详解"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">C语言数据结构模拟（1）：动态数组API详解</div></div></a></div><div><a href="/2023/02/09/C-extension-Learning-%EF%BC%881%EF%BC%89-%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%8C%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6%E5%92%8C%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A8/" title="C extension Learning （1） 位运算符，逻辑运算符和简单应用"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-09</div><div class="title">C extension Learning （1） 位运算符，逻辑运算符和简单应用</div></div></a></div><div><a href="/2023/02/09/C%E8%AF%AD%E8%A8%80%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%EF%BC%881%EF%BC%89string-h%E7%B3%BB%E5%88%97/" title="C语言常用函数（1）string.h系列"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-09</div><div class="title">C语言常用函数（1）string.h系列</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">大更新！这下上了简单的数据结构的C实现，如果只对思路感兴趣看思路即可，如果想查看API实现就取看详解</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88"><span class="toc-number">1.</span> <span class="toc-text">C++智能指针</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#shared-ptr-%E4%B8%8E%E8%AE%A1%E6%95%B0%E6%9C%BA%E5%88%B6"><span class="toc-number">1.1.</span> <span class="toc-text">shared_ptr 与计数机制</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E9%87%8F%E7%B1%BB%E5%9E%8B%E7%9A%84shared-ptr"><span class="toc-number">1.1.1.</span> <span class="toc-text">常量类型的shared_ptr</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%87%AA%E5%AE%9A%E4%B9%89%E7%B1%BB%E5%9E%8B%E7%9A%84shared-ptr"><span class="toc-number">1.1.2.</span> <span class="toc-text">自定义类型的shared_ptr</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#shared-ptr%E4%B8%8E%E5%87%BD%E6%95%B0"><span class="toc-number">1.2.</span> <span class="toc-text">shared_ptr与函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%80%BC%E4%BC%A0%E9%80%92"><span class="toc-number">1.2.1.</span> <span class="toc-text">值传递</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92"><span class="toc-number">1.2.2.</span> <span class="toc-text">引用传递</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%81%9A%E8%BF%94%E5%9B%9E%E5%80%BC"><span class="toc-number">1.2.3.</span> <span class="toc-text">做返回值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%92%8Cunique-ptr%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="toc-number">1.3.</span> <span class="toc-text">和unique_ptr的区别</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#weak-ptr"><span class="toc-number">1.4.</span> <span class="toc-text">weak_ ptr</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%BE%AA%E7%8E%AF%E5%BC%95%E7%94%A8%E7%9A%84%E4%BE%8B%E5%AD%90"><span class="toc-number">1.4.1.</span> <span class="toc-text">一个循环引用的例子</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%84%E9%80%A0%E4%B8%80%E4%B8%AAweak-ptr"><span class="toc-number">1.4.2.</span> <span class="toc-text">构造一个weak_ptr</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/04/22/Modern-C-SmartPtr-2-SharedPtrAndWeakPtr/" title="Modern-C-SmartPtr-2-SharedPtrAndWeakPtr"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Modern-C-SmartPtr-2-SharedPtrAndWeakPtr"/></a><div class="content"><a class="title" href="/2023/04/22/Modern-C-SmartPtr-2-SharedPtrAndWeakPtr/" title="Modern-C-SmartPtr-2-SharedPtrAndWeakPtr">Modern-C-SmartPtr-2-SharedPtrAndWeakPtr</a><time datetime="2023-04-22T14:42:26.000Z" title="发表于 2023-04-22 22:42:26">2023-04-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/22/ROS-%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%8F%91-2/" title="ROS 正式开发 2"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROS 正式开发 2"/></a><div class="content"><a class="title" href="/2023/04/22/ROS-%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%8F%91-2/" title="ROS 正式开发 2">ROS 正式开发 2</a><time datetime="2023-04-22T13:07:02.000Z" title="发表于 2023-04-22 21:07:02">2023-04-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/19/Modern-C-SmartPtr-1-UniquePtr/" title="Modern_C++_SmartPtr(1)_UniquePtr"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Modern_C++_SmartPtr(1)_UniquePtr"/></a><div class="content"><a class="title" href="/2023/04/19/Modern-C-SmartPtr-1-UniquePtr/" title="Modern_C++_SmartPtr(1)_UniquePtr">Modern_C++_SmartPtr(1)_UniquePtr</a><time datetime="2023-04-19T13:40:56.000Z" title="发表于 2023-04-19 21:40:56">2023-04-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/19/QT-NEW-4/" title="QT NEW 4"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="QT NEW 4"/></a><div class="content"><a class="title" href="/2023/04/19/QT-NEW-4/" title="QT NEW 4">QT NEW 4</a><time datetime="2023-04-19T12:52:36.000Z" title="发表于 2023-04-19 20:52:36">2023-04-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/18/ROS%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%8F%911/" title="ROS正式开发1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROS正式开发1"/></a><div class="content"><a class="title" href="/2023/04/18/ROS%E6%AD%A3%E5%BC%8F%E5%BC%80%E5%8F%911/" title="ROS正式开发1">ROS正式开发1</a><time datetime="2023-04-18T14:33:03.000Z" title="发表于 2023-04-18 22:33:03">2023-04-18</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
