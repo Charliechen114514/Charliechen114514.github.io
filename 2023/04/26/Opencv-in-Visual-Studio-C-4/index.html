@@ -1,0 +1,455 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Opencv in Visual Studio C(4) | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Opencv with Visual Studio4 ​        这是一个简单的图像，我们尝试来用之检测形状！ 轮廓检测​        现在我们想要检测形状的轮廓，是需要对图片做出若干预处理的！我们必须保证我们的图片经过开闭运算： Mat&amp; preWork(Mat&amp; pic) &amp;#123; 	Mat grey, blur, canny, dil, erode; 	cvtCo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Opencv in Visual Studio C(4)">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/04/26/Opencv-in-Visual-Studio-C-4/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="Opencv with Visual Studio4 ​        这是一个简单的图像，我们尝试来用之检测形状！ 轮廓检测​        现在我们想要检测形状的轮廓，是需要对图片做出若干预处理的！我们必须保证我们的图片经过开闭运算： Mat&amp; preWork(Mat&amp; pic) &amp;#123; 	Mat grey, blur, canny, dil, erode; 	cvtCo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-04-26T14:45:53.000Z">
+<meta property="article:modified_time" content="2023-04-26T14:48:21.279Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="Opencv">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/04/26/Opencv-in-Visual-Studio-C-4/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Opencv in Visual Studio C(4)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-04-26 22:48:21'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Opencv in Visual Studio C(4)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-04-26T14:45:53.000Z" title="发表于 2023-04-26 22:45:53">2023-04-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-04-26T14:48:21.279Z" title="更新于 2023-04-26 22:48:21">2023-04-26</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">205</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>1分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Opencv in Visual Studio C(4)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Opencv-with-Visual-Studio4"><a href="#Opencv-with-Visual-Studio4" class="headerlink" title="Opencv with Visual Studio4"></a>Opencv with Visual Studio4</h1><p><img src="image-20230426214208705.png" alt="image-20230426214208705"></p>
+<p>​        这是一个简单的图像，我们尝试来用之检测形状！</p>
+<h2 id="轮廓检测"><a href="#轮廓检测" class="headerlink" title="轮廓检测"></a>轮廓检测</h2><p>​        现在我们想要检测形状的轮廓，是需要对图片做出若干预处理的！我们必须保证我们的图片经过开闭运算：</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">Mat&amp; preWork(Mat&amp; pic)
+&#123;
+	Mat grey, blur, canny, dil, erode;
+	cvtColor(pic, grey, COLOR_BGR2GRAY);
+	GaussianBlur(grey, blur, Size(3, 3), 3, 0);
+	Canny(blur, canny, 25, 75);
+	Mat kernel &#x3D; getStructuringElement(MORPH_RECT, Size(3, 3));
+	dilate(canny, dil, kernel);
+
+	imshow(&quot;grey&quot;, grey);
+	imshow(&quot;blur&quot;, blur);
+	imshow(&quot;canny&quot;, canny);
+	imshow(&quot;dil&quot;, dil);
+	&#x2F;&#x2F;imshow(&quot;erode&quot;, erode);
+	waitKey(0);
+
+	Mat* work &#x3D; new Mat(dil);
+
+	return *work;
+
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我们返回的就是经过预处理的图片了！下面开始重点讲轮廓！</p>
+<p>​        我们的轮廓是用点来描述的，轮廓有若干层数，这就需要我们使用 vector<vector< int >&gt;</p>
+<p>​        还有层级，这里我们使用 vector&lt; Vec4i &gt;来定义类型！它表明当前的每一个类型有四个整数构成，就不需要我们自己手动指定原生的C++类型了</p>
+<p>​        这里是找到轮廓的函数</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">findContours(afterPreWork, countours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">&#x2F;** @brief Finds contours in a binary image.
+
+The function retrieves contours from the binary image using the algorithm @cite Suzuki85 . The contours
+are a useful tool for shape analysis and object detection and recognition. See squares.cpp in the
+OpenCV sample directory.
+@note Since opencv 3.2 source image is not modified by this function.
+
+@param image Source, an 8-bit single-channel image. Non-zero pixels are treated as 1&#39;s. Zero
+pixels remain 0&#39;s, so the image is treated as binary . You can use #compare, #inRange, #threshold ,
+#adaptiveThreshold, #Canny, and others to create a binary image out of a grayscale or color one.
+If mode equals to #RETR_CCOMP or #RETR_FLOODFILL, the input can also be a 32-bit integer image of labels (CV_32SC1).
+@param contours Detected contours. Each contour is stored as a vector of points (e.g.
+std::vector&lt;std::vector&lt;cv::Point&gt; &gt;).
+@param hierarchy Optional output vector (e.g. std::vector&lt;cv::Vec4i&gt;), containing information about the image topology. It has
+as many elements as the number of contours. For each i-th contour contours[i], the elements
+hierarchy[i][0] , hierarchy[i][1] , hierarchy[i][2] , and hierarchy[i][3] are set to 0-based indices
+in contours of the next and previous contours at the same hierarchical level, the first child
+contour and the parent contour, respectively. If for the contour i there are no next, previous,
+parent, or nested contours, the corresponding elements of hierarchy[i] will be negative.
+@param mode Contour retrieval mode, see #RetrievalModes
+@param method Contour approximation method, see #ContourApproximationModes
+@param offset Optional offset by which every contour point is shifted. This is useful if the
+contours are extracted from the image ROI and then they should be analyzed in the whole image
+context.
+ *&#x2F;
+CV_EXPORTS_W void findContours( InputArray image, OutputArrayOfArrays contours,
+                              OutputArray hierarchy, int mode,
+                              int method, Point offset &#x3D; Point());
+
+&#x2F;** @overload *&#x2F;
+CV_EXPORTS void findContours( InputArray image, OutputArrayOfArrays contours,
+                              int mode, int method, Point offset &#x3D; Point());
+
+&#x2F;** @example samples&#x2F;cpp&#x2F;squares.cpp
+A program using pyramid scaling, Canny, contours and contour simplification to find
+squares in a list of images (pic1-6.png). Returns sequence of squares detected on the image.
+*&#x2F;
+
+&#x2F;** @example samples&#x2F;tapi&#x2F;squares.cpp
+A program using pyramid scaling, Canny, contours and contour simplification to find
+squares in the input image.
+*&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这里是一些参数的文档</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">enum RetrievalModes &#123;
+    &#x2F;** retrieves only the extreme outer contours. It sets &#96;hierarchy[i][2]&#x3D;hierarchy[i][3]&#x3D;-1&#96; for
+    all the contours. *&#x2F;
+    RETR_EXTERNAL  &#x3D; 0,
+    &#x2F;** retrieves all of the contours without establishing any hierarchical relationships. *&#x2F;
+    RETR_LIST      &#x3D; 1,
+    &#x2F;** retrieves all of the contours and organizes them into a two-level hierarchy. At the top
+    level, there are external boundaries of the components. At the second level, there are
+    boundaries of the holes. If there is another contour inside a hole of a connected component, it
+    is still put at the top level. *&#x2F;
+    RETR_CCOMP     &#x3D; 2,
+    &#x2F;** retrieves all of the contours and reconstructs a full hierarchy of nested contours.*&#x2F;
+    RETR_TREE      &#x3D; 3,
+    RETR_FLOODFILL &#x3D; 4 &#x2F;&#x2F;!&lt;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">enum ContourApproximationModes &#123;
+    &#x2F;** stores absolutely all the contour points. That is, any 2 subsequent points (x1,y1) and
+    (x2,y2) of the contour will be either horizontal, vertical or diagonal neighbors, that is,
+    max(abs(x1-x2),abs(y2-y1))&#x3D;&#x3D;1. *&#x2F;
+    CHAIN_APPROX_NONE      &#x3D; 1,
+    &#x2F;** compresses horizontal, vertical, and diagonal segments and leaves only their end points.
+    For example, an up-right rectangular contour is encoded with 4 points. *&#x2F;
+    CHAIN_APPROX_SIMPLE    &#x3D; 2,
+    &#x2F;** applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *&#x2F;
+    CHAIN_APPROX_TC89_L1   &#x3D; 3,
+    &#x2F;** applies one of the flavors of the Teh-Chin chain approximation algorithm @cite TehChin89 *&#x2F;
+    CHAIN_APPROX_TC89_KCOS &#x3D; 4
+&#125;;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        上面是一些具体的参数说明！</p>
+<p>​        我们的findCountours 取到轮廓之后呢，就向我们传入空的轮廓和层级输入数据。随后，我们在 原图像（很重要，不要画在二值化后的图里去了！！！）绘制轮廓，这样就好了！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">Mat&amp; receiveCountours(Mat&amp; afterPreWork,Mat&amp; org)
+&#123;
+	vector&lt;vector&lt;Point&gt;&gt; countours;
+	vector&lt;Vec4i&gt; hierarchy;
+
+	findContours(afterPreWork, countours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+	Mat* workMat &#x3D; new Mat(org);
+
+	drawContours(*workMat, countours, -1, Scalar(255, 0, 0), 3);
+
+	return *workMat;
+&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230426221756602.png" alt="image-20230426221756602"></p>
+<p>​        但是一些原因我们的图片可能是有多个绘制的，他们是由图片的噪点 造成的，我们现在使用面积筛选法筛选！</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">Mat&amp; receiveCountours(Mat&amp; afterPreWork,Mat&amp; org)
+&#123;
+	vector&lt;vector&lt;Point&gt;&gt; countours;
+	vector&lt;Vec4i&gt; hierarchy;
+
+	findContours(afterPreWork, countours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+	Mat* workMat &#x3D; new Mat(org);
+
+	
+
+	for (int i &#x3D; 0; i &lt; countours.size(); i++) &#123;
+
+		auto area &#x3D; contourArea(countours[i]);
+		cout &lt;&lt; area &lt;&lt; endl;
+
+		if (area &gt; 1000) &#123;
+
+
+			drawContours(*workMat, countours, i, Scalar(255, 0, 0), 3);
+		&#125;&#x2F;&#x2F; 第I个轮廓满足！
+
+	&#125;
+&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        下面呢，我们使用矩形将找到的形状括起来！这就需要我们：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">&#x2F;** @brief Calculates a contour perimeter or a curve length.
+
+The function computes a curve length or a closed contour perimeter.
+
+@param curve Input vector of 2D points, stored in std::vector or Mat.
+@param closed Flag indicating whether the curve is closed or not.
+ *&#x2F;
+CV_EXPORTS_W double arcLength( InputArray curve, bool closed );<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">double peri &#x3D; arcLength(countours[i], true);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        以及我们之后可能需要通过多少个角点来判定他们是什么，就需要我们：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">&#x2F;** @brief Approximates a polygonal curve(s) with the specified precision.
+
+The function cv::approxPolyDP approximates a curve or a polygon with another curve&#x2F;polygon with less
+vertices so that the distance between them is less or equal to the specified precision. It uses the
+Douglas-Peucker algorithm &lt;http:&#x2F;&#x2F;en.wikipedia.org&#x2F;wiki&#x2F;Ramer-Douglas-Peucker_algorithm&gt;
+
+@param curve Input vector of a 2D point stored in std::vector or Mat
+@param approxCurve Result of the approximation. The type should match the type of the input curve.
+@param epsilon Parameter specifying the approximation accuracy. This is the maximum distance
+between the original curve and its approximation.
+@param closed If true, the approximated curve is closed (its first and last vertices are
+connected). Otherwise, it is not closed.
+ *&#x2F;
+CV_EXPORTS_W void approxPolyDP( InputArray curve,
+                                OutputArray approxCurve,
+                                double epsilon, bool closed );<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        为此，我们需要一个跟轮廓一个数据结构的大小来接受结果，随后用之来绘制轮廓，那就是：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">Mat&amp; receiveCountours(Mat&amp; afterPreWork,Mat&amp; org)
+&#123;
+	vector&lt;vector&lt;Point&gt;&gt; countours;
+	vector&lt;Vec4i&gt; hierarchy;
+
+	findContours(afterPreWork, countours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+	Mat* workMat &#x3D; new Mat(org);
+
+	vector&lt;vector&lt;Point&gt;&gt; conPoly(countours.size());
+
+	for (int i &#x3D; 0; i &lt; countours.size(); i++) &#123;
+
+		auto area &#x3D; contourArea(countours[i]);
+		cout &lt;&lt; area &lt;&lt; endl;
+
+		if (area &gt; 1000) &#123;
+
+			double peri &#x3D; arcLength(countours[i], true);
+			
+			approxPolyDP(countours[i], conPoly[i], 0.02 * peri, true);
+
+			drawContours(*workMat, conPoly, i, Scalar(255, 0, 0), 3);
+		
+		&#125;
+
+	&#125;
+	return *workMat;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230426223109977.png" alt="image-20230426223109977"></p>
+<p>​        而框住矩形是由给出：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">&#x2F;** @brief Calculates the up-right bounding rectangle of a point set or non-zero pixels of gray-scale image.
+
+The function calculates and returns the minimal up-right bounding rectangle for the specified point set or
+non-zero pixels of gray-scale image.
+
+@param array Input gray-scale image or 2D point set, stored in std::vector or Mat.
+ *&#x2F;
+CV_EXPORTS_W Rect boundingRect( InputArray array );<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        函数每一次扫描ConPoly后返回最小矩形，我们用一个vector&lt; Rect &gt;接受就好了</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">Mat&amp; receiveCountours(Mat&amp; afterPreWork,Mat&amp; org)
+&#123;
+	vector&lt;vector&lt;Point&gt;&gt; countours;
+	vector&lt;Vec4i&gt; hierarchy;
+
+	findContours(afterPreWork, countours, hierarchy, RETR_EXTERNAL, CHAIN_APPROX_SIMPLE);
+
+	Mat* workMat &#x3D; new Mat(org);
+
+	vector&lt;vector&lt;Point&gt;&gt; conPoly(countours.size());
+	vector&lt;Rect&gt; boundRect(countours.size());
+	for (int i &#x3D; 0; i &lt; countours.size(); i++) &#123;
+
+		auto area &#x3D; contourArea(countours[i]);
+		cout &lt;&lt; area &lt;&lt; endl;
+
+		if (area &gt; 1000) &#123;
+
+			double peri &#x3D; arcLength(countours[i], true);
+			
+			approxPolyDP(countours[i], conPoly[i], 0.02 * peri, true);
+
+
+			boundRect[i]  &#x3D; boundingRect(conPoly[i]);
+
+			drawContours(*workMat, conPoly, i, Scalar(255, 0, 0), 3);
+			
+			rectangle(*workMat, boundRect[i].tl(), boundRect[i].br(), Scalar(255, 0, 100),5);
+		&#125;
+
+	&#125;
+
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230426223759367.png" alt="image-20230426223759367"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/04/26/Opencv-in-Visual-Studio-C-4/">http://charliechen114514.github.io/2023/04/26/Opencv-in-Visual-Studio-C-4/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C/">C/C++</a><a class="post-meta__tags" href="/tags/Opencv/">Opencv</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/04/26/Opencv-in-Visual-Studio-C-3/" title="Opencv in Visual Studio C(3)"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Opencv in Visual Studio C(3)</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/05/Opencv-in-Visual-Studio-C/" title="Opencv in Visual Studio C++"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-05</div><div class="title">Opencv in Visual Studio C++</div></div></a></div><div><a href="/2023/04/26/Opencv-in-Visual-Studio-C-2/" title="Opencv in Visual Studio C(2)"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-26</div><div class="title">Opencv in Visual Studio C(2)</div></div></a></div><div><a href="/2023/04/26/Opencv-in-Visual-Studio-C-3/" title="Opencv in Visual Studio C(3)"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-26</div><div class="title">Opencv in Visual Studio C(3)</div></div></a></div><div><a href="/2023/01/28/C%E7%AE%80%E5%8D%95%E6%95%99%E7%A8%8B%EF%BC%881%EF%BC%89/" title="C简单教程（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-28</div><div class="title">C简单教程（1）</div></div></a></div><div><a href="/2023/01/30/%E7%AE%97%E6%B3%95%EF%BC%881%EF%BC%89/" title="算法（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-30</div><div class="title">算法（1）</div></div></a></div><div><a href="/2023/02/07/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%9A%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%EF%BC%881%EF%BC%89%E5%A4%B4%E6%96%87%E4%BB%B6-%E6%BA%90%E4%BB%A3%E7%A0%81-%E6%B5%8B%E8%AF%95/" title="C语言数据结构模拟：动态数组（1）头文件+源代码+测试"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">C语言数据结构模拟：动态数组（1）头文件+源代码+测试</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">57</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">20</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">大更新！这下上了简单的数据结构的C实现，如果只对思路感兴趣看思路即可，如果想查看API实现就取看详解</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Opencv-with-Visual-Studio4"><span class="toc-number">1.</span> <span class="toc-text">Opencv with Visual Studio4</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%BD%AE%E5%BB%93%E6%A3%80%E6%B5%8B"><span class="toc-number">1.1.</span> <span class="toc-text">轮廓检测</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/04/26/Opencv-in-Visual-Studio-C-4/" title="Opencv in Visual Studio C(4)"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Opencv in Visual Studio C(4)"/></a><div class="content"><a class="title" href="/2023/04/26/Opencv-in-Visual-Studio-C-4/" title="Opencv in Visual Studio C(4)">Opencv in Visual Studio C(4)</a><time datetime="2023-04-26T14:45:53.000Z" title="发表于 2023-04-26 22:45:53">2023-04-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/26/Opencv-in-Visual-Studio-C-3/" title="Opencv in Visual Studio C(3)"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Opencv in Visual Studio C(3)"/></a><div class="content"><a class="title" href="/2023/04/26/Opencv-in-Visual-Studio-C-3/" title="Opencv in Visual Studio C(3)">Opencv in Visual Studio C(3)</a><time datetime="2023-04-26T14:45:50.000Z" title="发表于 2023-04-26 22:45:50">2023-04-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/26/Opencv-in-Visual-Studio-C-2/" title="Opencv in Visual Studio C(2)"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Opencv in Visual Studio C(2)"/></a><div class="content"><a class="title" href="/2023/04/26/Opencv-in-Visual-Studio-C-2/" title="Opencv in Visual Studio C(2)">Opencv in Visual Studio C(2)</a><time datetime="2023-04-26T14:45:45.000Z" title="发表于 2023-04-26 22:45:45">2023-04-26</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/25/Essential-cpp-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B01/" title="Essential cpp 阅读笔记1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Essential cpp 阅读笔记1"/></a><div class="content"><a class="title" href="/2023/04/25/Essential-cpp-%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B01/" title="Essential cpp 阅读笔记1">Essential cpp 阅读笔记1</a><time datetime="2023-04-25T15:08:05.000Z" title="发表于 2023-04-25 23:08:05">2023-04-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/04/22/Modern-C-SmartPtr-2-SharedPtrAndWeakPtr/" title="Modern-C-SmartPtr-2-SharedPtrAndWeakPtr"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Modern-C-SmartPtr-2-SharedPtrAndWeakPtr"/></a><div class="content"><a class="title" href="/2023/04/22/Modern-C-SmartPtr-2-SharedPtrAndWeakPtr/" title="Modern-C-SmartPtr-2-SharedPtrAndWeakPtr">Modern-C-SmartPtr-2-SharedPtrAndWeakPtr</a><time datetime="2023-04-22T14:42:26.000Z" title="发表于 2023-04-22 22:42:26">2023-04-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
