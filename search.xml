@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>C 文件流基本快速复习</title>
+      <link href="/2023/05/09/C-%E6%96%87%E4%BB%B6%E6%B5%81%E5%9F%BA%E6%9C%AC%E5%BF%AB%E9%80%9F%E5%A4%8D%E4%B9%A0/"/>
+      <url>/2023/05/09/C-%E6%96%87%E4%BB%B6%E6%B5%81%E5%9F%BA%E6%9C%AC%E5%BF%AB%E9%80%9F%E5%A4%8D%E4%B9%A0/</url>
+      
+        <content type="html"><![CDATA[<h1 id="C语言快速复习——文件流"><a href="#C语言快速复习——文件流" class="headerlink" title="C语言快速复习——文件流"></a>C语言快速复习——文件流</h1><p>​        我们现在开始作简单的文件操作的复习</p><h2 id="fopen函数"><a href="#fopen函数" class="headerlink" title="fopen函数"></a>fopen函数</h2><p>​        打开文件的函数，也就是说我们需要创建一个<code>FILE*</code>指针来接受文件</p><pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">struct _iobuf &#123;        char *_ptr;        int   _cnt;        char *_base;        int   _flag;        int   _file;        int   _charbuf;        int   _bufsiz;        char *_tmpfname;        &#125;;typedef struct _iobuf FILE;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>​        为了方便我们的接受文件，我们选择使用这个fopen函数.</p><pre class="line-numbers language-C" data-language="C"><code class="language-C">FILE* fp &#x3D; fopen(fileAddr,Reading mode)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>​        那么，这就是一个重要的问题：我们应该怎么样打开文件呢？</p><div class="table-container"><table><thead><tr><th>w</th><th>open for writing (file need not exist)  如果文件不存在，就创建一个新的。</th></tr></thead><tbody><tr><td>a</td><td>open for appending (file need not exist)</td></tr><tr><td>r+</td><td>open for reading and writing, start at beginning</td></tr><tr><td>w+</td><td>open for reading and writing (overwrite file)</td></tr><tr><td>a+</td><td>open for reading and writing (append if file exists)</td></tr><tr><td>r</td><td>open for reading</td></tr></tbody></table></div><h2 id="fclose函数"><a href="#fclose函数" class="headerlink" title="fclose函数"></a>fclose函数</h2><p>​        对于文件指针，我们需要注意的是文件使用完毕之后，需要关闭文件指针。</p><pre class="line-numbers language-C" data-language="C"><code class="language-C">fclose(FILE* filePointer);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>​    </p><h2 id="fgetc-fputc"><a href="#fgetc-fputc" class="headerlink" title="fgetc fputc"></a>fgetc fputc</h2><p>​        跟getc 和 putchar 是一回事情！向指定的文件读入或者输出一个字符</p><h2 id="fseek"><a href="#fseek" class="headerlink" title="fseek"></a>fseek</h2><p>​        我们在流中定位一个指针的位置：这只是适用在 fseek 里头！</p><pre class="line-numbers language-none"><code class="language-none">SEEK_SET 0&#x2F;&#x2F; AT THE BEGINNING OF THE FILESEEK_CUR 1&#x2F;&#x2F; AT THE CURRENT PLACE OF THE FILESEEK_END 2&#x2F;&#x2F; AT THE END OF THE FILE<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre><h2 id="fputs-fgets-fprintf-fscanf"><a href="#fputs-fgets-fprintf-fscanf" class="headerlink" title="fputs fgets fprintf fscanf"></a>fputs fgets fprintf fscanf</h2><p>​        还是我们说的，跟<code>puts gets printf scanf</code>一回事</p><h2 id="feof"><a href="#feof" class="headerlink" title="feof()"></a>feof()</h2><p>​        到达文件尾时返回真值</p><h2 id="rewind"><a href="#rewind" class="headerlink" title="rewind()"></a>rewind()</h2><p>​        复位文件定位器到文件开始处</p><h2 id="fread"><a href="#fread" class="headerlink" title="fread()"></a>fread()</h2><p>​        从流中读指定个数的字符</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> C/C++ </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Essencial-cpp阅读笔记3</title>
       <link href="/2023/05/09/Essencial-cpp%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B03/"/>
       <url>/2023/05/09/Essencial-cpp%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B03/</url>
