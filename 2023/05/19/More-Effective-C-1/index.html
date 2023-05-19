@@ -1,0 +1,986 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>More Effective C++(1) | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="More Effective C++ 1Basic Issues我们现在开始C++的一大名著阅读.在这个sections，更多关注的是基础的C++议题。 条款1 区分pointers 和 reference​        Pointers和reference确实不一样。在使用方式上，我们对Pointers是*（解引用）和-&gt;的方式来访问Reference确跟对象本身一样，访问成员使用 .">
+<meta property="og:type" content="article">
+<meta property="og:title" content="More Effective C++(1)">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/05/19/More-Effective-C-1/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="More Effective C++ 1Basic Issues我们现在开始C++的一大名著阅读.在这个sections，更多关注的是基础的C++议题。 条款1 区分pointers 和 reference​        Pointers和reference确实不一样。在使用方式上，我们对Pointers是*（解引用）和-&gt;的方式来访问Reference确跟对象本身一样，访问成员使用 .">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-05-19T04:06:37.000Z">
+<meta property="article:modified_time" content="2023-05-19T04:10:15.085Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/05/19/More-Effective-C-1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'More Effective C++(1)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-19 12:10:15'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">More Effective C++(1)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-19T04:06:37.000Z" title="发表于 2023-05-19 12:06:37">2023-05-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-19T04:10:15.085Z" title="更新于 2023-05-19 12:10:15">2023-05-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">6.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>26分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="More Effective C++(1)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="More-Effective-C-1"><a href="#More-Effective-C-1" class="headerlink" title="More Effective C++ 1"></a>More Effective C++ 1</h1><h2 id="Basic-Issues"><a href="#Basic-Issues" class="headerlink" title="Basic Issues"></a>Basic Issues</h2><p>我们现在开始C++的一大名著阅读.在这个sections，更多关注的是基础的C++议题。</p>
+<h3 id="条款1-区分pointers-和-reference"><a href="#条款1-区分pointers-和-reference" class="headerlink" title="条款1 区分pointers 和 reference"></a>条款1 区分pointers 和 reference</h3><p>​        Pointers和reference确实不一样。在使用方式上，我们对Pointers是*（解引用）和<code>-&gt;</code>的方式来访问Reference确跟对象本身一样，访问成员使用 . </p>
+<p>​        作为Reference，不存在空引用！也就是说，不存在一个引用不指向任何对象。这点上，真是跟指针不大一样！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">char* pc &#x3D; 0;
+char* pc1 &#x3D; &amp;aCh; <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        当然，那这样如何呢？</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">char *pc &#x3D; 0;
+char&amp; rc &#x3D; *pc;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        答案是未定义行为！千万别显示的，或者是隐式的做这样的事情！</p>
+<p>​        其二，基于上面的阐述，被引用的对象——必须——在引用之前就被初始化！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">string&amp; rs; &#x2F;&#x2F; 不存在这样的代码！这是非法的
+string s(&quot;xxyyzz&quot;);
+string&amp; rs &#x3D; s;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        相对应的——</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">string* ps;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        通过编译！但是，比如说我的编译器会警告你没有初始化。于是，有必要对指针的合法性进行判断，而引用从来没有必要关注这件事情。</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;iostream&gt;
+
+void checkPointersValid(double* pt) &#123;
+
+	if (pt &#x3D;&#x3D; nullptr) &#123;
+		throw &quot;trying to use empty double pointer! that&#39;s really bad :(&quot;;
+		return;
+	&#125;
+	std::cout &lt;&lt; &quot;Got value:&gt; &quot; &lt;&lt; *pt &lt;&lt; std::endl;
+	return;
+&#125;
+
+void Processing(double* pt) &#123;
+
+	try &#123;
+
+		checkPointersValid(pt);
+
+	&#125;
+	catch (const char* errorStr) &#123;
+
+		std::cout &lt;&lt; errorStr &lt;&lt; std::endl;
+
+		exit(-1);
+
+	&#125;
+
+	return;
+&#125;
+
+int main() &#123;
+	double val &#x3D; 10;
+
+	double* p1 &#x3D; &amp;val;
+
+	double* null &#x3D; nullptr;
+
+	Processing(p1);
+
+	Processing(null);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        很是复杂。。。</p>
+<p>​        另一个重要的区别在于：pointers是可变的，它可以从指向一个内存，原生的话，不加以说明的——指向另一块内存，而不会告诉你这件事情——这是很危险的（对于指向堆内存的话，容易造成泄漏）。但是reference就相当于常指针，总是指向那个对象不会改变。</p>
+<p>​        总结来看：当你——需要考虑到“不指向任何对象”的可能性时，或者考虑：在不同时间需要指向不同对象的可能性时，有必要使用指针来完成你的工作，其余的情况下可以使用reference。</p>
+<h3 id="条款2：最好使用C-转型操作符"><a href="#条款2：最好使用C-转型操作符" class="headerlink" title="条款2：最好使用C++转型操作符"></a>条款2：最好使用C++转型操作符</h3><p>​        在旧时的C语言，我们如下转换类型</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">(target_type)expression<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        然而，这样的作法没有经过检查且辨识度太低了：为了解决这个问题，C++引入了：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">static_cast&lt;target_type&gt;(expression)<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        来个例子：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">int res1 &#x3D; 10, res2 &#x3D; 20;
+double do_res &#x3D; static_cast&lt;double&gt;(res1)&#x2F;res2;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        static_cast跟旧时的C一样有威力，也拥有一样的限制。甚至不可以移除const修饰符，于是const_cast来干这个事情了。</p>
+<p>​        const_cast只可以改变变量的常量性和变易性。其余的都改变不了！</p>
+<p><img src="D:\Hexo-Blog\source\_posts\More-Effective-C-1\image-20230514123125051-16844694129151.png" alt="image-20230514123125051"></p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class widget &#123;
+public:
+	int a;
+&#125;;
+
+class specialWidget :public widget &#123;
+public:
+	int b;
+&#125;;
+void update(specialWidget* psw) &#123;
+
+&#125;
+int main() &#123;
+
+	specialWidget sw;
+	const specialWidget&amp; csw &#x3D; sw;
+
+	update(&amp;csw); &#x2F;&#x2F; invalid
+
+	update(const_cast&lt;specialWidget*&gt;(&amp;csw)); &#x2F;&#x2F; finish work properly!
+
+	update((specialWidget*)&amp;csw);
+
+	widget* pw &#x3D; new specialWidget;
+	update(pw);&#x2F;&#x2F;error ： 类型错误，不可以需要孩子传父亲！
+
+	update(const_cast&lt;specialWidget*&gt;(pw)); &#x2F;&#x2F; error
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        还有个dynamic_cast，特别用在了安全的向下转性或者跨系转型的动作。也就是说，可以将指向基类的指针或引用转向指向派生或者是兄弟类的类的指针或者是引用。他没有办法用在缺乏虚函数的类型，也不可改变常量性！</p>
+<h3 id="条款3：不要以多态的方式处理数组"><a href="#条款3：不要以多态的方式处理数组" class="headerlink" title="条款3：不要以多态的方式处理数组"></a>条款3：不要以多态的方式处理数组</h3><p>​        继承的最重要的性质之一就是可以通过指向基类的指针或者是引用来操纵派生类。比如说</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class BST&#123;...&#125;
+class BalancedBST: public BST&#123;...&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        打印这些东西，我们涉及到：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void PrintBSTArray(ostream&amp; os,const BSTarray[],int numElems)&#123;
+    &#x2F;&#x2F; omit some basic check
+    for(int i &#x3D; 0; i &lt; int numElems; i++)&#123;
+        os&lt;&lt;array[i]; &#x2F;&#x2F; pretended that it has already been designed for using &lt;&lt;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        但是下一次传入：BalancedBST的时候，我们却依然实际上生成的是：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">os &lt;&lt; array + sizeof(BST)*i<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        而不是</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">os &lt;&lt; array + sizeof(BalancedBST)*i<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        这很麻烦了！倘若这个函数是删除元素的话，就意味着删除是不完全的！因为基类总是不会比派生类小的！而且行为未定义！极易造成程序的崩溃！所以不要一多态的方式来处理数组，是啥就是啥的处理！</p>
+<h3 id="条款四：非必要不提供默认构造函数"><a href="#条款四：非必要不提供默认构造函数" class="headerlink" title="条款四：非必要不提供默认构造函数"></a>条款四：非必要不提供默认构造函数</h3><p>​        Default constructors是C++从无到有的生成一个对象的办法。这个东西你不指定初始化方法，其成员也会拥有一些值——对于数值者是０或者是其他些什么无意义的随机值，对于指针者是nullptr。一些内置的数据结构被初始化作空容器。</p>
+<p>​        但是有一些类，倘若我们不提供任何其他信息，是不应该存在的！也就是说：一些可以从无到有的类才适合default constructor.反之不需要。比如说：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class EquipmentPieces&#123;
+    
+  public:
+    EquipmentPieces(int ID);
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        于是不难意料到：这样的初始化不可能合法：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">EquipmentPieces EqVec[10];&#x2F;&#x2F; no Default constructors<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        哪有该怎么办嘞，要不我们：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">int IDArray[]&#x3D;&#123;1,2,3,...&#125;;&#x2F;&#x2F; make the Id valid previously
+EquipmentPiece eqVec[10] &#x3D; &#123;
+    
+    EquipmentPiece(IDArray[0]),
+    EquipmentPiece(IDArray[1]),
+    ...
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        但是这没办法解决我们在堆上完成类似的行为。于是，我们不妨先声明指针数组</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef EquipmentPieces* PEP;
+PEP aPointerArray[10];&#x2F;&#x2F; in stack
+PEP aPointerArrayInHeap[10] &#x3D; new PEP[10];
+for(int i &#x3D; 0; i &lt; 10; i++)&#123;
+    
+    aPointerArrayInHeap[i] &#x3D; new EquipmentPieces(ID[i]);
+    
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        麻烦在于，我们必须记住我们在这里开辟了内存，是需要我们手动释放的。其次，可能指针本身还要占据内存，这是不好的。</p>
+<p>​        于是还有第三种方法，那就是类似于C式的——先分配空数据，让数组指针指向之！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void* rawMem &#x3D; operator new[](10*sizeof(EquipmentPiece));
+
+EquipmentPiece* EPArray &#x3D; static_cast&lt;EquipmentPiece*&gt; (rawMem);
+
+for(int i &#x3D; 0; i &lt; 10; i++)&#123;
+    new(&amp;bestPieces[i]) EquipmentPieces(ID[i]);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        就算如此，你会发现还得是要手动初始化！况且，释放掉他需要很麻烦的代码：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">for(int i &#x3D; 0 i &gt;&#x3D; 0; i--)&#123;
+	epVec[i].~EquipmentPieces();
+&#125;
+
+operator delete[](rawMem);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        一个没有默认构造器的类很快还会有第二个麻烦，那就是没办法直接调用大部分的模板！你当然可以谨慎的设计之来回避这个问题。但是大部分人只有会在出现问题的时候想起来这回事情。</p>
+<p>​        所以要不要它呢？注意到如果一切类都给了默认构造器，我们就必须手动的检查它，否则会产生大量的问题！</p>
+<p>​        于是，还是回到这里：倘若我们不提供任何其他信息，是不应该存在的！也就是说：一些可以从无到有的类才适合default constructor.反之不需要！</p>
+<h2 id="操作符"><a href="#操作符" class="headerlink" title="操作符"></a>操作符</h2><h3 id="条款5：对定制的类型转换符保持警觉"><a href="#条款5：对定制的类型转换符保持警觉" class="headerlink" title="条款5：对定制的类型转换符保持警觉"></a>条款5：对定制的类型转换符保持警觉</h3><p>​        C++自然允许不同类型之间的隐式转换，我是说，比如说</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">short a &#x3D; 10;
+double b &#x3D; a;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        居然是可行的！这还好，C++甚至可以：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">double b &#x3D; 10.00；
+char a &#x3D; b;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        这样会造成信息丢失的转换都是可以正常运行的！ 这是因为C++编译器会想尽办法的找到</p>
+<p>​        于是，在C++的类设计上，有必要专门提供一个转换函数来促使之客户程序员调用，</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class Rational&#123;
+public:    
+	Rational(double a, double b); &#x2F;&#x2F; make a&#x2F;b 
+&#125;;
+
+Rational r(1,2);
+cout &lt;&lt; r;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这居然是可以输出的：0.5！</p>
+<p>​        这是因为C++编译器会想尽办法的找到转化方式。这就很容易造成自己不期望你被调用的函数被调用了！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class Rational&#123;
+public:    
+	Rational(double a, double b); &#x2F;&#x2F; make a&#x2F;b 、
+    double asDouble() const;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这样，显示的调用即可：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">cout &lt;&lt; r.asDouble()&lt;&lt;endl;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        或者，采用关键字explict来防止隐式转换！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">template&lt;class T&gt;
+class Array&#123;
+    
+public:
+    ...
+        explicit Array(int num);
+    ...
+&#125;;
+
+Array&lt;int&gt; a(10);
+Array&lt;int&gt; b(10);
+
+if(a &#x3D;&#x3D; b[i])&#x2F;&#x2F; invalid!!! as it is expicited, you can not transform it underconciously!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="条款6区分前置操作符和后置操作符"><a href="#条款6区分前置操作符和后置操作符" class="headerlink" title="条款6区分前置操作符和后置操作符"></a>条款6区分前置操作符和后置操作符</h3><p>​        在很久以前的C++，没办法区分前置＋＋和后置＋＋（或者－－）。于是，我们这样设计类来防止语法混淆：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;iostream&gt;
+using namespace std;
+
+class UpInt &#123;
+
+public:
+	UpInt(int i) :_val(i) &#123;&#125;;
+	UpInt&amp; operator++() &#123; this-&gt;_val++; return *this; &#125;;
+	const UpInt operator++(int) &#123; UpInt old &#x3D; *this; ++(*this); return old; &#125;;
+	UpInt&amp; operator--()&#123; this-&gt;_val--; return *this; &#125;
+	const UpInt operator--(int) &#123; UpInt old &#x3D; *this; --(*this); return old; &#125;;
+
+	int getVal()const &#123; return _val; &#125;
+private:
+	int _val;
+&#125;;
+ostream&amp; operator&lt;&lt;(ostream&amp; os, const UpInt&amp; my_data) &#123; os &lt;&lt; my_data.getVal() &lt;&lt; endl; return os; &#125;;
+
+int main() &#123;
+
+	UpInt val(10);
+	++val;
+	cout &lt;&lt; val;
+	--val;
+	cout &lt;&lt; val;
+	val++;
+	cout &lt;&lt; val;
+	val--;
+	cout &lt;&lt; val;
+
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        为什么:</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">const UpInt operator++(int) &#123; UpInt old &#x3D; *this; ++(*this); return old; &#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        因为我们是为了防止:</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">int i &#x3D; 0;
+i++++; &#x2F;&#x2F; invalid! C++ abandon this behaviors<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        所以就是直接禁止!只需要加个const将返回的对象常量化!就好了</p>
+<h3 id="条款7：千万不要重载-amp-amp-和-操作符"><a href="#条款7：千万不要重载-amp-amp-和-操作符" class="headerlink" title="条款7：千万不要重载&amp;&amp;,|| 和 , 操作符"></a>条款7：千万不要重载&amp;&amp;,|| 和 , 操作符</h3><p>​        继承于C的，C++对真假值的逻辑表达式也是采用“骤死式”的判别表达式。也就是说，针对这样的表达式：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">char* p;
+...&#x2F;&#x2F; probably init the string or not
+
+if((p !&#x3D; NULL) &amp;&amp; (strlen(p) &gt; 10))&#123;
+    ...
+&#125;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        不需要担心strlen(p)会使用空指针，事实上，一旦判定 p == NULL，那就意味着这个表达式一定为假，就不需要我们去计算第二个式子。于是第二条甚至不会执行。</p>
+<p>​        但是，一旦我们重载了，就无法预期编译器的行为。</p>
+<p>​        于是在C++中，一些运算符是不可以重载的：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">.	.*		::		?:		 new 	 delete		sizeof		typeid		static_cast		
+dynamic_cast		const_cast		reinterpret_cast<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="条款8：了解不同含义的new和delete"><a href="#条款8：了解不同含义的new和delete" class="headerlink" title="条款8：了解不同含义的new和delete"></a>条款8：了解不同含义的new和delete</h3><p>​        我们必须指出，C++的语言有时候确实令人感到难绷，比如说我们会说new operator和operator new 不是一件事情！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">string* phs &#x3D; new string(&quot;Memory Managements&quot;);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        首先，这个new式语言内建的，就是说：首先他分配足够多的内存，放置一个东西。然后调用编译器找到的最合适的初始constructor来完成初始化工作！这样的行为不可以我们改变。</p>
+<p>​        我们可以改变什么啥呢？改变operator new。什么意思？我们发现，new在一些适合调用一个函数执行必要的内存分配空间。这个函数我们可以重写！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void* operator new(size_t size);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        也就是说，这是一个操作符函数，该函数返回一个空的内存！嘿，就像malloc函数一样！</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void* rawMem &#x3D; operator new(sizeof(string));<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        于是，new operator实际上就是operator new + 内存初始化了</p>
+<pre class="line-numbers language-none"><code class="language-none">string* phs &#x3D; new string(&quot;Memory Managements&quot;);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        等价于</p>
+<pre class="line-numbers language-none"><code class="language-none">void* tempName &#x3D; operator new(sizeof(string));
+call the func &gt;&gt; string::string(&quot;Memory Managements&quot;); on tempmemory
+string* ps &#x3D; static_cast&lt;string*&gt;(memory);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        还有一种有趣的new ，叫placement new. 啥意思？就是我们已经知道了指定了一个地方就要放摸一个类的对象，那就可以用之</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class Widget&#123;
+    public:
+    	Widget(size_t size);
+    ...
+&#125;;
+
+Widget* constructWidgetInBuffer(void* buffer,size_t size)&#123;
+ 	return new(buffer) Widget(size);   
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        欸我的嘛，抽象！其实这是在隐式的调用operator new</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void* operator new(size_t size,void* locations)&#123;
+    
+    return locations;
+    
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="Deletion-amp-amp-Deallocation"><a href="#Deletion-amp-amp-Deallocation" class="headerlink" title="Deletion &amp;&amp; Deallocation"></a>Deletion &amp;&amp; Deallocation</h4><p>​        为了避免 resource leak （资源泄露），每一个动态分配行为都必须分配一个。函数operator delete 对于内建的delete operator 对于内建的 delete operator ，好像operator new 对于 new operator 一样。</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">string* ps;
+&#x2F;&#x2F;...
+delete ps;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre><code>     你的编译器必须产生怎样的代码？它必须可以析构ps所指对象。又可以释放该对象占用的内存。
+</code></pre><p>​        内存释放动作由于函数operator delete 执行。通常声明如下：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void operator delete(void* memoryToBeDeallocated);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        由此delete ps;</p>
+<p>​        造成编译器产生这样的代码：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">ps-&gt;~string();
+operator delete(ps);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        这里呈现的一个暗示就是，如果你只打算处理原始的，未设置初值的内存，应该完全回避new operator 和 delete operators。改用operator new取得内存并以 operator delete 归还给系统。</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void* buffer &#x3D; operator new(50*sizeof(char));
+&#x2F;&#x2F;...
+operator delete(buffer);    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre><code>     这组行为在C++相当于malloc和free.
+</code></pre><p>​        如果你使用placement new, 在某内存块中产生的对象，你应该避免对那块内存使用 delete operator. 因为delete operator调用operator delete释放内存，但是该内存含有的对象最初并非是由operator new 分配得来的。毕竟placement new只是返回它所接受的指针而已，谁知道那个指针从哪里来呢？所以为了抵消该对象的构建器的影响，我们选择直接调用对象的destructor。</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void* mallocShared(size_t size);
+void freeShared(void *memory);
+void *sharedMemory &#x3D; mallocShared(sizeof(Widget));
+
+Widget* pW &#x3D; constructWidgetInBuffer(sharedMemory,10);
+...
+&#x2F;&#x2F; delete pW; 不要这样做！没有意义，因为sharedMemory来自mallocShared函数而不是new 出来的！
+pW-&gt;~Widget();&#x2F;&#x2F;可以的！手动调用析构器是允许的
+freeShared(pW);&#x2F;&#x2F; 可以的！释放pW所指向的内存，不调用任何destructor!<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="Arrays数组"><a href="#Arrays数组" class="headerlink" title="Arrays数组"></a>Arrays数组</h4><p>​        下面，我们考虑一些更远的事情，我是说：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">string* ps &#x3D; new string[10];<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        用的还是new operator，但是这次是数组！于是，我们实际上调用的是它的兄弟oprator new[ ]!当然这也就意味着我们可以重写之，但是往往重写全局的new函数是不明智的，因为其他的new operator也会发生行为的改变而使得程序发生剧烈的变化！</p>
+<p>​        类似的，删除使用了new operator</p>
+<h2 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h2><p>​        C++增加了Exceptions 之后，改变了太多的事情。比如说原始指针的使用成为了一个高风险事件，资源泄露的风险也是大增。</p>
+<p>​        但是为了使程序可以在触发异常后安全的退出程序，就必须使用它来处理推出前的工作！</p>
+<h3 id="条款9：使用destructor来防止内存泄漏"><a href="#条款9：使用destructor来防止内存泄漏" class="headerlink" title="条款9：使用destructor来防止内存泄漏"></a>条款9：使用destructor来防止内存泄漏</h3><p>​        假设我们现在正在书写一个类（Adorable Little Animal）ALA，我们在之后派生出来了小猫和小狗两个类</p>
+<p><img src="D:\Hexo-Blog\source\_posts\More-Effective-C-1\image-20230519100041781-16844694129162.png" alt="image-20230519100041781"></p>
+<p>​        为了实现领养工作，我们在抽象类下书写虚函数：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;iostream&gt;
+#include&lt;string&gt;
+using namespace std;
+class ALA &#123;
+
+public:
+	virtual void processAdoption() &#x3D; 0;&#x2F;&#x2F; 强迫重写
+
+protected:
+
+	string name;
+&#125;;
+
+class Puppy : public ALA&#123;
+public:
+	virtual void processAdoption();
+&#125;;
+
+class Kitten :public ALA &#123;
+public:
+	virtual void processAdoption();
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        大致如此</p>
+<p>​        现在我们需要读取星系返回一个ALA指针</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">ALA* readALA(istream&amp; s);&#x2F;&#x2F; 不在谈论怎么实现<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        于是，我们的收养问题实际上可以这样书写：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">&#x2F;&#x2F; 框架
+void processAdoption(istream&amp; dataSource)&#123;
+	while(dataSource)&#123;
+        ALA *pa &#x3D; readALA(dataSource);
+        pa-&gt;processAdoption();
+        delete pa;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这要求我们函数走遍dataSource，处理所有的信息，显然的——我们调用一次，就必须释放一次！</p>
+<p>​        现在出现问题了：假如说我们的 <code>pa-&gt;processAdoption()</code>抛出了一个异常！麻烦大了，这个异常会追溯到调用端，导致<code>delete pa;</code>被跳过了，也就是说，只要触发一次异常，资源泄露一次！</p>
+<p>​        这个时候，C++的Exception就可以出马了：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void processAdoption(istream&amp; dataSource)&#123;
+	while(dataSource)&#123;
+        ALA *pa &#x3D; readALA(dataSource);
+       try&#123;
+           pa-&gt;processAdoption();
+       &#125;
+        catch(...)&#123;
+            delete pa;
+            throw;&#x2F;&#x2F;再把异常传递出去
+        &#125;
+        delete pa;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        嘿！实在是太麻烦了！为什么不让delete代码剧中于一处呢？这就是智能指针的来源！我们只需要使用智能指针指向之，当发现需要被析构的时候就直接析构就好了。</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void processAdoption(istream&amp; dataSource)&#123;
+    while(dataSource)&#123;
+        unique_ptr&lt;ALA&gt; pa(readALA(dataSource));
+        pa-&gt;processAdoption();
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        隐藏在智能指针背后的理念是——以一个对象存放“必须自动释放的资源”，并且是依赖他自己的destructor来干这样的事情。</p>
+<p>​        下面来看窗口设计，比如说我们来看使用窗口显示信息</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void displayInfo(const Information&amp; info)&#123;
+    WINDOW_HANDLE w(createWindow());
+    
+    &#x2F;&#x2F;displayInfo here
+    
+    destroyWindow(w);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        还是先前的问题，如果允许时发生了exception，我们怎么办？</p>
+<p>​        我们设计一个class：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class WindowHandle&#123;
+    public:
+    	WindowHnadle(WINDOW_HANDLE handle):w(handle)&#123;&#125;;
+    	~WindowHandle()&#123;destroyWindow(w)&#125;;
+    	operator WINDOW_HANDLE()&#123;return w;&#125;;
+    
+    private:
+    	WINDOW_HANDLE w;
+    	WindowHandle(const WindowHandle&amp;);
+    	WindowHandle&amp; operator&#x3D;(const WindowHandle);
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我们把复制和赋值行为给静止了，同时还给予了一个隐式操作符！，于是，这个函数的设计变得十分的简单：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void displayInfo(const Information&amp; info)&#123;
+   	WindowHandle w(createWindow());
+    &#x2F;&#x2F;displayInfo here
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        现在我们把它作为临时对象可以销毁了！</p>
+<h3 id="条款10：在constructor内部阻止内存泄漏"><a href="#条款10：在constructor内部阻止内存泄漏" class="headerlink" title="条款10：在constructor内部阻止内存泄漏"></a>条款10：在constructor内部阻止内存泄漏</h3><p>​        我们再说一遍，Exception的出现不太好，比如说我们正在写通讯录：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;list&gt;
+using namespace std;
+class Image &#123;
+public:
+	Image(const string&amp; imageDataFileName);
+&#125;;
+
+class AudioClip &#123;
+public:
+	AudioClip(const string&amp; audioDataFileName);
+&#125;;
+
+class PhoneNumber &#123;
+
+&#125;;
+
+class BookEntry &#123;
+public:
+	BookEntry(
+		const string&amp; name,
+		const string&amp; addr &#x3D; &quot;&quot;,
+		const string&amp; imageFile &#x3D; &quot;&quot;,
+		const string&amp; audioClipFile &#x3D; &quot;&quot;
+	);
+	~BookEntry();
+
+	void addPhoneNumber(const PhoneNumber&amp; phoneNumber);
+
+private:
+	string theName;
+	string theAddr;
+	list&lt;PhoneNumber&gt; thePhone;
+	Image* theImage;
+	AudioClip* theAudioClip;
+&#125;;
+
+BookEntry::BookEntry(
+	const string&amp; name,
+	const string&amp; addr &#x3D; &quot;&quot;,
+	const string&amp; imageFile &#x3D; &quot;&quot;,
+	const string&amp; audioClipFile &#x3D; &quot;&quot;
+) :theName(name), theAddr(addr), theImage(0), theAudioClip(0) &#123;
+	if (imageFile !&#x3D; &quot;&quot;) &#123;
+		theImage &#x3D; new Image(imageFile);
+	&#125;
+
+	if (audioClipFile !&#x3D; &quot;&quot;) &#123;
+		theAudioClip &#x3D; new AudioClip(audioClipFile);
+	&#125;
+&#125;
+
+BookEntry::~BookEntry() &#123;
+	delete theImage;
+	delete theAudioClip;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        但是当现在有了异常之后，假使我们正在初始化的对象抛出异常，就还会发生资源泄漏，即使使用智能指针也不行，因为其调用的destructor要求对象必须已经构建完整！</p>
+<p>​        解决的办法是，在constructor内部就完成异常处理！</p>
+<p>​        </p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">BookEntry::BookEntry(
+	const string&amp; name,
+	const string&amp; addr &#x3D; &quot;&quot;,
+	const string&amp; imageFile &#x3D; &quot;&quot;,
+	const string&amp; audioClipFile &#x3D; &quot;&quot;
+) :theName(name), theAddr(addr), theImage(0), theAudioClip(0) &#123;
+	try
+	&#123;
+		if (imageFile !&#x3D; &quot;&quot;) &#123;
+			theImage &#x3D; new Image(imageFile);
+		&#125;
+
+		if (audioClipFile !&#x3D; &quot;&quot;) &#123;
+			theAudioClip &#x3D; new AudioClip(audioClipFile);
+		&#125;
+	&#125;
+	catch (...) &#123;
+		delete theImage;
+		delete theAudioClip;
+		throw;&#x2F;&#x2F; 
+	&#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        清除这个过程还是可以抽象成一个私有函数！把他放到类里去：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include&lt;iostream&gt;
+#include&lt;string&gt;
+#include&lt;list&gt;
+using namespace std;
+class Image &#123;
+public:
+	Image(const string&amp; imageDataFileName);
+&#125;;
+
+class AudioClip &#123;
+public:
+	AudioClip(const string&amp; audioDataFileName);
+&#125;;
+
+class PhoneNumber &#123;
+
+&#125;;
+
+class BookEntry &#123;
+public:
+	BookEntry(
+		const string&amp; name,
+		const string&amp; addr &#x3D; &quot;&quot;,
+		const string&amp; imageFile &#x3D; &quot;&quot;,
+		const string&amp; audioClipFile &#x3D; &quot;&quot;
+	);
+	~BookEntry();
+
+	void addPhoneNumber(const PhoneNumber&amp; phoneNumber);
+
+private:
+	string theName;
+	string theAddr;
+	list&lt;PhoneNumber&gt; thePhone;
+	Image* theImage;
+	AudioClip* theAudioClip;
+	void cleanUp();
+&#125;;
+
+void BookEntry::cleanUp() &#123;
+	delete theImage;
+	delete theAudioClip;
+&#125;
+
+BookEntry::BookEntry(
+	const string&amp; name,
+	const string&amp; addr &#x3D; &quot;&quot;,
+	const string&amp; imageFile &#x3D; &quot;&quot;,
+	const string&amp; audioClipFile &#x3D; &quot;&quot;
+) :theName(name), theAddr(addr), theImage(0), theAudioClip(0) &#123;
+	try
+	&#123;
+		if (imageFile !&#x3D; &quot;&quot;) &#123;
+			theImage &#x3D; new Image(imageFile);
+		&#125;
+
+		if (audioClipFile !&#x3D; &quot;&quot;) &#123;
+			theAudioClip &#x3D; new AudioClip(audioClipFile);
+		&#125;
+	&#125;
+	catch (...) &#123;
+		cleanUp();
+		throw;&#x2F;&#x2F; 
+	&#125;
+&#125;
+
+BookEntry::~BookEntry() &#123;
+	cleanUp();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我们再次改进：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class BookEntry &#123;
+public:
+	BookEntry(
+		const string&amp; name,
+		const string&amp; addr &#x3D; &quot;&quot;,
+		const string&amp; imageFile &#x3D; &quot;&quot;,
+		const string&amp; audioClipFile &#x3D; &quot;&quot;
+	);
+	~BookEntry();
+
+	void addPhoneNumber(const PhoneNumber&amp; phoneNumber);
+
+private:
+	string theName;
+	string theAddr;
+	list&lt;PhoneNumber&gt; thePhone;
+	Image* const theImage;
+	AudioClip* const theAudioClip;
+	void cleanUp();
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        现在外面就必须通过初值链表的方式才会给予之赋值。这样就可以这样给予一个安全的初始化方式</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">BookEntry::BookEntry(
+	const string&amp; name,
+	const string&amp; addr &#x3D; &quot;&quot;,
+	const string&amp; imageFile &#x3D; &quot;&quot;,
+	const string&amp; audioClipFile &#x3D; &quot;&quot;
+) :
+theName(name), 
+theAddr(addr), 
+theImage(imageFile !&#x3D; &quot;&quot;?new Image(ImageFile):0), 
+theAudioClip(audioClipFile !&#x3D; &quot;&quot;? new AudioClip(audioClipFile):0)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        但是这又把问题绕回去了！</p>
+<p>​        于是，为了使异常不流到外面，外面直接使用组合的方式完成任务：其构造函数放到类私有的地方：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class BookEntry&#123;
+    public:
+	BookEntry(
+		const string&amp; name,
+		const string&amp; addr &#x3D; &quot;&quot;,
+		const string&amp; imageFile &#x3D; &quot;&quot;,
+		const string&amp; audioClipFile &#x3D; &quot;&quot;
+	);
+	~BookEntry();
+
+	void addPhoneNumber(const PhoneNumber&amp; phoneNumber);
+
+private:
+	string theName;
+	string theAddr;
+	list&lt;PhoneNumber&gt; thePhone;
+	Image* const theImage;
+	AudioClip* const theAudioClip;
+	void cleanUp();
+    Image* initImage(const string&amp; imageFile);
+    AudioClip* initAudioClipFile(const string&amp; audioClipFile);
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        于是可以改写了：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">BookEntry::BookEntry(
+	const string&amp; name,
+	const string&amp; addr &#x3D; &quot;&quot;,
+	const string&amp; imageFile &#x3D; &quot;&quot;,
+	const string&amp; audioClipFile &#x3D; &quot;&quot;
+) :
+theName(name), 
+theAddr(addr), 
+theImage(initImage(imageFile)), 
+theAudioClip(initAudioClipFile(audioClipFile))<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        把异常处理转换到函数的内部：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">Image* BookEntry::initImage(const string&amp; imageFile)&#123;
+    if(imageFile !&#x3D; &quot;&quot;)
+        return new ImageFile(imageFile);
+    else return 0;
+&#125;&#x2F;&#x2F;这里不用，因为他是第一个被初始化，出现了其他问题会直接被释放<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">AudioClip* BookEntry::initAudioClipFile(const string&amp; audioClipFile)&#123;
+	try&#123;
+        if(audioClipFile !&#x3D; &quot;&quot;)&#123;
+            return new AudioClip(audioClipFile);
+        &#125;
+       	else return 0;
+    &#125;
+    catch(...)&#123;
+        delete theImage;
+        throw;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        好吧，维护有些困难！那就是用<code>unique_ptr</code>!</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class BookEntry&#123;
+    public:
+	BookEntry(
+		const string&amp; name,
+		const string&amp; addr &#x3D; &quot;&quot;,
+		const string&amp; imageFile &#x3D; &quot;&quot;,
+		const string&amp; audioClipFile &#x3D; &quot;&quot;
+	);
+	~BookEntry();
+
+	void addPhoneNumber(const PhoneNumber&amp; phoneNumber);
+
+private:
+	string theName;
+	string theAddr;
+	list&lt;PhoneNumber&gt; thePhone;
+	const unique_ptr&lt;Image&gt; theImage;
+	const unique_ptr&lt;AudioClip&gt; theAudioClip;
+	void cleanUp();
+    Image* initImage(const string&amp; imageFile);
+    AudioClip* initAudioClipFile(const string&amp; audioClipFile);
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这样，就可以回到上一个设计了：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">BookEntry::BookEntry(
+	const string&amp; name,
+	const string&amp; addr &#x3D; &quot;&quot;,
+	const string&amp; imageFile &#x3D; &quot;&quot;,
+	const string&amp; audioClipFile &#x3D; &quot;&quot;
+) :
+theName(name), 
+theAddr(addr), 
+theImage(imageFile !&#x3D; &quot;&quot;?new Image(ImageFile):0), 
+theAudioClip(audioClipFile !&#x3D; &quot;&quot;? new AudioClip(audioClipFile):0)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        同时，不在需要构建手写destructor了，直接放：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">BookEntry::~BookEntry()<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="条款11-禁止异常流出destructor"><a href="#条款11-禁止异常流出destructor" class="headerlink" title="条款11 禁止异常流出destructor"></a>条款11 禁止异常流出destructor</h3><p>​        假设现在外面的析构爆发问题了，我们的办法是：在里头使用try_catch语句接受处理之，甚至是这样：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">Session::~Session()&#123;
+    try&#123;
+        logDestruction(this);
+    &#125;
+    catch(...)&#123;&#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这使得异常直接被吸收，防止程序调用std::abort()造成释放不完全！</p>
+<h3 id="条款12：了解“抛出一个异常”与“传递一个参数”或者是“调用一个虚函数的区别”"><a href="#条款12：了解“抛出一个异常”与“传递一个参数”或者是“调用一个虚函数的区别”" class="headerlink" title="条款12：了解“抛出一个异常”与“传递一个参数”或者是“调用一个虚函数的区别”"></a>条款12：了解“抛出一个异常”与“传递一个参数”或者是“调用一个虚函数的区别”</h3><p>​        首先声明：我们调用函数返回到的是函数的调用端（除非失败了），而异常抛出一定不会回到抛出端！</p>
+<p>​        如：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">istream operator&lt;&lt;(istream&amp; s,Widget&amp; w);
+void passAndThrowWidget()&#123;
+    Widget localWidget;
+    cin &gt;&gt; localWidget;
+    throw localWidget;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我们把localWidget交到operator&gt;&gt;手里的时候，没有发生复制行为，而是绑定到reference上操作！（passByReference）,但是Exception不一样！无论是值传递还是引用传递，他都会发生复制行为！这是容易理解的：我们一旦调用了<code>throw localWidget</code>，程序离开函数，造成了<code>localWidget</code>析构，我们的catch如果是reference传递，那传的是一具尸体！好吧，我们就不得不复制了！这造成了throw是很慢的（特别是对象很大的时候）</p>
+<p>​        现在事情复杂起来了！假使我们：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class Widget&#123;&#125;;
+class SpecialWidget:public Widget&#123;&#125;;
+void passAndThrowWidget()&#123;
+    SpecialWidget localSpecialWidget;
+    ...
+    Widget&amp; rw &#x3D; localSpecialWidget;
+    throw rw;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        不是SpeicalWidget类型！因为这里抛出的是静态类型！复制的永远会是对象的静态类型！这是我们需要注意的：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">catch(Widget&amp; w)&#123;
+    ...
+    throw;
+&#125;
+&#x2F;&#x2F; and
+catch(Widget&amp; w)&#123;
+    ...
+    throw w;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        不是一回事情，前者传入的啥抛出的就是啥！不会发生复制行为。但是第二种就会！于是，有必要对那些就是想要处理的一场样本的对象直接使用</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">throw;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        即可！</p>
+<p>​        对于继承体制的异常处理：必须指出：一个接受基类的catch会接受基类和其派生类！而接受派生类的catch只管派生类：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">try&#123;
+    ...
+&#125;
+catch(base_error)&#123;&#125;
+catch(derived_error)&#123;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        上面的这个设计不合适！因为derived_error catch不到任何异常！这跟虚函数：”最吻合调用机制“不同，catch是最先吻合的调用机制。</p>
+<p>​        总结一下我们的长篇大论：</p>
+<p>​        首先：exception object总是会被复制，使用pass by val会被复制两次！而传递函数的参数则不会</p>
+<p>​        其次：跑出去成为exception的对象允许类转换的动作，比被传递到函数去的对象少。</p>
+<p>​        最后，catch字句是源码顺序调用优先而不是吻合度调用优先！</p>
+<h3 id="条款13-以引用传递捕捉异常"><a href="#条款13-以引用传递捕捉异常" class="headerlink" title="条款13 以引用传递捕捉异常"></a>条款13 以引用传递捕捉异常</h3><p>​        我们有三种方式传递异常：值传递，引用传递，指针传递。</p>
+<p>​        先考虑指针传递：不得不说因为不复制对象而显得十分搞笑，但是不大好，程序员们往往会忘记：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void someFunc&#123;
+    exception ex;
+    
+    &#x2F;&#x2F;...
+    
+    throw &amp;ex;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        对象早就被析构了！传递了一个非法指针！</p>
+<p>​        好吧，开堆上：</p>
+<pre class="line-numbers language-none"><code class="language-none">void someFunc&#123;
+    exception ex;
+    
+    &#x2F;&#x2F;...
+    
+    throw new ex;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        那问题更大了，用户程序员没有办法知道：他们什么时候需要释放，什么时候不需要释放！这下麻烦了！还是不要用之为妙。</p>
+<p>​        值传递呢？除了低效以外，如果我们传递了派生类指针，那意味着后续的处理下，对象都是基类，调用的虚函数是基类虚函数！程序爆炸了！</p>
+<p>​        于是还是引用传递好！避免了上述的问题！</p>
+<h3 id="条款14：明智使用exception-specification"><a href="#条款14：明智使用exception-specification" class="headerlink" title="条款14：明智使用exception specification"></a>条款14：明智使用exception specification</h3><p>​        谨慎使用他！</p>
+<p>​        如：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void f1();&#x2F;&#x2F; throw anything
+void f2()throw(int)&#123;
+    ...
+    f1();
+    ...
+&#125;    <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这下麻烦了，我们承诺了f2只会抛出int的意外，但是是事实f1会抛出一堆其他的意外！编译器不会帮助你检查这个事情，他默许了这样非法的行为。</p>
+<p>​        同时，不要将template和 特殊异常一起使用！因为我们无法知道template会抛出什么异常，导致未定义行为的发生！</p>
+<p>​        其二，如果A函数调用了B函数，若B没有特殊异常，A也不要有！但是很容易出错的：就是回调函数的问题：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">typedef void(*CallBackPtr)(int X,int Y,void* dataToPassBack);
+
+class CallBack&#123;
+    public:
+    	CallBack(CallBackPtr fPtr,void* dataToPassBack):
+    		func(fPtr),data(dataToPassBack);
+    void makeCallBack(int X,int Y)const throw();
+    private:
+    	CallBackPtr func;
+    	void* data;
+&#125;;
+
+void CallBack::makeCallBack(int X,int Y)const throw()&#123;
+    func(X,Y,data);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        <code>makeCallBack</code>函数内部就违反了特殊异常，谁知道func里面抛出了什么异常呢？但是这就可以：</p>
+<pre class="line-numbers language-none"><code class="language-none">typedef void(*CallBackPtr)(int X,int Y,void* dataToPassBack) throw();<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        这样就强迫函数必须书写<code>throw()</code>后缀保证函数不会跑出任何异常！</p>
+<p>​        还有其三：可以使用转化异常的方式防止出事情：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class UnexpectedExeception&#123;&#125;;
+void convertException()&#123;
+    throw UnexpectedExeception();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这样就好了！</p>
+<h2 id="条款15：了解异常处理的代价"><a href="#条款15：了解异常处理的代价" class="headerlink" title="条款15：了解异常处理的代价"></a>条款15：了解异常处理的代价</h2><p>​        我的评价是简单的：一坨大便，下一个（）</p>
+<p>​        好吧，异常处理是能少用就少用的：首先是程序开销巨大，其次：跳转使得程序逻辑结构不再清晰。完事！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/05/19/More-Effective-C-1/">http://charliechen114514.github.io/2023/05/19/More-Effective-C-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C/">C/C++</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/05/16/Windows-API-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%881%EF%BC%89/" title="Windows-API-程序设计（1）"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Windows-API-程序设计（1）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/01/28/C%E7%AE%80%E5%8D%95%E6%95%99%E7%A8%8B%EF%BC%881%EF%BC%89/" title="C简单教程（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-28</div><div class="title">C简单教程（1）</div></div></a></div><div><a href="/2023/01/30/%E7%AE%97%E6%B3%95%EF%BC%881%EF%BC%89/" title="算法（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-30</div><div class="title">算法（1）</div></div></a></div><div><a href="/2023/02/07/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%9A%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84%EF%BC%881%EF%BC%89%E5%A4%B4%E6%96%87%E4%BB%B6-%E6%BA%90%E4%BB%A3%E7%A0%81-%E6%B5%8B%E8%AF%95/" title="C语言数据结构模拟：动态数组（1）头文件+源代码+测试"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">C语言数据结构模拟：动态数组（1）头文件+源代码+测试</div></div></a></div><div><a href="/2023/02/07/C%E8%AF%AD%E8%A8%80%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E6%A8%A1%E6%8B%9F%EF%BC%881%EF%BC%89%EF%BC%9A%E5%8A%A8%E6%80%81%E6%95%B0%E7%BB%84API%E8%AF%A6%E8%A7%A3/" title="C语言数据结构模拟（1）：动态数组API详解"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-07</div><div class="title">C语言数据结构模拟（1）：动态数组API详解</div></div></a></div><div><a href="/2023/02/09/C-extension-Learning-%EF%BC%881%EF%BC%89-%E4%BD%8D%E8%BF%90%E7%AE%97%E7%AC%A6%EF%BC%8C%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6%E5%92%8C%E7%AE%80%E5%8D%95%E5%BA%94%E7%94%A8/" title="C extension Learning （1） 位运算符，逻辑运算符和简单应用"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-09</div><div class="title">C extension Learning （1） 位运算符，逻辑运算符和简单应用</div></div></a></div><div><a href="/2023/02/09/C%E8%AF%AD%E8%A8%80%E5%B8%B8%E7%94%A8%E5%87%BD%E6%95%B0%EF%BC%881%EF%BC%89string-h%E7%B3%BB%E5%88%97/" title="C语言常用函数（1）string.h系列"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-09</div><div class="title">C语言常用函数（1）string.h系列</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">68</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">大更新！这下上了简单的数据结构的C实现，如果只对思路感兴趣看思路即可，如果想查看API实现就取看详解</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#More-Effective-C-1"><span class="toc-number">1.</span> <span class="toc-text">More Effective C++ 1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Basic-Issues"><span class="toc-number">1.1.</span> <span class="toc-text">Basic Issues</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE1-%E5%8C%BA%E5%88%86pointers-%E5%92%8C-reference"><span class="toc-number">1.1.1.</span> <span class="toc-text">条款1 区分pointers 和 reference</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE2%EF%BC%9A%E6%9C%80%E5%A5%BD%E4%BD%BF%E7%94%A8C-%E8%BD%AC%E5%9E%8B%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">1.1.2.</span> <span class="toc-text">条款2：最好使用C++转型操作符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE3%EF%BC%9A%E4%B8%8D%E8%A6%81%E4%BB%A5%E5%A4%9A%E6%80%81%E7%9A%84%E6%96%B9%E5%BC%8F%E5%A4%84%E7%90%86%E6%95%B0%E7%BB%84"><span class="toc-number">1.1.3.</span> <span class="toc-text">条款3：不要以多态的方式处理数组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE%E5%9B%9B%EF%BC%9A%E9%9D%9E%E5%BF%85%E8%A6%81%E4%B8%8D%E6%8F%90%E4%BE%9B%E9%BB%98%E8%AE%A4%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.4.</span> <span class="toc-text">条款四：非必要不提供默认构造函数</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">1.2.</span> <span class="toc-text">操作符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE5%EF%BC%9A%E5%AF%B9%E5%AE%9A%E5%88%B6%E7%9A%84%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2%E7%AC%A6%E4%BF%9D%E6%8C%81%E8%AD%A6%E8%A7%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">条款5：对定制的类型转换符保持警觉</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE6%E5%8C%BA%E5%88%86%E5%89%8D%E7%BD%AE%E6%93%8D%E4%BD%9C%E7%AC%A6%E5%92%8C%E5%90%8E%E7%BD%AE%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">1.2.2.</span> <span class="toc-text">条款6区分前置操作符和后置操作符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE7%EF%BC%9A%E5%8D%83%E4%B8%87%E4%B8%8D%E8%A6%81%E9%87%8D%E8%BD%BD-amp-amp-%E5%92%8C-%E6%93%8D%E4%BD%9C%E7%AC%A6"><span class="toc-number">1.2.3.</span> <span class="toc-text">条款7：千万不要重载&amp;&amp;,|| 和 , 操作符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE8%EF%BC%9A%E4%BA%86%E8%A7%A3%E4%B8%8D%E5%90%8C%E5%90%AB%E4%B9%89%E7%9A%84new%E5%92%8Cdelete"><span class="toc-number">1.2.4.</span> <span class="toc-text">条款8：了解不同含义的new和delete</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Deletion-amp-amp-Deallocation"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">Deletion &amp;&amp; Deallocation</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Arrays%E6%95%B0%E7%BB%84"><span class="toc-number">1.2.4.2.</span> <span class="toc-text">Arrays数组</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86"><span class="toc-number">1.3.</span> <span class="toc-text">异常处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE9%EF%BC%9A%E4%BD%BF%E7%94%A8destructor%E6%9D%A5%E9%98%B2%E6%AD%A2%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F"><span class="toc-number">1.3.1.</span> <span class="toc-text">条款9：使用destructor来防止内存泄漏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE10%EF%BC%9A%E5%9C%A8constructor%E5%86%85%E9%83%A8%E9%98%BB%E6%AD%A2%E5%86%85%E5%AD%98%E6%B3%84%E6%BC%8F"><span class="toc-number">1.3.2.</span> <span class="toc-text">条款10：在constructor内部阻止内存泄漏</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE11-%E7%A6%81%E6%AD%A2%E5%BC%82%E5%B8%B8%E6%B5%81%E5%87%BAdestructor"><span class="toc-number">1.3.3.</span> <span class="toc-text">条款11 禁止异常流出destructor</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE12%EF%BC%9A%E4%BA%86%E8%A7%A3%E2%80%9C%E6%8A%9B%E5%87%BA%E4%B8%80%E4%B8%AA%E5%BC%82%E5%B8%B8%E2%80%9D%E4%B8%8E%E2%80%9C%E4%BC%A0%E9%80%92%E4%B8%80%E4%B8%AA%E5%8F%82%E6%95%B0%E2%80%9D%E6%88%96%E8%80%85%E6%98%AF%E2%80%9C%E8%B0%83%E7%94%A8%E4%B8%80%E4%B8%AA%E8%99%9A%E5%87%BD%E6%95%B0%E7%9A%84%E5%8C%BA%E5%88%AB%E2%80%9D"><span class="toc-number">1.3.4.</span> <span class="toc-text">条款12：了解“抛出一个异常”与“传递一个参数”或者是“调用一个虚函数的区别”</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE13-%E4%BB%A5%E5%BC%95%E7%94%A8%E4%BC%A0%E9%80%92%E6%8D%95%E6%8D%89%E5%BC%82%E5%B8%B8"><span class="toc-number">1.3.5.</span> <span class="toc-text">条款13 以引用传递捕捉异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE14%EF%BC%9A%E6%98%8E%E6%99%BA%E4%BD%BF%E7%94%A8exception-specification"><span class="toc-number">1.3.6.</span> <span class="toc-text">条款14：明智使用exception specification</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9D%A1%E6%AC%BE15%EF%BC%9A%E4%BA%86%E8%A7%A3%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E7%9A%84%E4%BB%A3%E4%BB%B7"><span class="toc-number">1.4.</span> <span class="toc-text">条款15：了解异常处理的代价</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/05/19/More-Effective-C-1/" title="More Effective C++(1)"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="More Effective C++(1)"/></a><div class="content"><a class="title" href="/2023/05/19/More-Effective-C-1/" title="More Effective C++(1)">More Effective C++(1)</a><time datetime="2023-05-19T04:06:37.000Z" title="发表于 2023-05-19 12:06:37">2023-05-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/16/Windows-API-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%881%EF%BC%89/" title="Windows-API-程序设计（1）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Windows-API-程序设计（1）"/></a><div class="content"><a class="title" href="/2023/05/16/Windows-API-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%881%EF%BC%89/" title="Windows-API-程序设计（1）">Windows-API-程序设计（1）</a><time datetime="2023-05-16T12:32:45.000Z" title="发表于 2023-05-16 20:32:45">2023-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/16/%E6%91%B8%E9%B1%BCing%EF%BC%881%EF%BC%89-Windows-API-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E5%88%9D%E6%8E%A2%EF%BC%882%EF%BC%89/" title="摸鱼ing（1）-Windows-API-程序设计初探（2）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="摸鱼ing（1）-Windows-API-程序设计初探（2）"/></a><div class="content"><a class="title" href="/2023/05/16/%E6%91%B8%E9%B1%BCing%EF%BC%881%EF%BC%89-Windows-API-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%E5%88%9D%E6%8E%A2%EF%BC%882%EF%BC%89/" title="摸鱼ing（1）-Windows-API-程序设计初探（2）">摸鱼ing（1）-Windows-API-程序设计初探（2）</a><time datetime="2023-05-16T12:32:25.000Z" title="发表于 2023-05-16 20:32:25">2023-05-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/14/QT-new-6/" title="QT-new-6"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="QT-new-6"/></a><div class="content"><a class="title" href="/2023/05/14/QT-new-6/" title="QT-new-6">QT-new-6</a><time datetime="2023-05-14T02:37:59.000Z" title="发表于 2023-05-14 10:37:59">2023-05-14</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/13/Matlab-SystematicallyLearn1/" title="Matlab-SystematicallyLearn1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Matlab-SystematicallyLearn1"/></a><div class="content"><a class="title" href="/2023/05/13/Matlab-SystematicallyLearn1/" title="Matlab-SystematicallyLearn1">Matlab-SystematicallyLearn1</a><time datetime="2023-05-13T00:40:17.000Z" title="发表于 2023-05-13 08:40:17">2023-05-13</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
