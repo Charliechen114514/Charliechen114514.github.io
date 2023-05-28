@@ -1,0 +1,465 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>pytorch学习3 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Pytorch学习3torchvision 学习​        pytorch的很多API可以去pytorch.org  ​        下面来看一个加载：  import torchvision  train_set &#x3D; torchvision.datasets.CIFAR10(root&#x3D;&quot;.&#x2F;dataset&quot;,train&#x3D;True">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pytorch学习3">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/05/28/pytorch%E5%AD%A6%E4%B9%A03/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="Pytorch学习3torchvision 学习​        pytorch的很多API可以去pytorch.org  ​        下面来看一个加载：  import torchvision  train_set &#x3D; torchvision.datasets.CIFAR10(root&#x3D;&quot;.&#x2F;dataset&quot;,train&#x3D;True">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-05-28T13:51:24.000Z">
+<meta property="article:modified_time" content="2023-05-28T13:54:20.509Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="pytorch">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/05/28/pytorch%E5%AD%A6%E4%B9%A03/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'pytorch学习3',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-28 21:54:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">pytorch学习3</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-28T13:51:24.000Z" title="发表于 2023-05-28 21:51:24">2023-05-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-28T13:54:20.509Z" title="更新于 2023-05-28 21:54:20">2023-05-28</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>7分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="pytorch学习3"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Pytorch学习3"><a href="#Pytorch学习3" class="headerlink" title="Pytorch学习3"></a>Pytorch学习3</h1><h2 id="torchvision-学习"><a href="#torchvision-学习" class="headerlink" title="torchvision 学习"></a>torchvision 学习</h2><p>​        pytorch的很多API可以去pytorch.org </p>
+<p>​        下面来看一个加载：</p>
+<p><img src="image-20230511224505274.png" alt="image-20230511224505274"></p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">import torchvision
+
+train_set &#x3D; torchvision.datasets.CIFAR10(root&#x3D;&quot;.&#x2F;dataset&quot;,train&#x3D;True,download&#x3D;True)
+test_set &#x3D; torchvision.datasets.CIFAR10(root&#x3D;&quot;.&#x2F;dataset&quot;,train&#x3D;False,download&#x3D;True)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        稍等片刻，就会下载好数据！</p>
+<p>​        来测试一下：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">print</span><span class="token punctuation">(</span>test_set<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20230511224848459.png" alt="image-20230511224848459"></p>
+<p>​        开debug发现还是很多属性的！</p>
+<p>​        这里有相关的read_me:</p>
+<p>The CIFAR-10 and CIFAR-100 are labeled subsets of the <a target="_blank" rel="noopener" href="http://people.csail.mit.edu/torralba/tinyimages/">80 million tiny images</a> dataset. They were collected by Alex Krizhevsky, Vinod Nair, and Geoffrey Hinton.</p>
+<h2 id="The-CIFAR-10-dataset"><a href="#The-CIFAR-10-dataset" class="headerlink" title="The CIFAR-10 dataset"></a>The CIFAR-10 dataset</h2><p>​        CIFAR-10数据集由10个类别的60000张32x32彩色图像组成，每个类别有6000张图像。有50000个训练图像和10000个测试图像。</p>
+<p>​        数据集分为五个训练批次和一个测试批次，每个批次有10000张图像。测试批次包含从每个类别中随机选择的1000幅图像。训练批包含按随机顺序排列的剩余图像，但一些训练批可能包含来自一个类的图像多于来自另一类的图像。在它们之间，训练批次正好包含每个类的5000个图像。</p>
+<p>​        以下是数据集中的类，以及每个类的10张随机图像：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>airplane</th>
+<th><img src="airplane1.png" alt="img"></th>
+<th><img src="airplane2.png" alt="img"></th>
+<th><img src="airplane3.png" alt="img"></th>
+<th><img src="airplane4.png" alt="img"></th>
+<th><img src="airplane5.png" alt="img"></th>
+<th><img src="airplane6.png" alt="img"></th>
+<th><img src="airplane7.png" alt="img"></th>
+<th><img src="airplane8.png" alt="img"></th>
+<th><img src="airplane9.png" alt="img"></th>
+<th><img src="airplane10.png" alt="img"></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>automobile</td>
+<td><img src="automobile1.png" alt="img"></td>
+<td><img src="automobile2.png" alt="img"></td>
+<td><img src="automobile3.png" alt="img"></td>
+<td><img src="automobile4.png" alt="img"></td>
+<td><img src="automobile5.png" alt="img"></td>
+<td><img src="automobile6.png" alt="img"></td>
+<td><img src="automobile7.png" alt="img"></td>
+<td><img src="automobile8.png" alt="img"></td>
+<td><img src="automobile9.png" alt="img"></td>
+<td><img src="automobile10.png" alt="img"></td>
+</tr>
+<tr>
+<td>bird</td>
+<td><img src="bird1.png" alt="img"></td>
+<td><img src="bird2.png" alt="img"></td>
+<td><img src="bird3.png" alt="img"></td>
+<td><img src="bird4.png" alt="img"></td>
+<td><img src="bird5.png" alt="img"></td>
+<td><img src="bird6.png" alt="img"></td>
+<td><img src="bird7.png" alt="img"></td>
+<td><img src="bird8.png" alt="img"></td>
+<td><img src="bird9.png" alt="img"></td>
+<td><img src="bird10.png" alt="img"></td>
+</tr>
+<tr>
+<td>cat</td>
+<td><img src="cat1.png" alt="img"></td>
+<td><img src="cat2.png" alt="img"></td>
+<td><img src="cat3.png" alt="img"></td>
+<td><img src="cat4.png" alt="img"></td>
+<td><img src="cat5.png" alt="img"></td>
+<td><img src="cat6.png" alt="img"></td>
+<td><img src="cat7.png" alt="img"></td>
+<td><img src="cat8.png" alt="img"></td>
+<td><img src="cat9.png" alt="img"></td>
+<td><img src="cat10.png" alt="img"></td>
+</tr>
+<tr>
+<td>deer</td>
+<td><img src="deer1.png" alt="img"></td>
+<td><img src="deer2.png" alt="img"></td>
+<td><img src="deer3.png" alt="img"></td>
+<td><img src="deer4.png" alt="img"></td>
+<td><img src="deer5.png" alt="img"></td>
+<td><img src="deer6.png" alt="img"></td>
+<td><img src="deer7.png" alt="img"></td>
+<td><img src="deer8.png" alt="img"></td>
+<td><img src="deer9.png" alt="img"></td>
+<td><img src="deer10.png" alt="img"></td>
+</tr>
+<tr>
+<td>dog</td>
+<td><img src="dog1.png" alt="img"></td>
+<td><img src="dog2.png" alt="img"></td>
+<td><img src="dog3.png" alt="img"></td>
+<td><img src="dog4.png" alt="img"></td>
+<td><img src="dog5.png" alt="img"></td>
+<td><img src="dog6.png" alt="img"></td>
+<td><img src="dog7.png" alt="img"></td>
+<td><img src="dog8.png" alt="img"></td>
+<td><img src="dog9.png" alt="img"></td>
+<td><img src="dog10.png" alt="img"></td>
+</tr>
+<tr>
+<td>frog</td>
+<td><img src="frog1.png" alt="img"></td>
+<td><img src="frog2.png" alt="img"></td>
+<td><img src="frog3.png" alt="img"></td>
+<td><img src="frog4.png" alt="img"></td>
+<td><img src="frog5.png" alt="img"></td>
+<td><img src="frog6.png" alt="img"></td>
+<td><img src="frog7.png" alt="img"></td>
+<td><img src="frog8.png" alt="img"></td>
+<td><img src="frog9.png" alt="img"></td>
+<td><img src="frog10.png" alt="img"></td>
+</tr>
+<tr>
+<td>horse</td>
+<td><img src="horse1.png" alt="img"></td>
+<td><img src="horse2.png" alt="img"></td>
+<td><img src="horse3.png" alt="img"></td>
+<td><img src="horse4.png" alt="img"></td>
+<td><img src="horse5.png" alt="img"></td>
+<td><img src="horse6.png" alt="img"></td>
+<td><img src="horse7.png" alt="img"></td>
+<td><img src="horse8.png" alt="img"></td>
+<td><img src="horse9.png" alt="img"></td>
+<td><img src="horse10.png" alt="img"></td>
+</tr>
+<tr>
+<td>ship</td>
+<td><img src="ship1.png" alt="img"></td>
+<td><img src="ship2.png" alt="img"></td>
+<td><img src="ship3.png" alt="img"></td>
+<td><img src="ship4.png" alt="img"></td>
+<td><img src="ship5.png" alt="img"></td>
+<td><img src="ship6.png" alt="img"></td>
+<td><img src="ship7.png" alt="img"></td>
+<td><img src="ship8.png" alt="img"></td>
+<td><img src="ship9.png" alt="img"></td>
+<td><img src="ship10.png" alt="img"></td>
+</tr>
+<tr>
+<td>truck</td>
+<td><img src="truck1.png" alt="img"></td>
+<td><img src="truck2.png" alt="img"></td>
+<td><img src="truck3.png" alt="img"></td>
+<td><img src="truck4.png" alt="img"></td>
+<td><img src="truck5.png" alt="img"></td>
+<td><img src="truck6.png" alt="img"></td>
+<td><img src="truck7.png" alt="img"></td>
+<td><img src="truck8.png" alt="img"></td>
+<td><img src="truck9.png" alt="img"></td>
+<td><img src="truck10.png" alt="img"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>​        这些类是完全互斥的。汽车和卡车之间没有重叠。“汽车”包括轿车、SUV之类的东西。“卡车”只包括大卡车。两者都不包括皮卡。</p>
+<h2 id="下载"><a href="#下载" class="headerlink" title="下载"></a>下载</h2><p>如果您要使用此数据集，请引用本页底部的技术报告。</p>
+<p>|版本|大小|md5sum|</p>
+<p>| —————————————————————————————— | ——— | ———————————————— |</p>
+<p>|[CIFAR-10 python版本](<a target="_blank" rel="noopener" href="http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz）|163">http://www.cs.toronto.edu/~kriz/cifar-10-python.tar.gz）|163</a> MB | c58f30108f718f92721af3b95e74349a|</p>
+<p>|[CIFAR-10 Matlab版本](<a target="_blank" rel="noopener" href="http://www.cs.toronto.edu/~kriz/cifar-10-matlab.tar.gz）|175">http://www.cs.toronto.edu/~kriz/cifar-10-matlab.tar.gz）|175</a> MB |70270af85842c9e89bb428ec9976c926|</p>
+<p>|[CIFAR-10二进制版本（适用于C程序）](<a target="_blank" rel="noopener" href="http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz）|162">http://www.cs.toronto.edu/~kriz/cifar-10-binary.tar.gz）|162</a> MB | c32a1d4ab5d03f1284b67883e8d87530|</p>
+<h2 id="基线结果"><a href="#基线结果" class="headerlink" title="基线结果"></a>基线结果</h2><p>你可以在这个数据集上找到一些基线可复制的结果<a target="_blank" rel="noopener" href="http://code.google.com/p/cuda-convnet/">在cuda convnet的项目页面上</a>. 这些结果是用卷积神经网络获得的。简单地说，在没有数据扩充的情况下，它们的测试误差为18%，在有数据扩充的条件下为11%。此外，<a target="_blank" rel="noopener" href="http://www.cs.toronto.edu/~jasper/）有一篇[新论文](http://hips.seas.harvard.edu/content/practical-bayesian-optimization-machine-learning-algorithms">Jasper Snoek</a>其中，他使用贝叶斯超参数优化来找到权重衰减和其他超参数的良好设置，这使他能够使用获得18%的网络架构获得15%的测试错误率（没有数据扩充）。</p>
+<h2 id="其他结果"><a href="#其他结果" class="headerlink" title="其他结果"></a>其他结果</h2><p>​        <a target="_blank" rel="noopener" href="http://rodrigob.github.com/">罗德里戈·贝南森</a>好心地在他的网站上收集了CIFAR-10/100和其他数据集的结果；<a target="_blank" rel="noopener" href="http://rodrigob.github.com/are_we_there_yet/build/classification_datasets_results.html">点击此处</a>查看。</p>
+<p>​        数据集布局</p>
+<p>​        Python/Matlab版本</p>
+<p>​        我（这里指作者）将描述数据集的Python版本的布局。Matlab版本的布局是相同的。</p>
+<p>​        档案包含文件data_batch_1，data_batch_2。。。，data_batch_5以及test_batch。这些文件中的每一个都是用[cPickle]生成的Python“pickle”对象(<a target="_blank" rel="noopener" href="http://www.python.org/doc/2.5/lib/module-cPickle.html">http://www.python.org/doc/2.5/lib/module-cPickle.html</a>). 下面是一个python2例程，它将打开这样一个文件并返回一个字典：</p>
+<pre class="line-numbers language-none"><code class="language-none">def unpickle（文件）：
+
+导入cPickle
+
+打开（文件，&#39;rb&#39;）为fo：
+
+dict&#x3D;cPickle.load（fo）
+
+返回dict
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>还有一个蟒蛇3版本：</p>
+<pre class="line-numbers language-none"><code class="language-none">def unpickle（文件）：
+
+进口泡菜
+
+打开（文件，&#39;rb&#39;）为fo：
+
+dict&#x3D;pickle.load（fo，编码&#x3D;“字节”）
+
+返回dict
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        以这种方式加载的每个批处理文件都包含一个字典，其中包含以下元素：</p>
+<p>​        -<strong>数据</strong>—一个10000x3072<a target="_blank" rel="noopener" href="http://numpy.scipy.org/">数字</a>uint8s的数组。阵列的每一行存储一个32x32颜色的图像。前1024个条目包含红色通道值，接下来的1024个条目为绿色，最后的1024个为蓝色。图像按行主顺序存储，因此阵列的前32个条目是图像第一行的红色通道值。</p>
+<p>​        -<strong>标签</strong>—包含0-9范围内的10000个数字的列表。索引<em>i</em>处的数字表示数组<strong>数据</strong>中第<em>i</em>个图像的标签。</p>
+<p>​        数据集包含另一个名为batches.meta的文件。它也包含一个Python字典对象。它包含以下条目：</p>
+<p>​        -<strong>label_names</strong>——一个10元素列表，为上述<strong>标签</strong>数组中的数字标签提供有意义的名称。例如，label_names[0]=“飞机”、label_names[1]=“汽车”等。</p>
+<h2 id="二进制版本"><a href="#二进制版本" class="headerlink" title="二进制版本"></a>二进制版本</h2><p>二进制版本包含文件data_batch_1.bin、data_batch_2.bin、…、data_back_5.bin以及test_batch.bin。这些文件的格式如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;1 x标签&gt;&lt;3072 x像素&gt;
+
+...
+
+&lt;1 x标签&gt;&lt;3072 x像素&gt;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>换句话说，第一个字节是第一个图像的标签，它是0-9范围内的数字。接下来的3072个字节是图像的像素值。第一个1024字节是红色通道值，接下来的1024字节是绿色，最后的1024字节为蓝色。这些值按行主顺序存储，因此前32个字节是图像第一行的红色通道值。</p>
+<p>每个文件包含10000个这样的3073字节的图像“行”，尽管没有<strong>任何行的分隔符</strong>。因此，每个文件的长度应该恰好为30730000字节。</p>
+<p>还有另一个文件，名为batches.meta.txt。这是一个ASCII文件，它将0-9范围内的数字标签映射到有意义的类名。它只是10个类名的列表，每行一个。第<em>i</em>行的类名对应于数字标签<em>i</em>。</p>
+<p>这个数据集和CIFAR-10一样，只是它有100个类，每个类包含600个图像。每节课有500个训练图像和100个测试图像。CIFAR-100中的100个类被分组为20个超类。每个图像都带有一个“精细”标签（它所属的类）和一个“粗略”标签（其所属的超类）。</p>
+<p>以下是CIFAR-100中的类列表：</p>
+<p>|超类|类|</p>
+<p>| ——————————————— | ——————————————————————————- |</p>
+<p>|水生哺乳动物|海狸、海豚、水獭、海豹、鲸鱼|</p>
+<p>|鱼类|水族馆鱼类、比目鱼、鳐鱼、鲨鱼、鳟鱼|</p>
+<p>|花|兰花、罂粟、玫瑰、向日葵、郁金香|</p>
+<p>|食品容器|瓶子、碗、罐头、杯子、盘子|</p>
+<p>|水果和蔬菜|苹果、蘑菇、橙子、梨、甜椒|</p>
+<p>|家用电器|时钟、电脑键盘、灯、电话、电视|</p>
+<p>|家用家具|床、椅子、沙发、桌子、衣柜|</p>
+<p>|昆虫|蜜蜂、甲虫、蝴蝶、毛毛虫、蟑螂|</p>
+<p>|大型食肉动物|熊、豹、狮子、老虎、狼|</p>
+<p>|大型人造户外物品|桥梁、城堡、房屋、道路、摩天大楼|</p>
+<p>|大型自然户外场景|云、森林、山脉、平原、海洋|</p>
+<p>|大型杂食动物和草食动物|骆驼、牛、黑猩猩、大象、袋鼠|</p>
+<p>|中型哺乳动物|狐狸、豪猪、负鼠、浣熊、臭鼬|</p>
+<p>|非昆虫无脊椎动物|螃蟹、龙虾、蜗牛、蜘蛛、蠕虫|</p>
+<p>|人|婴儿，男孩，女孩，男人，女人|</p>
+<p>|爬行动物|鳄鱼、恐龙、蜥蜴、蛇、乌龟|</p>
+<p>|小型哺乳动物|仓鼠、老鼠、兔子、鼩鼩、松鼠|</p>
+<p>|树木|枫树、橡树、棕榈树、松树、柳树|</p>
+<p>|车辆1|自行车、公共汽车、摩托车、皮卡、火车|</p>
+<p>|车辆2|割草机、火箭、有轨电车、坦克、拖拉机|</p>
+<p>是的，我知道蘑菇不是真正的水果或蔬菜，熊也不是真正的食肉动物。</p>
+<h2 id="下载-1"><a href="#下载-1" class="headerlink" title="下载"></a>下载</h2><p>|版本|大小|md5sum|</p>
+<p>| —————————————————————————————— | ——— | ———————————————— |</p>
+<p>|[CIFAR-100 python版本](<a target="_blank" rel="noopener" href="http://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz）|161">http://www.cs.toronto.edu/~kriz/cifar-100-python.tar.gz）|161</a> MB | eb9058c3a382ffc7106e4002c42a8d85|</p>
+<p>|[CIFAR-100 Matlab版本](<a target="_blank" rel="noopener" href="http://www.cs.toronto.edu/~kriz/cifar-100-matlab.tar.gz）|175">http://www.cs.toronto.edu/~kriz/cifar-100-matlab.tar.gz）|175</a> MB |6a4bfa1dcd5c9453dda6bb54194911f4|</p>
+<p>|[CIFAR-100二进制版本（适用于C程序）](<a target="_blank" rel="noopener" href="http://www.cs.toronto.edu/~kriz/cifar-100-二进制.tar.gz）|161">http://www.cs.toronto.edu/~kriz/cifar-100-二进制.tar.gz）|161</a> MB |03b5dce0913d631647c71ecec9e9cb8|</p>
+<p>数据集布局</p>
+<p>python/Matlab版本</p>
+<p>python和Matlab版本在布局上与CIFAR-10相同，所以我不会在这里浪费空间来描述它们。</p>
+<p>二进制版本</p>
+<p>CIFAR-100的二进制版本与CIFAR-10的二进制版本一样，只是每个图像都有两个标签字节（粗略和精细）和3072个像素字节，所以二进制文件看起来是这样的：</p>
+<pre class="line-numbers language-none"><code class="language-none">&lt;1 x粗略标签&gt;&lt;1 x精细标签&gt;&lt;3072 x像素&gt;
+
+...
+
+&lt;1 x粗略标签&gt;&lt;1 x精细标签&gt;&lt;3072 x像素&gt;
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        Sivan Sabato好心地提供了[这份文件](<a target="_blank" rel="noopener" href="http://www.cs.toronto.edu/~kriz/cifar_indexes），它将cifar-100图像映射到8000万微小图像数据集中的图像。Sivan写道：">http://www.cs.toronto.edu/~kriz/cifar_indexes），它将cifar-100图像映射到8000万微小图像数据集中的图像。Sivan写道：</a></p>
+<pre class="line-numbers language-none"><code class="language-none">该文件有60000行，每行都包含一个指向微小数据库的索引，
+
+其中微小数据库中的第一个图像被索引为“1”。“0”表示不是来自微小数据库的图像。
+
+前50000行对应于训练集，后10000行对应
+
+到测试集。
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p>​        本技术报告（第3章）更详细地描述了数据集以及收集数据时所遵循的方法。如果您打算使用此数据集，请引用它。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/05/28/pytorch%E5%AD%A6%E4%B9%A03/">http://charliechen114514.github.io/2023/05/28/pytorch%E5%AD%A6%E4%B9%A03/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pytorch/">pytorch</a><a class="post-meta__tags" href="/tags/python/">python</a><a class="post-meta__tags" href="/tags/AI/">AI</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A04/" title="pytorch学习4"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">pytorch学习4</div></div></a></div><div class="next-post pull-right"><a href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A02/" title="pytorch学习2"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">pytorch学习2</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/29/pytorch-1/" title="pytorch 1"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-29</div><div class="title">pytorch 1</div></div></a></div><div><a href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A02/" title="pytorch学习2"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-28</div><div class="title">pytorch学习2</div></div></a></div><div><a href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A04/" title="pytorch学习4"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-28</div><div class="title">pytorch学习4</div></div></a></div><div><a href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/" title="pytorch学习5"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-28</div><div class="title">pytorch学习5</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">大更新！这下上了简单的数据结构的C实现，如果只对思路感兴趣看思路即可，如果想查看API实现就取看详解</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Pytorch%E5%AD%A6%E4%B9%A03"><span class="toc-number">1.</span> <span class="toc-text">Pytorch学习3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#torchvision-%E5%AD%A6%E4%B9%A0"><span class="toc-number">1.1.</span> <span class="toc-text">torchvision 学习</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#The-CIFAR-10-dataset"><span class="toc-number">1.2.</span> <span class="toc-text">The CIFAR-10 dataset</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD"><span class="toc-number">1.3.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E7%BA%BF%E7%BB%93%E6%9E%9C"><span class="toc-number">1.4.</span> <span class="toc-text">基线结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B6%E4%BB%96%E7%BB%93%E6%9E%9C"><span class="toc-number">1.5.</span> <span class="toc-text">其他结果</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E8%BF%9B%E5%88%B6%E7%89%88%E6%9C%AC"><span class="toc-number">1.6.</span> <span class="toc-text">二进制版本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD-1"><span class="toc-number">1.7.</span> <span class="toc-text">下载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">1.8.</span> <span class="toc-text">参考</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/" title="pytorch学习5"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习5"/></a><div class="content"><a class="title" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/" title="pytorch学习5">pytorch学习5</a><time datetime="2023-05-28T13:51:30.000Z" title="发表于 2023-05-28 21:51:30">2023-05-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A04/" title="pytorch学习4"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习4"/></a><div class="content"><a class="title" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A04/" title="pytorch学习4">pytorch学习4</a><time datetime="2023-05-28T13:51:27.000Z" title="发表于 2023-05-28 21:51:27">2023-05-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A03/" title="pytorch学习3"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习3"/></a><div class="content"><a class="title" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A03/" title="pytorch学习3">pytorch学习3</a><time datetime="2023-05-28T13:51:24.000Z" title="发表于 2023-05-28 21:51:24">2023-05-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A02/" title="pytorch学习2"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习2"/></a><div class="content"><a class="title" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A02/" title="pytorch学习2">pytorch学习2</a><time datetime="2023-05-28T13:51:20.000Z" title="发表于 2023-05-28 21:51:20">2023-05-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/QT-NEW-12-13/" title="QT NEW 12-13"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="QT NEW 12-13"/></a><div class="content"><a class="title" href="/2023/05/28/QT-NEW-12-13/" title="QT NEW 12-13">QT NEW 12-13</a><time datetime="2023-05-28T11:44:24.000Z" title="发表于 2023-05-28 19:44:24">2023-05-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

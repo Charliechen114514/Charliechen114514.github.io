@@ -1,0 +1,484 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>pytorch学习5 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="神经网络卷积层​        先扔一个pytorch的官网！https:&#x2F;&#x2F;pytorch.org&#x2F;docs         ​        继续： ​        这是参数：作为图像处理常用的是Conv2d     nn.Conv1d Applies a 1D convolution over an input signal composed of several input planes">
+<meta property="og:type" content="article">
+<meta property="og:title" content="pytorch学习5">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="神经网络卷积层​        先扔一个pytorch的官网！https:&#x2F;&#x2F;pytorch.org&#x2F;docs         ​        继续： ​        这是参数：作为图像处理常用的是Conv2d     nn.Conv1d Applies a 1D convolution over an input signal composed of several input planes">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-05-28T13:51:30.000Z">
+<meta property="article:modified_time" content="2023-05-28T13:53:08.805Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="pytorch">
+<meta property="article:tag" content="python">
+<meta property="article:tag" content="AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'pytorch学习5',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-05-28 21:53:08'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">pytorch学习5</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-05-28T13:51:30.000Z" title="发表于 2023-05-28 21:51:30">2023-05-28</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-05-28T13:53:08.805Z" title="更新于 2023-05-28 21:53:08">2023-05-28</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="pytorch学习5"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h2><h3 id="卷积层"><a href="#卷积层" class="headerlink" title="卷积层"></a>卷积层</h3><p>​        先扔一个<code>pytorch</code>的官网！<a target="_blank" rel="noopener" href="https://pytorch.org/docs">https://pytorch.org/docs</a>        </p>
+<p>​        继续：</p>
+<p>​        这是参数：作为图像处理常用的是Conv2d</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.Conv1d.html#torch.nn.Conv1d"><code>nn.Conv1d</code></a></th>
+<th>Applies a 1D convolution over an input signal composed of several input planes.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html#torch.nn.Conv2d"><code>nn.Conv2d</code></a></td>
+<td>Applies a 2D convolution over an input signal composed of several input planes.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html#torch.nn.Conv3d"><code>nn.Conv3d</code></a></td>
+<td>Applies a 3D convolution over an input signal composed of several input planes.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.ConvTranspose1d.html#torch.nn.ConvTranspose1d"><code>nn.ConvTranspose1d</code></a></td>
+<td>Applies a 1D transposed convolution operator over an input image composed of several input planes.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.ConvTranspose2d.html#torch.nn.ConvTranspose2d"><code>nn.ConvTranspose2d</code></a></td>
+<td>Applies a 2D transposed convolution operator over an input image composed of several input planes.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.ConvTranspose3d.html#torch.nn.ConvTranspose3d"><code>nn.ConvTranspose3d</code></a></td>
+<td>Applies a 3D transposed convolution operator over an input image composed of several input planes.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.LazyConv1d.html#torch.nn.LazyConv1d"><code>nn.LazyConv1d</code></a></td>
+<td>A <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.Conv1d.html#torch.nn.Conv1d"><code>torch.nn.Conv1d</code></a> module with lazy initialization of the <code>in_channels</code> argument of the <code>Conv1d</code> that is inferred from the <code>input.size(1)</code>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.LazyConv2d.html#torch.nn.LazyConv2d"><code>nn.LazyConv2d</code></a></td>
+<td>A <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.Conv2d.html#torch.nn.Conv2d"><code>torch.nn.Conv2d</code></a> module with lazy initialization of the <code>in_channels</code> argument of the <code>Conv2d</code> that is inferred from the <code>input.size(1)</code>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.LazyConv3d.html#torch.nn.LazyConv3d"><code>nn.LazyConv3d</code></a></td>
+<td>A <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.Conv3d.html#torch.nn.Conv3d"><code>torch.nn.Conv3d</code></a> module with lazy initialization of the <code>in_channels</code> argument of the <code>Conv3d</code> that is inferred from the <code>input.size(1)</code>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.LazyConvTranspose1d.html#torch.nn.LazyConvTranspose1d"><code>nn.LazyConvTranspose1d</code></a></td>
+<td>A <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.ConvTranspose1d.html#torch.nn.ConvTranspose1d"><code>torch.nn.ConvTranspose1d</code></a> module with lazy initialization of the <code>in_channels</code> argument of the <code>ConvTranspose1d</code> that is inferred from the <code>input.size(1)</code>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.LazyConvTranspose2d.html#torch.nn.LazyConvTranspose2d"><code>nn.LazyConvTranspose2d</code></a></td>
+<td>A <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.ConvTranspose2d.html#torch.nn.ConvTranspose2d"><code>torch.nn.ConvTranspose2d</code></a> module with lazy initialization of the <code>in_channels</code> argument of the <code>ConvTranspose2d</code> that is inferred from the <code>input.size(1)</code>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.LazyConvTranspose3d.html#torch.nn.LazyConvTranspose3d"><code>nn.LazyConvTranspose3d</code></a></td>
+<td>A <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.ConvTranspose3d.html#torch.nn.ConvTranspose3d"><code>torch.nn.ConvTranspose3d</code></a> module with lazy initialization of the <code>in_channels</code> argument of the <code>ConvTranspose3d</code> that is inferred from the <code>input.size(1)</code>.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.Unfold.html#torch.nn.Unfold"><code>nn.Unfold</code></a></td>
+<td>Extracts sliding local blocks from a batched input tensor.</td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/generated/torch.nn.Fold.html#torch.nn.Fold"><code>nn.Fold</code></a></td>
+<td>Combines an array of sliding local blocks into a large containing tensor.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>​        点进去看看：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python">CLASS 
+<span class="token class-name">torch</span><span class="token punctuation">.</span>nn<span class="token punctuation">.</span>Conv2d<span class="token punctuation">(</span>in_channels<span class="token punctuation">,</span> out_channels<span class="token punctuation">,</span> kernel_size<span class="token punctuation">,</span> stride<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> padding<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span> dilation<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> groups<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> bias<span class="token operator">=</span><span class="token boolean">True</span><span class="token punctuation">,</span> padding_mode<span class="token operator">=</span><span class="token string">'zeros'</span><span class="token punctuation">,</span> device<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">,</span> dtype<span class="token operator">=</span><span class="token boolean">None</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        Applies a 2D convolution over an input signal composed of several input planes.</p>
+<p>In the simplest case, the output value of the layer with input size </p>
+<script type="math/tex; mode=display">
+(N,C_{in},H,W)</script><p>​        and output</p>
+<script type="math/tex; mode=display">
+(N,C_{out},H_{out},W_{out})</script><p>​         can be precisely described as:</p>
+<script type="math/tex; mode=display">
+out(N_i,C_{outj}) = bias(C_{outj})+\sum_{k=0}^{C_{in}-1}weight(C_{out},k)*input(N_i,k)</script><p>​        where ⋆ is the valid 2D <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/Cross-correlation">cross-correlation</a> operator, <em>N</em> is a batch size, C<em> denotes a number of channels, </em>H<em> is a height of input planes in pixels, and </em>W* is width in pixels.</p>
+<p>​        This module supports <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/notes/cuda.html#tf32-on-ampere">TensorFloat32</a>.</p>
+<p>​        On certain ROCm devices, when using float16 inputs this module will use <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/notes/numerical_accuracy.html#fp16-on-mi200">different precision</a> for backward.</p>
+<ul>
+<li><p><code>stride</code> controls the stride for the cross-correlation, a single number or a tuple.</p>
+</li>
+<li><p><code>padding</code> controls the amount of padding applied to the input. It can be either a string {‘valid’, ‘same’} or an int / a tuple of ints giving the amount of implicit padding applied on both sides.</p>
+</li>
+<li><p><code>dilation</code> controls the spacing between the kernel points; also known as the à trous algorithm. It is harder to describe, but this <a target="_blank" rel="noopener" href="https://github.com/vdumoulin/conv_arithmetic/blob/master/README.md">link</a> has a nice visualization of what <code>dilation</code> does.</p>
+</li>
+<li><p><code>groups</code> controls the connections between inputs and outputs. <code>in_channels</code> and <code>out_channels</code> must both be divisible by <code>groups</code>. For example,</p>
+<blockquote>
+<ul>
+<li>At groups=1, all inputs are convolved to all outputs.</li>
+<li>At groups=2, the operation becomes equivalent to having two conv layers side by side, each seeing half the input channels and producing half the output channels, and both subsequently concatenated.</li>
+<li>At groups= <code>in_channels</code>, each input channel is convolved with its own set of filters (of size $\frac{in_channels}{out_channels}$)</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>​        The parameters <code>kernel_size</code>, <code>stride</code>, <code>padding</code>, <code>dilation</code> can either be:</p>
+<blockquote>
+<ul>
+<li>a single <code>int</code> – in which case the same value is used for the height and width dimension</li>
+<li>a <code>tuple</code> of two ints – in which case, the first int is used for the height dimension, and the second int for the width dimension</li>
+</ul>
+</blockquote>
+<p>​        When groups == in_channels and out_channels == K * in_channels, where K is a positive integer, this operation is also known as a “depthwise convolution”.</p>
+<p>​        In other words, for an input of size $(N,C_{in},L_{in})$, a depthwise convolution with a depthwise multiplier<em>K</em> can be performed with the arguments ($C_{in}=C_{in},C_{out}=C_{in}×K,…,groups=C_{in}$.)</p>
+<p>​        In some circumstances when given tensors on a CUDA device and using CuDNN, this operator may select a nondeterministic algorithm to increase performance. If this is undesirable, you can try to make the operation deterministic (potentially at a performance cost) by setting </p>
+<pre class="line-numbers language-none"><code class="language-none">torch.backends.cudnn.deterministic &#x3D; True. <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        See <a target="_blank" rel="noopener" href="https://pytorch.org/docs/stable/notes/randomness.html">Reproducibility</a> for more information.</p>
+<p>​        <code>padding=&#39;valid&#39;</code> is the same as no padding. <code>padding=&#39;same&#39;</code> pads the input so the output has the shape as the input. However, this mode doesn’t support any stride values other than 1.</p>
+<p>​        This module supports complex data types i.e. <code>complex32, complex64, complex128</code>.</p>
+<p>Parameters:</p>
+<ul>
+<li><strong>in_channels</strong> (<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/functions.html#int"><em>int</em></a>) – Number of channels in the input image</li>
+<li><strong>out_channels</strong> (<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/functions.html#int"><em>int</em></a>) – Number of channels produced by the convolution</li>
+<li><strong>kernel_size</strong> (<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/functions.html#int"><em>int</em></a> <em>or</em> <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/stdtypes.html#tuple"><em>tuple</em></a>) – Size of the convolving kernel</li>
+<li><strong>stride</strong> (<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/functions.html#int"><em>int</em></a> <em>or</em> <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/stdtypes.html#tuple"><em>tuple</em></a><em>,</em> <em>optional</em>) – Stride of the convolution. Default: 1</li>
+<li><strong>padding</strong> (<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/functions.html#int"><em>int</em></a><em>,</em> <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/stdtypes.html#tuple"><em>tuple</em></a> <em>or</em> <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/stdtypes.html#str"><em>str</em></a><em>,</em> <em>optional</em>) – Padding added to all four sides of the input. Default: 0</li>
+<li><strong>padding_mode</strong> (<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/stdtypes.html#str"><em>str</em></a><em>,</em> <em>optional</em>) – <code>&#39;zeros&#39;</code>, <code>&#39;reflect&#39;</code>, <code>&#39;replicate&#39;</code> or <code>&#39;circular&#39;</code>. Default: <code>&#39;zeros&#39;</code></li>
+<li><strong>dilation</strong> (<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/functions.html#int"><em>int</em></a> <em>or</em> <a target="_blank" rel="noopener" href="https://docs.python.org/3/library/stdtypes.html#tuple"><em>tuple</em></a><em>,</em> <em>optional</em>) – Spacing between kernel elements. Default: 1</li>
+<li><strong>groups</strong> (<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/functions.html#int"><em>int</em></a><em>,</em> <em>optional</em>) – Number of blocked connections from input channels to output channels. Default: 1</li>
+<li><strong>bias</strong> (<a target="_blank" rel="noopener" href="https://docs.python.org/3/library/functions.html#bool"><em>bool</em></a><em>,</em> <em>optional</em>) – If <code>True</code>, adds a learnable bias to the output. Default: <code>True</code></li>
+</ul>
+<h2 id="what-is-Convolution-arithmetic-from-read-ME"><a href="#what-is-Convolution-arithmetic-from-read-ME" class="headerlink" title="what is Convolution arithmetic(from read ME)"></a>what is Convolution arithmetic(from read ME)</h2><p>​        A technical report on convolution arithmetic in the context of deep learning.</p>
+<p>​        The code and the images of this tutorial are free to use as regulated by the<br>licence and subject to proper attribution:</p>
+<ul>
+<li>[1] Vincent Dumoulin, Francesco Visin - <a target="_blank" rel="noopener" href="https://arxiv.org/abs/1603.07285">A guide to convolution arithmetic<br>for deep learning</a><br>(<a target="_blank" rel="noopener" href="https://gist.github.com/fvisin/165ca9935392fa9600a6c94664a01214">BibTeX</a>)</li>
+</ul>
+<h2 id="Convolution-animations"><a href="#Convolution-animations" class="headerlink" title="Convolution animations"></a>Convolution animations</h2><p>_N.B.: Blue maps are inputs, and cyan maps are outputs._</p>
+<table style="width:100%; table-layout:fixed;">
+  <tr>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/no_padding_no_strides.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/arbitrary_padding_no_strides.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/same_padding_no_strides.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/full_padding_no_strides.gif"></td>
+  </tr>
+  <tr>
+    <td>No padding, no strides</td>
+    <td>Arbitrary padding, no strides</td>
+    <td>Half padding, no strides</td>
+    <td>Full padding, no strides</td>
+  </tr>
+  <tr>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/no_padding_strides.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/padding_strides.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/padding_strides_odd.gif"></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>No padding, strides</td>
+    <td>Padding, strides</td>
+    <td>Padding, strides (odd)</td>
+    <td></td>
+  </tr>
+</table>
+
+
+<h2 id="Transposed-convolution-animations"><a href="#Transposed-convolution-animations" class="headerlink" title="Transposed convolution animations"></a>Transposed convolution animations</h2><p>_N.B.: Blue maps are inputs, and cyan maps are outputs._</p>
+<table style="width:100%; table-layout:fixed;">
+  <tr>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/no_padding_no_strides_transposed.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/arbitrary_padding_no_strides_transposed.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/same_padding_no_strides_transposed.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/full_padding_no_strides_transposed.gif"></td>
+  </tr>
+  <tr>
+    <td>No padding, no strides, transposed</td>
+    <td>Arbitrary padding, no strides, transposed</td>
+    <td>Half padding, no strides, transposed</td>
+    <td>Full padding, no strides, transposed</td>
+  </tr>
+  <tr>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/no_padding_strides_transposed.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/padding_strides_transposed.gif"></td>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/padding_strides_odd_transposed.gif"></td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>No padding, strides, transposed</td>
+    <td>Padding, strides, transposed</td>
+    <td>Padding, strides, transposed (odd)</td>
+    <td></td>
+  </tr>
+</table>
+
+
+<h2 id="Dilated-convolution-animations"><a href="#Dilated-convolution-animations" class="headerlink" title="Dilated convolution animations"></a>Dilated convolution animations</h2><p>_N.B.: Blue maps are inputs, and cyan maps are outputs._</p>
+<table style="width:25%"; table-layout:fixed;>
+  <tr>
+    <td><img width="150px" src="https://github.com/vdumoulin/conv_arithmetic/raw/master/gif/dilation.gif"></td>
+  </tr>
+  <tr>
+    <td>No padding, no stride, dilation</td>
+  </tr>
+</table>
+
+
+<h2 id="Generating-the-Makefile"><a href="#Generating-the-Makefile" class="headerlink" title="Generating the Makefile"></a>Generating the Makefile</h2><p>From the repository’s root directory:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ ./bin/generate_makefile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h2 id="Generating-the-animations"><a href="#Generating-the-animations" class="headerlink" title="Generating the animations"></a>Generating the animations</h2><p>From the repository’s root directory:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">make</span> all_animations<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>The animations will be output to the <code>gif</code> directory. Individual animation steps<br>will be output in PDF format to the <code>pdf</code> directory and in PNG format to the<br><code>png</code> directory.</p>
+<h2 id="Compiling-the-document"><a href="#Compiling-the-document" class="headerlink" title="Compiling the document"></a>Compiling the document</h2><p>From the repository’s root directory:</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">$ <span class="token function">make</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20230528203415187.png" alt="image-20230528203415187"></p>
+<p>​        其实就是这样，我们3 x 3的扫过图像，并且对之求和输出到新单元，我们发现他会做九次。，故得到了一个 3 x 3的表。</p>
+<p><img src="image-20230528203830290.png" alt="image-20230528203830290"></p>
+<p>​        这样就可以升维了，从而提取信息特征。</p>
+<p><img src="image-20230528213941244.png" alt="image-20230528213941244"></p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> torch
+<span class="token keyword">import</span> torchvision
+<span class="token keyword">from</span> torch <span class="token keyword">import</span> nn
+<span class="token keyword">from</span> torch<span class="token punctuation">.</span>nn <span class="token keyword">import</span> Conv2d
+<span class="token keyword">from</span> torch<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>data <span class="token keyword">import</span> DataLoader
+
+dataset <span class="token operator">=</span> torchvision<span class="token punctuation">.</span>datasets<span class="token punctuation">.</span>CIFAR10<span class="token punctuation">(</span><span class="token string">"../data"</span><span class="token punctuation">,</span>train <span class="token operator">=</span> <span class="token boolean">False</span><span class="token punctuation">,</span>
+                                       transform<span class="token operator">=</span>torchvision<span class="token punctuation">.</span>transforms<span class="token punctuation">.</span>ToTensor<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                        download<span class="token operator">=</span><span class="token boolean">True</span>
+                                       <span class="token punctuation">)</span>
+dataloader <span class="token operator">=</span> DataLoader<span class="token punctuation">(</span>dataset<span class="token punctuation">,</span>batch_size<span class="token operator">=</span><span class="token number">64</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> <span class="token class-name">cc</span><span class="token punctuation">(</span>nn<span class="token punctuation">.</span>Module<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token builtin">super</span><span class="token punctuation">(</span>cc<span class="token punctuation">,</span>self<span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>conv1 <span class="token operator">=</span> Conv2d<span class="token punctuation">(</span>in_channels<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">,</span>out_channels<span class="token operator">=</span><span class="token number">6</span><span class="token punctuation">,</span>kernel_size<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">,</span>stride<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span>padding<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token keyword">def</span> <span class="token function">forward</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>x<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        x <span class="token operator">=</span> self<span class="token punctuation">.</span>conv1<span class="token punctuation">(</span>x<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> x
+
+c <span class="token operator">=</span> cc<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token keyword">for</span> data <span class="token keyword">in</span> dataloader<span class="token punctuation">:</span>
+    imgs<span class="token punctuation">,</span> targets <span class="token operator">=</span>data
+    output <span class="token operator">=</span> c<span class="token punctuation">(</span>imgs<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>imgs<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>output<span class="token punctuation">.</span>shape<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我们把它输出到tensorboard里去：</p>
+<pre class="line-numbers language-python" data-language="python"><code class="language-python"><span class="token keyword">import</span> torch
+<span class="token keyword">import</span> torchvision
+<span class="token keyword">from</span> torch <span class="token keyword">import</span> nn
+<span class="token keyword">from</span> torch<span class="token punctuation">.</span>nn <span class="token keyword">import</span> Conv2d
+<span class="token keyword">from</span> torch<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>data <span class="token keyword">import</span> DataLoader
+<span class="token keyword">from</span> torch<span class="token punctuation">.</span>utils<span class="token punctuation">.</span>tensorboard <span class="token keyword">import</span> SummaryWriter
+
+dataset <span class="token operator">=</span> torchvision<span class="token punctuation">.</span>datasets<span class="token punctuation">.</span>CIFAR10<span class="token punctuation">(</span><span class="token string">"../data"</span><span class="token punctuation">,</span>train <span class="token operator">=</span> <span class="token boolean">False</span><span class="token punctuation">,</span>
+                                       transform<span class="token operator">=</span>torchvision<span class="token punctuation">.</span>transforms<span class="token punctuation">.</span>ToTensor<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+                                        download<span class="token operator">=</span><span class="token boolean">True</span>
+                                       <span class="token punctuation">)</span>
+dataloader <span class="token operator">=</span> DataLoader<span class="token punctuation">(</span>dataset<span class="token punctuation">,</span>batch_size<span class="token operator">=</span><span class="token number">64</span><span class="token punctuation">)</span>
+
+<span class="token keyword">class</span> <span class="token class-name">cc</span><span class="token punctuation">(</span>nn<span class="token punctuation">.</span>Module<span class="token punctuation">)</span><span class="token punctuation">:</span>
+    <span class="token keyword">def</span> <span class="token function">__init__</span><span class="token punctuation">(</span>self<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        <span class="token builtin">super</span><span class="token punctuation">(</span>cc<span class="token punctuation">,</span>self<span class="token punctuation">)</span><span class="token punctuation">.</span>__init__<span class="token punctuation">(</span><span class="token punctuation">)</span>
+        self<span class="token punctuation">.</span>conv1 <span class="token operator">=</span> Conv2d<span class="token punctuation">(</span>in_channels<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">,</span>out_channels<span class="token operator">=</span><span class="token number">6</span><span class="token punctuation">,</span>kernel_size<span class="token operator">=</span><span class="token number">3</span><span class="token punctuation">,</span>stride<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span>padding<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">)</span>
+    <span class="token keyword">def</span> <span class="token function">forward</span><span class="token punctuation">(</span>self<span class="token punctuation">,</span>x<span class="token punctuation">)</span><span class="token punctuation">:</span>
+        x <span class="token operator">=</span> self<span class="token punctuation">.</span>conv1<span class="token punctuation">(</span>x<span class="token punctuation">)</span>
+        <span class="token keyword">return</span> x
+
+c <span class="token operator">=</span> cc<span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+writer <span class="token operator">=</span> SummaryWriter<span class="token punctuation">(</span><span class="token string">"../logs"</span><span class="token punctuation">)</span>
+step <span class="token operator">=</span> <span class="token number">0</span>
+<span class="token keyword">for</span> data <span class="token keyword">in</span> dataloader<span class="token punctuation">:</span>
+    imgs<span class="token punctuation">,</span> targets <span class="token operator">=</span>data
+    output <span class="token operator">=</span> c<span class="token punctuation">(</span>imgs<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>imgs<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+    <span class="token keyword">print</span><span class="token punctuation">(</span>output<span class="token punctuation">.</span>shape<span class="token punctuation">)</span>
+    output <span class="token operator">=</span> torch<span class="token punctuation">.</span>reshape<span class="token punctuation">(</span>output<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">,</span> <span class="token number">30</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    writer<span class="token punctuation">.</span>add_images<span class="token punctuation">(</span><span class="token string">"input"</span><span class="token punctuation">,</span>imgs<span class="token punctuation">,</span>step<span class="token punctuation">)</span>
+    writer<span class="token punctuation">.</span>add_images<span class="token punctuation">(</span><span class="token string">"output"</span><span class="token punctuation">,</span> output<span class="token punctuation">,</span> step<span class="token punctuation">)</span>
+    step <span class="token operator">=</span> step <span class="token operator">+</span> <span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token punctuation">(</span>yolofacev5<span class="token punctuation">)</span> pythonProject<span class="token operator"><span class="token file-descriptor important">1</span>></span> <span class="token builtin class-name">cd</span> <span class="token punctuation">..</span>
+<span class="token punctuation">(</span>yolofacev5<span class="token punctuation">)</span> pythonProject<span class="token operator"><span class="token file-descriptor important">1</span>></span> tensorboard <span class="token parameter variable">--logdir</span><span class="token operator">=</span>logs      <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><img src="image-20230528214836000.png" alt="image-20230528214836000"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/">http://charliechen114514.github.io/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/pytorch/">pytorch</a><a class="post-meta__tags" href="/tags/python/">python</a><a class="post-meta__tags" href="/tags/AI/">AI</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A04/" title="pytorch学习4"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">pytorch学习4</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/03/29/pytorch-1/" title="pytorch 1"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-03-29</div><div class="title">pytorch 1</div></div></a></div><div><a href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A02/" title="pytorch学习2"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-28</div><div class="title">pytorch学习2</div></div></a></div><div><a href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A04/" title="pytorch学习4"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-28</div><div class="title">pytorch学习4</div></div></a></div><div><a href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A03/" title="pytorch学习3"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-05-28</div><div class="title">pytorch学习3</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">80</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">22</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">大更新！这下上了简单的数据结构的C实现，如果只对思路感兴趣看思路即可，如果想查看API实现就取看详解</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C"><span class="toc-number">1.</span> <span class="toc-text">神经网络</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8D%B7%E7%A7%AF%E5%B1%82"><span class="toc-number">1.1.</span> <span class="toc-text">卷积层</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#what-is-Convolution-arithmetic-from-read-ME"><span class="toc-number">2.</span> <span class="toc-text">what is Convolution arithmetic(from read ME)</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Convolution-animations"><span class="toc-number">3.</span> <span class="toc-text">Convolution animations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Transposed-convolution-animations"><span class="toc-number">4.</span> <span class="toc-text">Transposed convolution animations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Dilated-convolution-animations"><span class="toc-number">5.</span> <span class="toc-text">Dilated convolution animations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Generating-the-Makefile"><span class="toc-number">6.</span> <span class="toc-text">Generating the Makefile</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Generating-the-animations"><span class="toc-number">7.</span> <span class="toc-text">Generating the animations</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Compiling-the-document"><span class="toc-number">8.</span> <span class="toc-text">Compiling the document</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/" title="pytorch学习5"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习5"/></a><div class="content"><a class="title" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/" title="pytorch学习5">pytorch学习5</a><time datetime="2023-05-28T13:51:30.000Z" title="发表于 2023-05-28 21:51:30">2023-05-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A04/" title="pytorch学习4"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习4"/></a><div class="content"><a class="title" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A04/" title="pytorch学习4">pytorch学习4</a><time datetime="2023-05-28T13:51:27.000Z" title="发表于 2023-05-28 21:51:27">2023-05-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A03/" title="pytorch学习3"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习3"/></a><div class="content"><a class="title" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A03/" title="pytorch学习3">pytorch学习3</a><time datetime="2023-05-28T13:51:24.000Z" title="发表于 2023-05-28 21:51:24">2023-05-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A02/" title="pytorch学习2"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习2"/></a><div class="content"><a class="title" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A02/" title="pytorch学习2">pytorch学习2</a><time datetime="2023-05-28T13:51:20.000Z" title="发表于 2023-05-28 21:51:20">2023-05-28</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/QT-NEW-12-13/" title="QT NEW 12-13"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="QT NEW 12-13"/></a><div class="content"><a class="title" href="/2023/05/28/QT-NEW-12-13/" title="QT NEW 12-13">QT NEW 12-13</a><time datetime="2023-05-28T11:44:24.000Z" title="发表于 2023-05-28 19:44:24">2023-05-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
