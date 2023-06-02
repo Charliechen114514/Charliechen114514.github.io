@@ -1,0 +1,356 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Qt &amp;&amp; Opencv Config | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="关于Qt + opencv各平台编译方法的水博客1（代价是搞了N久）写在前面​        正确选择模块的版本是必要的                                        ——爹的 instruction ​        首先，如果你是一个构件库者，哥们建议你仔细看看这帮写博客的人他们构建配置的版本是多少！防止坑上加坑，导致人寄上加寄！ ​        下面，我将介">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Qt &amp;&amp; Opencv Config">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/06/01/Qt-Opencv-Config/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="关于Qt + opencv各平台编译方法的水博客1（代价是搞了N久）写在前面​        正确选择模块的版本是必要的                                        ——爹的 instruction ​        首先，如果你是一个构件库者，哥们建议你仔细看看这帮写博客的人他们构建配置的版本是多少！防止坑上加坑，导致人寄上加寄！ ​        下面，我将介">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-06-01T13:31:25.000Z">
+<meta property="article:modified_time" content="2023-06-02T07:00:56.911Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="Qt">
+<meta property="article:tag" content="opencv">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/06/01/Qt-Opencv-Config/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Qt && Opencv Config',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-06-02 15:00:56'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">84</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">24</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Qt &amp;&amp; Opencv Config</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-06-01T13:31:25.000Z" title="发表于 2023-06-01 21:31:25">2023-06-01</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-06-02T07:00:56.911Z" title="更新于 2023-06-02 15:00:56">2023-06-02</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Qt &amp;&amp; Opencv Config"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="关于Qt-opencv各平台编译方法的水博客1（代价是搞了N久）"><a href="#关于Qt-opencv各平台编译方法的水博客1（代价是搞了N久）" class="headerlink" title="关于Qt + opencv各平台编译方法的水博客1（代价是搞了N久）"></a>关于Qt + opencv各平台编译方法的水博客1（代价是搞了N久）</h1><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>​        正确选择模块的版本是必要的                                        ——爹的 instruction</p>
+<p>​        首先，如果你是一个构件库者，哥们建议你仔细看看这帮写博客的人他们构建配置的版本是多少！防止坑上加坑，导致人寄上加寄！</p>
+<p>​        下面，我将介绍一下简单的 Windows11/Linux-Ubuntu20.04 Qt5.12.8/Qt6.6.0 + Opencv 4.6.0/Opencv 4.5.3， 如果你是想在自己的电脑上搭建上述系统，烦请按照我下面给出的若干的reference version, 否则在编译，安装，运行，到最后的打包出了问题。。。很正常就会，以及，以及</p>
+<p><strong>注意到本博客尚未解决：基于Windows11下如此操作方法qt6.6.0 + mingw_64bits打包程序的可移植性的问题，具体表现为于纯净Win10下爆出 RunTimeError - Unknown Terminate 以及Windows11下程序双击无反应的问题</strong></p>
+<p>​        成功解决的是下面的，全流程简单的概括为👇</p>
+<h2 id="Windows11-Qt-5-12-8-Opencv4-5-3"><a href="#Windows11-Qt-5-12-8-Opencv4-5-3" class="headerlink" title="Windows11 + Qt 5.12.8 + Opencv4.5.3"></a>Windows11 + Qt 5.12.8 + Opencv4.5.3</h2><p>​        首先，我们需要的是获取上面我提到的资源。</p>
+<p>​        如果打算配置的是6.6.0，Cmake可以不用下，qt有自己自带的Cmake-gui，但是低版本的不自带Cmake-gui，需要自己来下载。</p>
+<p>​        Qt 5.12.8可以通过点击这里获取：<a target="_blank" rel="noopener" href="https://download.qt.io/new_archive/qt/5.12/5.12.8/qt-opensource-windows-x86-5.12.8.exe">qt-opensource-windows-x86-5.12.8.exe</a></p>
+<p>​        或者，你想要浏览其他的版本，看这里：<a target="_blank" rel="noopener" href="https://download.qt.io/new_archive/qt/">Index of /new_archive/qt</a></p>
+<p>​        至于 opencv，这里给出传送门：</p>
+<p>​        opencv:<a target="_blank" rel="noopener" href="https://opencv.org/releases/">Releases - OpenCV</a>，对了，有人有疑问：我是该安装Source版本的还是Windows版本的呢？都一样，前者直接得到压缩包，后者是一个解压程序。基本一致的！结合自身的需求来！</p>
+<p>​        opencv_contrib :  这个用户贡献的contribution的子模块，是需要到 github那里去下载的！注意到这里给出的是 opencv_contrib 4.x 的教程。读者可以自行尝试opencv_contrib 5.x的联合编译。<a target="_blank" rel="noopener" href="https://github.com/opencv/opencv_contrib/tree/4.x（不过，不建议编译这个，我自己尝试过在后续的编译中这个会爆炸（爆一大堆错误））">https://github.com/opencv/opencv_contrib/tree/4.x（不过，不建议编译这个，我自己尝试过在后续的编译中这个会爆炸（爆一大堆错误））</a></p>
+<p>​        我们下载好了之后。得到的是若干的压缩包和一个QT安装的SDK。</p>
+<h3 id="安装QT"><a href="#安装QT" class="headerlink" title="安装QT"></a>安装QT</h3><p>​        原则上讲，这个版本的QT不使用线上安装，意味之我们不需要配置Qt tempory repository.注意到如果你先前有一个qt账号，登陆即可，反之，注册一个！直接选择对应的编译包和SDK包就可以了。为了联合演示 mingw_32, mingw_64, MSVC2017_32,MSVC_64编译器下的编译行为，这里我就都下载了，以及，在Tools选择上也都选择了MSVC编译器和mingw编译器（tnnd,13.8G）。Qt作为桌面开发的经典工具，安装也是press几个按钮的事情。这里就不细说说明了。</p>
+<h3 id="安装opencv"><a href="#安装opencv" class="headerlink" title="安装opencv"></a>安装opencv</h3><p>​        解压就完事了！</p>
+<h3 id="开始联合编译Qt-opencv"><a href="#开始联合编译Qt-opencv" class="headerlink" title="开始联合编译Qt + opencv"></a>开始联合编译Qt + opencv</h3><p>​        我们将opencv得到的资源，分别置于一个空间比较大的地方。比如说我的D盘（）。</p>
+<p>​        专门建立一个文件夹，叫：</p>
+<pre class="line-numbers language-none"><code class="language-none">Qt5_12_Opencv453Compile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        在底下，再建立三个文件夹！</p>
+<p><img src="image-20230602103923847.png" alt="image-20230602103923847"></p>
+<p><img src="image-20230602103930586.png" alt="image-20230602103930586"></p>
+<p>​        如上图所示。也就是：</p>
+<pre class="line-numbers language-none"><code class="language-none">opencv_build
+opencv_contrib
+opencv_source<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        我想，你从名字就知道了——<code>opencv_source</code>装源码，把<code>Opencv4.5.3</code>的源码内容放到这里, <code>opencv_contrib</code> 装用户贡献模块，把contrib的所有内容放到这里，而<code>opencv_build</code>,任何一个熟知Cmake编译的人都知道装编译的结果的。</p>
+<p>​        现在，打开你的Cmake-gui</p>
+<p>​    <img src="image-20230602121940454.png" alt="image-20230602121940454"></p>
+<p>​        你的<code>Where is the source code</code>和<code>where to build the binaries</code>，如果先前没有用过会是空的！source code自然在<code>opencv_source</code>下，build产生的文件放到<code>opencv_build</code>下，就像这样一样。</p>
+<p>​        点击Advanced 和 Grouped,防止自己老花眼找半天的Cmake变量。点击Configure</p>
+<p><img src="image-20230602122308408.png" alt="image-20230602122308408"></p>
+<p>​        默认下，这里是没有编译器的，现在，选择Specify native Compliers（指定本地编译器），点击之</p>
+<p><img src="image-20230602122412384.png" alt="image-20230602122412384"></p>
+<p>​        下拉找到<code>Mingw Makefiles</code>，这就是我们想要的编译器了！</p>
+<p>​        Config结束后，点击Next.</p>
+<p>​        指定好自己C,C++语言的编译器位置，他们在自己QT安装的文件下的。</p>
+<pre class="line-numbers language-none"><code class="language-none">D:\QT\Qt5.12.8\Tools\mingw730_64\bin\gcc.exe &#x2F;&#x2F; for C<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">D:\QT\Qt5.12.8\Tools\mingw730_64\bin\g++.exe &#x2F;&#x2F; for C++<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20230602122748504.png" alt="image-20230602122748504"></p>
+<p>​        可以看到正在配置了。</p>
+<p>​        同时，记得添加编译器到环境变量！</p>
+<pre class="line-numbers language-none"><code class="language-none">D:\QT\Qt5.12.8\5.12.8\mingw73_64\bin;
+D:\QT\Qt5.12.12\Tools\mingw730_64;
+D:\QT\Qt5.12.8\Tools\mingw730_64\x86_64-w64-mingw32\bin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        他们稍后是为了使系统可以找到Qt库来运行Qt的！</p>
+<p>​        待到你添加完毕之后，现在，回到Cmake界面是满山红</p>
+<p><img src="image-20230602123431972.png" alt="image-20230602123431972"></p>
+<p>​        下面开始配置选项</p>
+<p>​        1. 打开with_OpenGL 和 With_Qt,他们在WITH group下面</p>
+<p>​        2. 配置好contrib模块，就是在Opencv Group下，找到这样的一个变量     OPENCV_EXTRA_MODOLES_PATH</p>
+<p>​        给他写上：</p>
+<pre class="line-numbers language-none"><code class="language-none">D:\QT5_12_Opencv453Compile\opencv_contrib\modules<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        呐！就是我们存放<code>contrib</code>模块下面的<code>modules</code>模块，注意。</p>
+<p>​        再次重新配置：点击Configure</p>
+<p>​        正常来讲，再次编译过后，是不会有红色出现的！但是我这里还是红色出现了！</p>
+<p>​        是Qt5的库路径不知道。给我默认到自己的Anaconda的库里去了。自己手动修改一下，同时，留意一下正斜杠与反斜杠的区别（fuck Windows）</p>
+<p><img src="image-20230602124437202.png" alt="image-20230602124437202"></p>
+<p>​        _这里是为了测试mingw32编译才选择的32编译器_（WRANING!后续的编译中尝试过了！不建议选择这个，64位的系统就选择mingw64!）如果你不想打包库的话，可以选择64位编译器。</p>
+<p>​        以及我看到有教程建议在Opencv的变量中只勾选opencv_world. 这是把若干的库编译成一个，显得笨重！这里就不这样做了！</p>
+<p>​        点击Config</p>
+<p><img src="image-20230602124653801.png" alt="image-20230602124653801"></p>
+<p>​        (留心一下产生的清单里有没有都配置成为你想要的环境，确定了再点击！)</p>
+<p>​        再点击Generate生成可以用的MakeFile.</p>
+<h3 id="PowerShell启用mingw32编译源代码"><a href="#PowerShell启用mingw32编译源代码" class="headerlink" title="PowerShell启用mingw32编译源代码"></a>PowerShell启用mingw32编译源代码</h3><p><img src="image-20230602124918062.png" alt="image-20230602124918062"></p>
+<pre class="line-numbers language-none"><code class="language-none">mingw32-make -j 8 &#x2F;&#x2F; 8 is then_recommend<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        后来还是调成8了，因为有一定概率产生多线程编译错误导致编译中止！</p>
+<p>​        CD到自己的Build文件下，敲这个指令！（哈哈，其实是让他所有的CPU资源来调动编译之，可不想等1个小时）</p>
+<p><img src="image-20230602125026896.png" alt="image-20230602125026896"></p>
+<p>​        一敲击回车，程序开始快速的编译。泡杯咖啡休息一下把。</p>
+<p>​        中间可能存在跑错！注意！明确选择的编译器是64位！同时，注意反复确认引入的Cmake选项指向的环境是你想要的那个（错一点都不行！）</p>
+<p>​        _不！要！mingw编译器 停止编译了还要继续继续在原文件夹下再输mingw32-make_了，否则可能会跳过一些库的生成！导致后面程序应用后异常崩溃！</p>
+<pre class="line-numbers language-none"><code class="language-none">mingw32-make install<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        下载好刚刚那些库！</p>
+<p><img src="image-20230602135455371.png" alt="image-20230602135455371"></p>
+<p>​        现在，我们下载好的库，就在</p>
+<p><img src="image-20230602135533374.png" alt="image-20230602135533374"></p>
+<p>以及opencv可用的文件在：</p>
+<p><img src="image-20230602135559565.png" alt="image-20230602135559565"></p>
+<p>​        打开QT，整一个MainWindow工程。</p>
+<p>​        现在开始检验你配置的是否成功了！（大喜）</p>
+<p>​        在PRO工程文件下，添加</p>
+<pre class="line-numbers language-none"><code class="language-none">INCLUDEPATH +&#x3D; D:\QT5_12_Opencv453Compile\opencv_build\install\include
+
+LIBS +&#x3D; D:\QT5_12_Opencv453Compile\opencv_build\install\x64\mingw\bin\libopencv_*.dll<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        <strong>然！后！Ctrl+S重载一下工程，否则下面别让自己白忙活！</strong></p>
+<p>​        尝试一下，在MainWindow.cpp下整点：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include &quot;mainwindow.h&quot;
+#include &quot;ui_mainwindow.h&quot;
+#include&lt;opencv2&#x2F;opencv.hpp&gt; &#x2F;&#x2F; 关键时刻！
+#include&lt;QDebug&gt;
+using namespace cv;
+MainWindow::MainWindow(QWidget *parent)
+    : QMainWindow(parent)
+    , ui(new Ui::MainWindow)
+&#123;
+    ui-&gt;setupUi(this);
+    Mat img &#x3D; imread(&quot;D:\\QT projects\\5128opencv\\1.png&quot;);&#x2F;&#x2F;嘿！这个别照搬地址！哥们找自己的一张图片扔进来它的地址！
+    if(img.empty())&#123;
+       qDebug() &lt;&lt; &quot;Error in loading picture&quot;;
+    &#125;
+    namedWindow(&quot;Display window&quot;, WINDOW_AUTOSIZE );
+    imshow(&quot;Display window&quot;,img);
+&#125;
+
+MainWindow::~MainWindow()
+&#123;
+    delete ui;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        好了，如果，我说如果，没有什么问题，那恭喜可以开摆了。。。</p>
+<p>​        但是如果没有呢？</p>
+<p>​        0. Can not find opencv2/opencv.hpp: 好好看看你有没有Ctrl + S你的工程</p>
+<p>​        1.Unrecognize File Format</p>
+<p>​        当你运行上面的代码在QConsole上扔出了这个错误的时候，注意选好你的编译器套餐！留意到你用了什么编译器编译的opencv+QT，就使用哪款编译器！</p>
+<pre><code>    2. ​        程序异常结束
+</code></pre><p>​        哥们太倒霉了！程序不认识库！也就是说，他没办法按照你给的路径去寻找库，一个一点都不优雅的方法，就是把 自己编译产生的库，在install/x64/bin下的库，原封不动的扔到自己的debug或者是release文件夹下，让G++/GCC编译的时候直接在本地工作文件夹下找到库从而避免一场结束！（Windows的这个屏蔽了过多的细节，没办法）</p>
+<p><img src="image-20230602141655611.png" alt="image-20230602141655611"></p>
+<p>​        这是成功的界面！</p>
+<h3 id="程序打包"><a href="#程序打包" class="headerlink" title="程序打包"></a>程序打包</h3><p>​        成功了！后面经过调试，成功将这一个环境的qt+ opencv程序应用到了各台电脑上！（不用下载几百MB的库力，喜）</p>
+<p>​        首先，转到自己同名目录下的：</p>
+<pre><code>     很抽象的一个：》
+</code></pre><pre class="line-numbers language-none"><code class="language-none">D:\QT projects\build-5128opencv-Desktop_Qt_5_12_8_MinGW_64_bit-Release<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        将这个目录下的可执行文件拿出来，和这下面的一大堆库一起</p>
+<p><img src="image-20230602143253394.png" alt="image-20230602143253394"></p>
+<p>​        和</p>
+<p><img src="image-20230602143320878.png" alt="image-20230602143320878"></p>
+<p>​        把他们拎出来：</p>
+<p>​        扔到一个建议是<strong>全程不带一点中文名的路径（for example:你的D盘）</strong>，把我说的那一大坨东西，扔到一个新建的文件夹下。</p>
+<p>​        现在，<strong>在应用搜索处，搜索你构建的编译器</strong>，比如说根据这个名字：</p>
+<pre class="line-numbers language-none"><code class="language-none">build-5128opencv-Desktop_Qt_5_12_8_MinGW_64_bit-Release<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        我应当选择</p>
+<pre class="line-numbers language-none"><code class="language-none">Qt5.12.8 Mingw64bits<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        然后选择之运行：</p>
+<p><img src="image-20230602144243995.png" alt="image-20230602144243995"></p>
+<p>​        cd 到自己的构建文件夹下</p>
+<pre class="line-numbers language-none"><code class="language-none">windeployqt yourFileName.exe<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        然后就会给你配置一些库了！</p>
+<p><img src="image-20230602144734439.png" alt="image-20230602144734439"></p>
+<p>​        点击一下</p>
+<p>​        Error 1： 少库了！</p>
+<p>​        总而言之就是少库了！别慌别慌，补一下就好啦！</p>
+<pre class="line-numbers language-none"><code class="language-none">D:\QT\Qt5.12.8\5.12.8\mingw73_64\bin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        找到自己安装QT下的这种文件夹，找到缺什么库就直接Copy即可。</p>
+<p>​        Error 2: Terminate by unknown Error</p>
+<p>​        反正就是扔给你这个未知的错误，本质上来讲就是少库（对可执行文件而言），可能是没有在全英文路径下打包造成。</p>
+<p>​        Error 3：EXE文件在装死</p>
+<p>​        嘛，说白了还是少库，有人急了（是我/(ㄒoㄒ)/~~）咋还少库啊，事实上是：库签名对不上，使用的mingw编译器下的windeployqt没有给你正确的打包！可能还是：没有在全英文路径下打包造成。实在不行库全删了，缺啥补啥！</p>
+<p>​        Anyway，忙活了两天的(大致回忆了一下是块30多个小时处理之)配置这里说完了，下一篇博客我介绍一下<code>Linux + qt5.12.8 + opencv 4.5.3</code>的配置。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/06/01/Qt-Opencv-Config/">http://charliechen114514.github.io/2023/06/01/Qt-Opencv-Config/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Qt/">Qt</a><a class="post-meta__tags" href="/tags/opencv/">opencv</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/05/31/Ros%E5%B0%8F%E8%BD%A6%E7%AE%80%E5%8D%95%E6%93%8D%E4%BD%9C%EF%BC%88%E6%B0%B4%EF%BC%81%EF%BC%89/" title="Ros小车简单操作（水！）"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Ros小车简单操作（水！）</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">84</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">24</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">大更新！这下上了简单的数据结构的C实现，如果只对思路感兴趣看思路即可，如果想查看API实现就取看详解</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%85%B3%E4%BA%8EQt-opencv%E5%90%84%E5%B9%B3%E5%8F%B0%E7%BC%96%E8%AF%91%E6%96%B9%E6%B3%95%E7%9A%84%E6%B0%B4%E5%8D%9A%E5%AE%A21%EF%BC%88%E4%BB%A3%E4%BB%B7%E6%98%AF%E6%90%9E%E4%BA%86N%E4%B9%85%EF%BC%89"><span class="toc-number">1.</span> <span class="toc-text">关于Qt + opencv各平台编译方法的水博客1（代价是搞了N久）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows11-Qt-5-12-8-Opencv4-5-3"><span class="toc-number">1.2.</span> <span class="toc-text">Windows11 + Qt 5.12.8 + Opencv4.5.3</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85QT"><span class="toc-number">1.2.1.</span> <span class="toc-text">安装QT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85opencv"><span class="toc-number">1.2.2.</span> <span class="toc-text">安装opencv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%A7%8B%E8%81%94%E5%90%88%E7%BC%96%E8%AF%91Qt-opencv"><span class="toc-number">1.2.3.</span> <span class="toc-text">开始联合编译Qt + opencv</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#PowerShell%E5%90%AF%E7%94%A8mingw32%E7%BC%96%E8%AF%91%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="toc-number">1.2.4.</span> <span class="toc-text">PowerShell启用mingw32编译源代码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A8%8B%E5%BA%8F%E6%89%93%E5%8C%85"><span class="toc-number">1.2.5.</span> <span class="toc-text">程序打包</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/06/01/Qt-Opencv-Config/" title="Qt &amp;&amp; Opencv Config"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Qt &amp;&amp; Opencv Config"/></a><div class="content"><a class="title" href="/2023/06/01/Qt-Opencv-Config/" title="Qt &amp;&amp; Opencv Config">Qt &amp;&amp; Opencv Config</a><time datetime="2023-06-01T13:31:25.000Z" title="发表于 2023-06-01 21:31:25">2023-06-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/31/Ros%E5%B0%8F%E8%BD%A6%E7%AE%80%E5%8D%95%E6%93%8D%E4%BD%9C%EF%BC%88%E6%B0%B4%EF%BC%81%EF%BC%89/" title="Ros小车简单操作（水！）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Ros小车简单操作（水！）"/></a><div class="content"><a class="title" href="/2023/05/31/Ros%E5%B0%8F%E8%BD%A6%E7%AE%80%E5%8D%95%E6%93%8D%E4%BD%9C%EF%BC%88%E6%B0%B4%EF%BC%81%EF%BC%89/" title="Ros小车简单操作（水！）">Ros小车简单操作（水！）</a><time datetime="2023-05-31T12:34:30.000Z" title="发表于 2023-05-31 20:34:30">2023-05-31</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/29/QT-new-14/" title="QT new 14"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="QT new 14"/></a><div class="content"><a class="title" href="/2023/05/29/QT-new-14/" title="QT new 14">QT new 14</a><time datetime="2023-05-29T09:14:07.000Z" title="发表于 2023-05-29 17:14:07">2023-05-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/29/Windows-API-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%886%EF%BC%89/" title="Windows-API-程序设计（6）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Windows-API-程序设计（6）"/></a><div class="content"><a class="title" href="/2023/05/29/Windows-API-%E7%A8%8B%E5%BA%8F%E8%AE%BE%E8%AE%A1%EF%BC%886%EF%BC%89/" title="Windows-API-程序设计（6）">Windows-API-程序设计（6）</a><time datetime="2023-05-29T09:13:07.000Z" title="发表于 2023-05-29 17:13:07">2023-05-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/" title="pytorch学习5"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="pytorch学习5"/></a><div class="content"><a class="title" href="/2023/05/28/pytorch%E5%AD%A6%E4%B9%A05/" title="pytorch学习5">pytorch学习5</a><time datetime="2023-05-28T13:51:30.000Z" title="发表于 2023-05-28 21:51:30">2023-05-28</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
