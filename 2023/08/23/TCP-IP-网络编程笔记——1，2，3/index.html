@@ -1,0 +1,1058 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>TCP/IP 网络编程笔记——1，2，3 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="1. 理解网络和套接字​        网络编程实在很简单，其实就是一句话： 研究编写使得两台联网的计算机通信的程序！没了！ ​        计算机提供一个叫做socket的东西，实际上就是“套接字”的意思。难以理解？其实就是插头！说白了就是通信的软件接口。 流程​        快速的讲一些常见的接口——先把流程梳理明白了—— ​        假装我们是一台计算机（倒不如假设我们的计算机是人">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TCP&#x2F;IP 网络编程笔记——1，2，3">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="1. 理解网络和套接字​        网络编程实在很简单，其实就是一句话： 研究编写使得两台联网的计算机通信的程序！没了！ ​        计算机提供一个叫做socket的东西，实际上就是“套接字”的意思。难以理解？其实就是插头！说白了就是通信的软件接口。 流程​        快速的讲一些常见的接口——先把流程梳理明白了—— ​        假装我们是一台计算机（倒不如假设我们的计算机是人">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-08-23T02:37:26.000Z">
+<meta property="article:modified_time" content="2023-08-23T02:39:34.225Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="Windows 32API">
+<meta property="article:tag" content="C&#x2F;C++. Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'TCP/IP 网络编程笔记——1，2，3',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-08-23 10:39:34'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">TCP/IP 网络编程笔记——1，2，3</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-08-23T02:37:26.000Z" title="发表于 2023-08-23 10:37:26">2023-08-23</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-08-23T02:39:34.225Z" title="更新于 2023-08-23 10:39:34">2023-08-23</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>25分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="TCP/IP 网络编程笔记——1，2，3"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="1-理解网络和套接字"><a href="#1-理解网络和套接字" class="headerlink" title="1. 理解网络和套接字"></a>1. 理解网络和套接字</h1><p>​        网络编程实在很简单，其实就是一句话： 研究编写使得两台联网的计算机通信的程序！没了！</p>
+<p>​        计算机提供一个叫做socket的东西，实际上就是“套接字”的意思。难以理解？其实就是插头！说白了就是通信的软件接口。</p>
+<h2 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h2><p>​        快速的讲一些常见的接口——先把流程梳理明白了——</p>
+<p>​        假装我们是一台计算机（倒不如假设我们的计算机是人），想要跟别的计算机通信，就务必需要——有——电话机</p>
+<p>​        好吧，现在手无寸铁，先整个电话机玩玩</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;sys&#x2F;socket.h&gt;
+
+int scoket(int domain, int type, int protocol);		<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        第一个参数说的是用的是什么套接字类型</p>
+<p>​        而这里的type指的是协议面向的种类， 也就是说“type”参数指的是套接字类型，常用的类型有：</p>
+<ul>
+<li>SOCK_STREAM（TCP流）</li>
+<li>SOCK_DGRAM（UDP数据报）</li>
+<li>SOCK_RAW（原始套接字）</li>
+</ul>
+<p>​        协议“protocol”一般设置为“0”，就是说在已经确定套接字使用的协议簇和类型时，这个参数的值就为0</p>
+<p>​        我们将会在稍后看到，作为我们已知使用的协议种类后，只需要这里置0即可。（对于那些无法确定协议种类的才会在这里设置其他东西）</p>
+<p>​        随后，就是bind，有电话机，就需要有电话号码——这个函数就是确定套接字的地址信息，告诉这个套接字要去哪里（IP和端口）</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;sys&#x2F;socket.h&gt;
+
+int bind(int sockfd,struct sockaddr* myaddr, socklen_t addrlen);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        接下来就是接听（相当于打了电话号码等）</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;sys&#x2F;socket.h&gt;
+
+int listen(int sockfd, int backlog);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>值得一提的sockfd这个fd, 在Linux下指的是file discriptor（描述符，不理解的话可以认为是Windows下的文件句柄）</p>
+</blockquote>
+<p>​        等到客户端有了响应之后，我们就要摁下同意表示愿意接听</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;sys&#x2F;socket.h&gt;
+int listen(int sockfd, struct sockaddr* addr, socklen_t* addrlen);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        总结一下：</p>
+<blockquote>
+<p>第一步：调用socket创建套接字</p>
+<p>第二步：调用bind函数分配IP和端口号</p>
+<p>第三步：调用listen函数转化为可接受请求的状态</p>
+<p>第四步：调用accept受理链接请求</p>
+</blockquote>
+<p>​        方便起见，这里就扔下代码：</p>
+<blockquote>
+<p>TIPS: 你的电脑绝对没有SC.h这个文件，因为这是我自己写的，对于那些常见的函数给封装在同一个头文件而不需要反复写，在这个节段：</p>
+</blockquote>
+<h3 id="SC-c"><a href="#SC-c" class="headerlink" title="SC.c"></a>SC.c</h3><pre class="line-numbers language-C" data-language="C"><code class="language-C">#include &quot;SC.h&quot;
+&#x2F;&#x2F; error handle
+void showError(const char* message)
+&#123;
+	fputs(message,stdout);
+	fputc(&#39;\n&#39;,stdout);
+	exit(-1);
+&#125;
+
+&#x2F;&#x2F; show argc help
+void showHelp(int argc_n, int agrc_r ,const char* msgHelp)
+&#123;
+    if(argc_n !&#x3D; agrc_r)&#123;
+        printf(&quot;%s&quot;,msgHelp);
+        exit(1);
+    &#125;
+    
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="Sc-h"><a href="#Sc-h" class="headerlink" title="Sc.h"></a>Sc.h</h3><pre class="line-numbers language-C" data-language="C"><code class="language-C">#ifndef _SC_H_
+#define _SC_H_
+
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;string.h&gt;
+#include &lt;unistd.h&gt; &#x2F;&#x2F; 提供Linux文件IO
+#include &lt;arpa&#x2F;inet.h&gt;
+#include &lt;sys&#x2F;socket.h&gt;
+#include &lt;errno.h&gt;
+typedef struct sockaddr_in Sockaddr_in;
+typedef struct sockaddr Sockaddr;
+&#x2F;&#x2F; pre-announced
+void showError(const char* message);
+void showHelp(int argc_n, int agrc_r, const char* msgHelp);
+
+&#x2F;&#x2F; setMemZero
+#define ZERO 0
+#define ZeroMem(buf) memset(buf, ZERO, sizeof(buf))
+#endif<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="服务器端"><a href="#服务器端" class="headerlink" title="服务器端"></a>服务器端</h3><pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">// include basic files</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">"SC.h"</span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;errno.h></span></span>
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token keyword">int</span> argc<span class="token punctuation">,</span> <span class="token keyword">char</span><span class="token operator">*</span> argv<span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">int</span> serv_sock<span class="token punctuation">;</span>
+	<span class="token keyword">int</span> clnt_sock<span class="token punctuation">;</span>
+
+	<span class="token keyword">struct</span> <span class="token class-name">sockaddr_in</span> serv_addr<span class="token punctuation">;</span>
+	<span class="token keyword">struct</span> <span class="token class-name">sockaddr_in</span> clnt_addr<span class="token punctuation">;</span>
+	<span class="token class-name">socklen_t</span> clnt_addr_size<span class="token punctuation">;</span>
+
+	<span class="token keyword">char</span> message<span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token string">"hello, world\n"</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span><span class="token punctuation">(</span>argc <span class="token operator">!=</span> <span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Usage: &lt;port>\n"</span><span class="token punctuation">,</span>argv<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	serv_sock <span class="token operator">=</span> <span class="token function">socket</span><span class="token punctuation">(</span>PF_INET<span class="token punctuation">,</span> SOCK_STREAM<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span><span class="token punctuation">(</span>serv_sock <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token function">showError</span><span class="token punctuation">(</span><span class="token string">"socket Error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>serv_addr<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>serv_addr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	serv_addr<span class="token punctuation">.</span>sin_family <span class="token operator">=</span> AF_INET<span class="token punctuation">;</span>
+	serv_addr<span class="token punctuation">.</span>sin_addr<span class="token punctuation">.</span>s_addr <span class="token operator">=</span> <span class="token function">htonl</span><span class="token punctuation">(</span>INADDR_ANY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	serv_addr<span class="token punctuation">.</span>sin_port <span class="token operator">=</span> <span class="token function">htons</span><span class="token punctuation">(</span><span class="token function">atoi</span><span class="token punctuation">(</span>argv<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">bind</span><span class="token punctuation">(</span>serv_sock<span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">sockaddr</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>serv_addr<span class="token punctuation">,</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>serv_addr<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"%d\n"</span><span class="token punctuation">,</span>errno<span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">showError</span><span class="token punctuation">(</span><span class="token string">"bind() Error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>	
+		<span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">listen</span><span class="token punctuation">(</span>serv_sock<span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span> <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token function">showError</span><span class="token punctuation">(</span><span class="token string">"listen() error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	clnt_addr_size <span class="token operator">=</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>clnt_addr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	clnt_sock <span class="token operator">=</span> <span class="token function">accept</span><span class="token punctuation">(</span>serv_sock<span class="token punctuation">,</span><span class="token punctuation">(</span><span class="token keyword">struct</span> <span class="token class-name">sockaddr</span><span class="token operator">*</span><span class="token punctuation">)</span><span class="token operator">&amp;</span>clnt_addr<span class="token punctuation">,</span> <span class="token operator">&amp;</span>clnt_addr_size<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token keyword">if</span><span class="token punctuation">(</span>clnt_sock <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+		<span class="token function">showError</span><span class="token punctuation">(</span><span class="token string">"accept() error"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+		<span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token punctuation">&#125;</span>
+
+	<span class="token function">write</span><span class="token punctuation">(</span>clnt_sock<span class="token punctuation">,</span> message<span class="token punctuation">,</span><span class="token keyword">sizeof</span><span class="token punctuation">(</span>message<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token function">close</span><span class="token punctuation">(</span>clnt_sock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+	<span class="token function">close</span><span class="token punctuation">(</span>serv_sock<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+	<span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        对于客户端，我们只需要给出链接的地址和端口，就可以了：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">#include &lt;sys&#x2F;socket.h&gt;
+
+int connect(int sockfd, struct sockaddr* serv_addr, socklen_t addrlen);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>第一步：创建套接字（调用socket函数）</p>
+<p>第二步：调用connect函数</p>
+</blockquote>
+<h3 id="客户端"><a href="#客户端" class="headerlink" title="客户端"></a>客户端</h3><pre class="line-numbers language-C" data-language="C"><code class="language-C">#include &quot;SC.h&quot;
+
+int main(int argc, char* argv[])
+&#123;
+    int sock;
+    Sockaddr_in serv_addr;
+
+    char message[30];
+    int str_len;
+
+    showHelp(3,argc,&quot;Usage: argv[0] &lt;IP&gt; &lt;port&gt;\n&quot;);
+
+    sock &#x3D; socket(PF_INET,SOCK_STREAM,0);
+    if(sock &#x3D;&#x3D; -1)&#123;
+        showError(&quot;socket() Error&quot;);
+    &#125;
+
+    ZeroMem(&amp;serv_addr);
+    serv_addr.sin_family &#x3D; AF_INET;
+    serv_addr.sin_addr.s_addr &#x3D; inet_addr(argv[1]);
+    serv_addr.sin_port &#x3D; htons(atoi(argv[2]));
+
+    if(connect(sock, (Sockaddr*)&amp;serv_addr,sizeof(serv_addr)) &#x3D;&#x3D; -1)&#123;
+    	printf(&quot;%d\n&quot;,errno);
+        showError(&quot;connect() Error&quot;);
+    &#125;
+
+    str_len &#x3D; read(sock,message,sizeof(message) - 1);
+    if(str_len &#x3D;&#x3D; -1)&#123;
+        showError(&quot;read() error&quot;);
+    &#125;
+  
+    printf(&quot;Message from server:&gt; %s\n&quot;,message);
+
+    close(sock);
+
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>运行</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">gcc -o client client.c SC.c SC.h # 产生客户端的可执行代码<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">gcc -o server server.c SC.c SC.h # 产生服务端的可执行代码<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        然后运行（额，假定你对Linux操作系统是用过的情况下）</p>
+<pre class="line-numbers language-none"><code class="language-none">.&#x2F;server 9190             # 运行在自己家电脑，IP是127.0.0.1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">.&#x2F;client 127.0.0.1 9190 <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20230823081013006.png" alt="image-20230823081013006"></p>
+<h3 id="Windows实现"><a href="#Windows实现" class="headerlink" title="Windows实现"></a>Windows实现</h3><p>​        在Windows底下，我们同样可以干这样的事情。这里未来方便于网络而不是环境配置，我们使用VS</p>
+<p>​        不过首先，我们需要链接ws2_32.lib（项目-&gt;属性-&gt;链接器-&gt;输入-&gt;附加依赖项）</p>
+<p>​        先来就是初始化相关的库——</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;winsock2.h&gt;
+
+int WSAStartup(WORD wVersionRequested, LPWSADATA lpWSAData);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>第一个参数：Winsock的版本（高情商：兼容）</p>
+<p>第二个参数：WSADATA这个结构体的地址（相信我，Windows喜欢通过传参数的方式初始化，这是为了可以返回状态而设置的！）</p>
+</blockquote>
+<p>​        设置版本是使用一个十六位数实现的。咋搞呢？举个例子</p>
+<p>​        我现在的函数有主版本和副版本之称：Winsock 1.1和Winsock 2.1之类的。那么，我就用低8位表达主版本，高8位表达副版本。 那： <code>v</code>$1.2$  $\leftrightarrow$ $0x0201$</p>
+<p>​        啥？别自己手写了</p>
+<pre class="line-numbers language-none"><code class="language-none">MAKEWORD(1, 2) -&gt; 0x0201
+MAKEWORD(2, 2) -&gt; 0x0202<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        同理：我们来看看Windows 的</p>
+<h3 id="服务器端-1"><a href="#服务器端-1" class="headerlink" title="服务器端"></a>服务器端</h3><pre class="line-numbers language-C" data-language="C"><code class="language-C">#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;winsock2.h&gt;
+
+void ErrorHandling(const char* msg);
+
+int main(int argc, char* argv[])
+&#123;
+	WSADATA wsadata;
+	SOCKET hServSock, hClntSock;
+	SOCKADDR_IN servAddr, clntAddr;
+
+	int szClntAddr;
+	char message[] &#x3D; &quot;HelloWorld\n&quot;;
+	if (argc !&#x3D; 2) &#123;
+		printf(&quot;Usage : %s &lt;port&gt;\n&quot;, argv[0]);
+		exit(1);
+	&#125;
+
+	if (WSAStartup(MAKEWORD(2, 2), &amp;wsadata) !&#x3D; 0)
+		ErrorHandling(&quot;WSAStartUp Error&quot;);
+
+	hServSock &#x3D; socket(PF_INET, SOCK_STREAM, 0);
+
+	if (hServSock &#x3D;&#x3D; INVALID_SOCKET)
+		ErrorHandling(&quot;socket error&quot;);
+
+	memset(&amp;servAddr, 0, sizeof(servAddr));
+	servAddr.sin_family &#x3D; AF_INET;
+	servAddr.sin_addr.s_addr&#x3D;htonl(INADDR_ANY);
+	servAddr.sin_port &#x3D; htons(atoi(argv[1]));
+
+	if (bind(hServSock, (SOCKADDR*)&amp;servAddr, sizeof(servAddr)) &#x3D;&#x3D; SOCKET_ERROR)
+		ErrorHandling(&quot;bind error&quot;);
+
+	if (listen(hServSock, 5) &#x3D;&#x3D; SOCKET_ERROR)
+		ErrorHandling(&quot;listen error&quot;);
+
+	szClntAddr &#x3D; sizeof(clntAddr);
+	hClntSock &#x3D; accept(hServSock, (SOCKADDR*)&amp;clntAddr, &amp;szClntAddr);
+
+	if (hClntSock &#x3D;&#x3D; INVALID_SOCKET)
+		ErrorHandling(&quot;accept error&quot;);
+
+	send(hClntSock, message, sizeof(message), 0);
+
+	closesocket(hClntSock);
+	closesocket(hServSock);
+
+	WSACleanup();
+	return 0;
+&#125;
+
+void ErrorHandling(const char* msg)
+&#123;
+	fputs(msg, stderr);
+	fputc(&#39;\n&#39;, stderr);
+	exit(1);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="客户端-1"><a href="#客户端-1" class="headerlink" title="客户端"></a>客户端</h3><pre class="line-numbers language-C" data-language="C"><code class="language-C">#define _WINSOCK_DEPRECATED_NO_WARNINGS 1
+#include &lt;stdio.h&gt;
+#include &lt;stdlib.h&gt;
+#include &lt;winsock2.h&gt;
+
+void ErrorHandling(const char *message);
+
+int main(int argc, char* argv[])
+&#123;
+	WSADATA wsaData;
+	SOCKET hSocket;
+	SOCKADDR_IN servAddr;
+	char message[30];
+	int strLen &#x3D; 0;
+	int idx &#x3D; 0, readLen &#x3D; 0;
+
+	if (argc !&#x3D; 3)
+	&#123;
+		printf(&quot;Usage : %s &lt;IP&gt; &lt;port&gt;\n&quot;, argv[0]);
+		exit(1);
+	&#125;
+
+	if (WSAStartup(MAKEWORD(2, 2), &amp;wsaData) !&#x3D; 0)
+	&#123;
+		printf(&quot;%d\n&quot;,GetLastError());
+		ErrorHandling(&quot;WSAStartup() error!&quot;);
+	&#125;
+
+	hSocket &#x3D; socket(PF_INET, SOCK_STREAM, 0);
+	if (hSocket &#x3D;&#x3D; INVALID_SOCKET) 
+		ErrorHandling(&quot;socket() error!&quot;);
+	
+	memset(&amp;servAddr, 0, sizeof(servAddr));
+
+	servAddr.sin_family &#x3D; AF_INET;
+	servAddr.sin_addr.s_addr &#x3D; inet_addr(argv[1]); &#x2F;&#x2F; IP address
+	servAddr.sin_port &#x3D; htons(atoi(argv[2])); &#x2F;&#x2F; port
+
+	if (connect(hSocket, (SOCKADDR*)&amp;servAddr, sizeof(servAddr)) &#x3D;&#x3D; SOCKET_ERROR)
+		ErrorHandling(&quot;connect() error!&quot;);
+	else
+		puts(&quot;Connected...........&quot;);
+
+	while (readLen &#x3D; recv(hSocket, &amp;message[idx++], 1, 0))
+	&#123;
+		if (readLen &#x3D;&#x3D; -1)
+			ErrorHandling(&quot;read() error!&quot;);
+
+		strLen +&#x3D; readLen;
+	&#125;
+
+	printf(&quot;Message from server: %s \n&quot;, message);
+	printf(&quot;Function read call count: %d \n&quot;, strLen);
+	
+	closesocket(hSocket);
+	WSACleanup();
+	return 0;
+
+&#125;
+
+void ErrorHandling(const char* message)
+&#123;
+	fputs(message, stderr);
+	fputc(&#39;\n&#39;, stderr);
+	exit(1);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="套接字类型和协议设置"><a href="#套接字类型和协议设置" class="headerlink" title="套接字类型和协议设置"></a>套接字类型和协议设置</h1><h2 id="啥是协议"><a href="#啥是协议" class="headerlink" title="啥是协议"></a>啥是协议</h2><p>​        你用你的语法说，我用我的语法说，两个人互相听不懂对方说什么，这不无效沟通吗？是的，这玩意的出现就是为了规范通信。</p>
+<h2 id="socket函数"><a href="#socket函数" class="headerlink" title="socket函数"></a>socket函数</h2><p>​        回忆下我们刚刚体验过的socket函数。。。啥，不记得了？这里：</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;sys&#x2F;socket.h&gt;
+
+int scoket(int domain, int type, int protocol);		<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        我们第一个参数，就是说的用的什么套接字类型，你可以翻看一下sys/socket.h提供的接口</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;* Protocol families.  *&#x2F;
+#define PF_UNSPEC	0	&#x2F;* Unspecified.  *&#x2F;
+#define PF_LOCAL	1	&#x2F;* Local to host (pipes and file-domain).  *&#x2F;
+#define PF_UNIX		PF_LOCAL &#x2F;* POSIX name for PF_LOCAL.  *&#x2F;
+#define PF_FILE		PF_LOCAL &#x2F;* Another non-standard name for PF_LOCAL.  *&#x2F;
+#define PF_INET		2	&#x2F;* IP protocol family.  *&#x2F;
+#define PF_AX25		3	&#x2F;* Amateur Radio AX.25.  *&#x2F;
+#define PF_IPX		4	&#x2F;* Novell Internet Protocol.  *&#x2F;
+#define PF_APPLETALK	5	&#x2F;* Appletalk DDP.  *&#x2F;
+#define PF_NETROM	6	&#x2F;* Amateur radio NetROM.  *&#x2F;
+#define PF_BRIDGE	7	&#x2F;* Multiprotocol bridge.  *&#x2F;
+#define PF_ATMPVC	8	&#x2F;* ATM PVCs.  *&#x2F;
+#define PF_X25		9	&#x2F;* Reserved for X.25 project.  *&#x2F;
+#define PF_INET6	10	&#x2F;* IP version 6.  *&#x2F;
+#define PF_ROSE		11	&#x2F;* Amateur Radio X.25 PLP.  *&#x2F;
+#define PF_DECnet	12	&#x2F;* Reserved for DECnet project.  *&#x2F;
+#define PF_NETBEUI	13	&#x2F;* Reserved for 802.2LLC project.  *&#x2F;
+#define PF_SECURITY	14	&#x2F;* Security callback pseudo AF.  *&#x2F;
+#define PF_KEY		15	&#x2F;* PF_KEY key management API.  *&#x2F;
+#define PF_NETLINK	16
+#define PF_ROUTE	PF_NETLINK &#x2F;* Alias to emulate 4.4BSD.  *&#x2F;
+#define PF_PACKET	17	&#x2F;* Packet family.  *&#x2F;
+#define PF_ASH		18	&#x2F;* Ash.  *&#x2F;
+#define PF_ECONET	19	&#x2F;* Acorn Econet.  *&#x2F;
+#define PF_ATMSVC	20	&#x2F;* ATM SVCs.  *&#x2F;
+#define PF_RDS		21	&#x2F;* RDS sockets.  *&#x2F;
+#define PF_SNA		22	&#x2F;* Linux SNA Project *&#x2F;
+#define PF_IRDA		23	&#x2F;* IRDA sockets.  *&#x2F;
+#define PF_PPPOX	24	&#x2F;* PPPoX sockets.  *&#x2F;
+#define PF_WANPIPE	25	&#x2F;* Wanpipe API sockets.  *&#x2F;
+#define PF_LLC		26	&#x2F;* Linux LLC.  *&#x2F;
+#define PF_IB		27	&#x2F;* Native InfiniBand address.  *&#x2F;
+#define PF_MPLS		28	&#x2F;* MPLS.  *&#x2F;
+#define PF_CAN		29	&#x2F;* Controller Area Network.  *&#x2F;
+#define PF_TIPC		30	&#x2F;* TIPC sockets.  *&#x2F;
+#define PF_BLUETOOTH	31	&#x2F;* Bluetooth sockets.  *&#x2F;
+#define PF_IUCV		32	&#x2F;* IUCV sockets.  *&#x2F;
+#define PF_RXRPC	33	&#x2F;* RxRPC sockets.  *&#x2F;
+#define PF_ISDN		34	&#x2F;* mISDN sockets.  *&#x2F;
+#define PF_PHONET	35	&#x2F;* Phonet sockets.  *&#x2F;
+#define PF_IEEE802154	36	&#x2F;* IEEE 802.15.4 sockets.  *&#x2F;
+#define PF_CAIF		37	&#x2F;* CAIF sockets.  *&#x2F;
+#define PF_ALG		38	&#x2F;* Algorithm sockets.  *&#x2F;
+#define PF_NFC		39	&#x2F;* NFC sockets.  *&#x2F;
+#define PF_VSOCK	40	&#x2F;* vSockets.  *&#x2F;
+#define PF_KCM		41	&#x2F;* Kernel Connection Multiplexor.  *&#x2F;
+#define PF_QIPCRTR	42	&#x2F;* Qualcomm IPC Router.  *&#x2F;
+#define PF_SMC		43	&#x2F;* SMC sockets.  *&#x2F;
+#define PF_XDP		44	&#x2F;* XDP sockets.  *&#x2F;
+#define PF_MAX		45	&#x2F;* For now..  *&#x2F;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我去，这可太多了，我们现在，主要聚焦在如下的几个协议族</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>名称</th>
+<th>协议族</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>PF_INET</code></td>
+<td>IPv4互联网协议族</td>
+</tr>
+<tr>
+<td><code>PF_INET6</code></td>
+<td>IPv6互联网协议族</td>
+</tr>
+<tr>
+<td><code>PF_LOCAL</code></td>
+<td>本地通信的互联网协议族</td>
+</tr>
+<tr>
+<td><code>PF_PACKET</code></td>
+<td>底层套接字的协议族</td>
+</tr>
+<tr>
+<td><code>PF_IPX</code></td>
+<td>IPX Novell协议族</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>​        那为什么还要有第二个参数呢？答案很简单，就算是我们选定了协议族，其内部还是有很多其他的数据通信方式。我们怎么传？是安全优先还是速度优先呢？</p>
+<pre class="line-numbers language-none"><code class="language-none">enum __socket_type
+&#123;
+  SOCK_STREAM &#x3D; 1,		&#x2F;* Sequenced, reliable, connection-based
+				   byte streams.  *&#x2F;
+#define SOCK_STREAM SOCK_STREAM
+  SOCK_DGRAM &#x3D; 2,		&#x2F;* Connectionless, unreliable datagrams
+				   of fixed maximum length.  *&#x2F;
+#define SOCK_DGRAM SOCK_DGRAM
+  SOCK_RAW &#x3D; 3,			&#x2F;* Raw protocol interface.  *&#x2F;
+#define SOCK_RAW SOCK_RAW
+  SOCK_RDM &#x3D; 4,			&#x2F;* Reliably-delivered messages.  *&#x2F;
+#define SOCK_RDM SOCK_RDM
+  SOCK_SEQPACKET &#x3D; 5,		&#x2F;* Sequenced, reliable, connection-based,
+				   datagrams of fixed maximum length.  *&#x2F;
+#define SOCK_SEQPACKET SOCK_SEQPACKET
+  SOCK_DCCP &#x3D; 6,		&#x2F;* Datagram Congestion Control Protocol.  *&#x2F;
+#define SOCK_DCCP SOCK_DCCP
+  SOCK_PACKET &#x3D; 10,		&#x2F;* Linux specific way of getting packets
+				   at the dev level.  For writing rarp and
+				   other similar things on the user level. *&#x2F;
+#define SOCK_PACKET SOCK_PACKET
+
+  &#x2F;* Flags to be ORed into the type parameter of socket and socketpair and
+     used for the flags parameter of paccept.  *&#x2F;
+
+  SOCK_CLOEXEC &#x3D; 02000000,	&#x2F;* Atomically set close-on-exec flag for the
+				   new descriptor(s).  *&#x2F;
+#define SOCK_CLOEXEC SOCK_CLOEXEC
+  SOCK_NONBLOCK &#x3D; 00004000	&#x2F;* Atomically mark descriptor(s) as
+				   non-blocking.  *&#x2F;
+#define SOCK_NONBLOCK SOCK_NONBLOCK
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="SOCK-STREAM：面向链接的套接字"><a href="#SOCK-STREAM：面向链接的套接字" class="headerlink" title="SOCK_STREAM：面向链接的套接字"></a>SOCK_STREAM：面向链接的套接字</h3><ul>
+<li>这个传输过程中的数据不会消失，</li>
+<li>并且，会按照顺序依次传输数据，</li>
+<li>传输的数据不会存在数据的边界</li>
+</ul>
+<h3 id="SOCK-DGRAM"><a href="#SOCK-DGRAM" class="headerlink" title="SOCK_DGRAM"></a>SOCK_DGRAM</h3><ul>
+<li>强调快速传输而不是顺序传输</li>
+<li>传输的数据可能丢失</li>
+<li>传输的数据是有边界的</li>
+<li>限制每次传输的数据大小</li>
+</ul>
+<h3 id="第三个参数…"><a href="#第三个参数…" class="headerlink" title="第三个参数…"></a>第三个参数…</h3><p>​        我们还会需要第三个参数，为什么呢？</p>
+<blockquote>
+<p>遇到了同一协议族下多个数据传输方式相同的协议</p>
+</blockquote>
+<p>​        这个时候，第三个参数就可以用来指定特定的一个——不过大可以放心，一般用不到，我们会置成0</p>
+<p>​        我们使用TCP来做个例子</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">#include &quot;SC.h&quot;
+
+int main(int argc, char* argv[])
+&#123;
+    int sock;
+    Sockaddr_in serv_addr;
+
+    char message[30];
+    int str_len &#x3D; 0;
+    int idx &#x3D; 0, read_len &#x3D; 0;
+
+    showHelp(3,argc,&quot;Usage: argv[0] &lt;IP&gt; &lt;port&gt;\n&quot;);
+
+    sock &#x3D; socket(PF_INET,SOCK_STREAM,0);
+    if(sock &#x3D;&#x3D; -1)&#123;
+        showError(&quot;socket() Error&quot;);
+    &#125;
+
+    ZeroMem(&amp;serv_addr);
+    serv_addr.sin_family &#x3D; AF_INET;
+    serv_addr.sin_addr.s_addr &#x3D; inet_addr(argv[1]);
+    serv_addr.sin_port &#x3D; htons(atoi(argv[2]));
+
+    if(connect(sock, (Sockaddr*)&amp;serv_addr,sizeof(serv_addr)) &#x3D;&#x3D; -1)&#123;
+    	printf(&quot;%d\n&quot;,errno);
+        showError(&quot;connect() Error&quot;);
+    &#125;
+
+    &#x2F;&#x2F; MODIFY THIS BLOCK TO THIS in client.c
+    while(read_len &#x3D; read(sock, &amp;message[idx++],1))&#123;
+        if(read_len &#x3D;&#x3D; -1)&#123;
+            showError(&quot;read() Error&quot;);
+        &#125;
+
+        str_len +&#x3D; read_len;
+    &#125;
+  
+    printf(&quot;Message from server:&gt; %s\n&quot;,message);
+    printf(&quot;Function read call count: %d\n&quot;,str_len);
+    close(sock);
+
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        只需要调整一下</p>
+<h1 id="地址组与数据序列"><a href="#地址组与数据序列" class="headerlink" title="地址组与数据序列"></a>地址组与数据序列</h1><h2 id="分配给套接字的IP和端口"><a href="#分配给套接字的IP和端口" class="headerlink" title="分配给套接字的IP和端口"></a>分配给套接字的IP和端口</h2><p>​        IP地址现在分两类：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>IP地址种类</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>IPv4</td>
+<td>4字节地址序列</td>
+</tr>
+<tr>
+<td>IPv6</td>
+<td>16字节地址序列</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>只需通过IP地址的第一个字节可判断网络地址占用的字节数，因为我们根据IP地址的边界区分网络地址：</p>
+<blockquote>
+<p>A类地址的首字节范围：0-127<br>B类地址的首字节范围：128-191<br>C类地址的首字节范围：192-223</p>
+</blockquote>
+<p>还有以下表述方式：</p>
+<blockquote>
+<p>A类地址的首位以0开始<br>B类地址的前2位以10开始<br>C类地址的前3位以110开始</p>
+</blockquote>
+<p>​        简单的说:IPv4地址是由两个部分构成的</p>
+<p>​        网络号码字段（Net-id）：IP 地址的网络号码字段用来标识一个网络，网络号码字段的前几位用来区分 IP 地址的类型。</p>
+<p>​        主机号码字段（Host-id）：主机号码字段用来区分一个网络内的不同主机。对于网络号相同的设备，无论实际所处的物理位置如何，它们都是处在同一个网络中。</p>
+<pre><code>   IP用于区分计算机，只要有IP地址就能向目标主机传输数据，但仅凭这些无法传输给最终的应用程序。如网上看视频的同时网上聊天，这时至少需要1个接收视频数据的套接字和一个接收聊天信息的套接字。如何区分这些套接字呢？
+   计算机中一般有网络接口卡数据传输设备，通过NIC向计算机内部传输数据时会用到IP。操作系统负责把传递到内部的数据适当分配给套接字，这时就要利用端口号。通过NIC接收的数据内有端口号，操作系统正是参考此端口号把数据传输给相应端口的套接字。
+   端口号就是在同一操作系统内为区分不同套接字而设置的，因此无法将1个端口号分配给不同的套接字。端口号由16位构成，可分配的端口号范围是0-65535。但0-1023是知名端口，一般分配给特定应用程序。虽然端口号不能重复，但TCP套接字和UDP套接字不会共用端口号，所以允许重复。例如：如果某TCP套接字使用9190号端口，则其他TCP套接字就无法使用该端口号，但UDP套接字可以使用。
+   数据传输目标地址同时包含IP地址和端口号。
+</code></pre><h2 id="地址信息表示"><a href="#地址信息表示" class="headerlink" title="地址信息表示"></a>地址信息表示</h2><p>​        好,当你看完上面的一节了,我们就可以产生如下的对话</p>
+<blockquote>
+<p>用啥地址组？</p>
+<p>IPv4的</p>
+<p>IP地址呢</p>
+<p>114.5.1.4</p>
+<p>端口号？</p>
+<p>1919</p>
+</blockquote>
+<p>​        于是，直接用一个结构体，回答上面的所有问题</p>
+<pre class="line-numbers language-none"><code class="language-none">struct sockaddr_in
+  &#123;
+    __SOCKADDR_COMMON (sin_);&#x2F;&#x2F; 本质上是 sa_family_t sin_family
+    in_port_t sin_port;			&#x2F;* Port number.  *&#x2F;
+    struct in_addr sin_addr;		&#x2F;* Internet address.  *&#x2F;
+
+    &#x2F;* Pad to size of &#96;struct sockaddr&#39;.  *&#x2F;
+    unsigned char sin_zero[sizeof (struct sockaddr)
+			   - __SOCKADDR_COMMON_SIZE
+			   - sizeof (in_port_t)
+			   - sizeof (struct in_addr)];
+  &#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        哦对了，这个</p>
+<pre class="line-numbers language-none"><code class="language-none">struct in_addr sin_addr;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        是对IP地址的封装，其实他是</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;* Internet address.  *&#x2F;
+typedef uint32_t in_addr_t;
+struct in_addr
+  &#123;
+    in_addr_t s_addr;
+  &#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>TIPS: 在Linux（倒不如说是POSIX）下，系统定义的数据类型会在后面加上一个_t表示系统定义的</p>
+</blockquote>
+<h3 id="sin-family"><a href="#sin-family" class="headerlink" title="sin_family"></a>sin_family</h3><pre class="line-numbers language-none"><code class="language-none">&#x2F;* Address families.  *&#x2F;
+#define AF_UNSPEC	PF_UNSPEC
+#define AF_LOCAL	PF_LOCAL
+#define AF_UNIX		PF_UNIX
+#define AF_FILE		PF_FILE
+#define AF_INET		PF_INET
+#define AF_AX25		PF_AX25
+#define AF_IPX		PF_IPX
+#define AF_APPLETALK	PF_APPLETALK
+#define AF_NETROM	PF_NETROM
+#define AF_BRIDGE	PF_BRIDGE
+#define AF_ATMPVC	PF_ATMPVC
+#define AF_X25		PF_X25
+#define AF_INET6	PF_INET6
+#define AF_ROSE		PF_ROSE
+#define AF_DECnet	PF_DECnet
+#define AF_NETBEUI	PF_NETBEUI
+#define AF_SECURITY	PF_SECURITY
+#define AF_KEY		PF_KEY
+#define AF_NETLINK	PF_NETLINK
+#define AF_ROUTE	PF_ROUTE
+#define AF_PACKET	PF_PACKET
+#define AF_ASH		PF_ASH
+#define AF_ECONET	PF_ECONET
+#define AF_ATMSVC	PF_ATMSVC
+#define AF_RDS		PF_RDS
+#define AF_SNA		PF_SNA
+#define AF_IRDA		PF_IRDA
+#define AF_PPPOX	PF_PPPOX
+#define AF_WANPIPE	PF_WANPIPE
+#define AF_LLC		PF_LLC
+#define AF_IB		PF_IB
+#define AF_MPLS		PF_MPLS
+#define AF_CAN		PF_CAN
+#define AF_TIPC		PF_TIPC
+#define AF_BLUETOOTH	PF_BLUETOOTH
+#define AF_IUCV		PF_IUCV
+#define AF_RXRPC	PF_RXRPC
+#define AF_ISDN		PF_ISDN
+#define AF_PHONET	PF_PHONET
+#define AF_IEEE802154	PF_IEEE802154
+#define AF_CAIF		PF_CAIF
+#define AF_ALG		PF_ALG
+#define AF_NFC		PF_NFC
+#define AF_VSOCK	PF_VSOCK
+#define AF_KCM		PF_KCM
+#define AF_QIPCRTR	PF_QIPCRTR
+#define AF_SMC		PF_SMC
+#define AF_XDP		PF_XDP
+#define AF_MAX		PF_MAX<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这是在Linux下定义的，当然，我们常常使用的：就是下面三个</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>地址组<code>(Address Family) AF</code></th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>AF_INET</code></td>
+<td>IPv4地址组</td>
+</tr>
+<tr>
+<td><code>AF_INET6</code></td>
+<td>IPv6地址组</td>
+</tr>
+<tr>
+<td><code>AF_LOCAL</code></td>
+<td>本地通信采用的UNIX协议地址组</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="sin-port"><a href="#sin-port" class="headerlink" title="sin_port"></a>sin_port</h3><p>​        保存16位端口</p>
+<h3 id="sin-addr"><a href="#sin-addr" class="headerlink" title="sin_addr"></a>sin_addr</h3><p>​        保存32位IP地址信息</p>
+<h3 id="sin-zero"><a href="#sin-zero" class="headerlink" title="sin_zero"></a>sin_zero</h3><p>​        为了跟sockaddr结构体保持一致，必须填充0</p>
+<h2 id="网络字节序和地址变换"><a href="#网络字节序和地址变换" class="headerlink" title="网络字节序和地址变换"></a>网络字节序和地址变换</h2><p>​        CPU向内存保存数据的方式有两种：</p>
+<ul>
+<li>大端序：高位字节放到低位去</li>
+<li>小端序：低位字节放到高位去</li>
+</ul>
+<p><img src="image-20230823093636718.png" alt="image-20230823093636718"></p>
+<p>​        那么，我们就必须考虑传输数据的时候双方存储方式不一致的问题（解析数据可能会出错），解决的办法也是出乎意料的简单——规定传输的是大端序。</p>
+<p>​        我们无论如何，都会把数据处理成大端序格式存储的，在进行传输——很简单吧（喜）</p>
+<ul>
+<li><p>uint32_t htonl(uint32_t hostlong);</p>
+</li>
+<li><p>uint16_t htons(uint16_t hostshort);</p>
+</li>
+<li><p>uint32_t ntohl(uint32_t netlong);</p>
+</li>
+<li><p>uint16_t ntohs(uint16_t netshort);</p>
+</li>
+</ul>
+<p>​        h表示host，指小端，n表示network指大端，l表示32位长整数，s表示16位短整数。<br>​        举个例子：ntohs的意思就是吧short字节（s）从网络字节序（n）转换成主机字节序（h）</p>
+<p>​        来个实操</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;stdio.h&gt;
+#include &lt;arpa&#x2F;inet.h&gt;
+
+int main(int argc, char* argv[])
+&#123;
+    unsigned short host_port &#x3D; 0x1234;
+    unsigned short net_port;
+    unsigned long host_addr &#x3D; 0x12345678;
+    unsigned long net_addr;
+
+    net_port &#x3D; htons(host_port);
+    net_addr &#x3D; htonl(host_addr);
+
+    printf(&quot;Host ordered port:&gt; %#x\n&quot;, host_port);
+    printf(&quot;Network ordered port: %#x\n&quot;, net_port);
+    printf(&quot;Host ordered address:&gt; %#lx\n&quot;, host_addr);
+    printf(&quot;Network ordered address: %#lx\n&quot;, net_addr);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230823094810009.png" alt="image-20230823094810009"></p>
+<h2 id="网络地址的初始化与分配"><a href="#网络地址的初始化与分配" class="headerlink" title="网络地址的初始化与分配"></a>网络地址的初始化与分配</h2><p>​        我们这里介绍一些接口，可以讲字符串格式的IP地址转化成整数类型的。</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;arpa&#x2F;inet.h&gt;
+
+in_addr_t inet_addr(const char* string);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        这个函数转化成功就会返回转化成功后的数字，否则返回<code>INADDR_NONE</code></p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;stdio.h&gt;
+#include &lt;arpa&#x2F;inet.h&gt;
+#include &quot;SC.h&quot;
+int main(int argc, char* argv[])
+&#123;
+    showHelp(argc,2,&quot;USAGE: .&#x2F;file IP&quot;);
+
+    unsigned long conv_addr &#x3D; inet_addr(argv[1]);
+    if(conv_addr &#x3D;&#x3D; INADDR_NONE)&#123;
+        showError(&quot;Can not transform, IP address might be invalid anyhow!&quot;);
+    &#125;
+    else&#123;
+        printf(&quot;From string type:&gt; %s To network ordered integer addr: %#lx \n&quot;,argv[1],conv_addr);
+    &#125;
+
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230823095718064.png" alt="image-20230823095718064"></p>
+<p>​        当然，我们更加经常使用的是inet_aton，这是因为我们常常会使用sockaddr_in这个结构体，这个函数会自动的吧结果填入到结构体当中！简单而不复杂</p>
+<p>​        当然也可以倒过来</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;arpa&#x2F;inet.h&gt;
+
+char* inet_ntoa(struct in_addr adr);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">#include &quot;SC.h&quot;
+
+int main()
+&#123;
+    Sockaddr_in addr1, addr2;
+    char* pStr;
+    char str[20];
+
+    addr1.sin_addr.s_addr &#x3D; htonl(0x1020304);
+    addr2.sin_addr.s_addr &#x3D; htonl(0x1010101);
+
+    pStr &#x3D; inet_ntoa(addr1.sin_addr);
+    strcpy(str,pStr);
+
+    printf(&quot;Dotted-Demical notation1:&gt;%s\n&quot;,pStr);
+
+    inet_ntoa(addr2.sin_addr);
+    printf(&quot;Dotted-Demical notation2:&gt;%s\n&quot;,pStr);
+    printf(&quot;Dotted-Demical notation3:&gt;%s\n&quot;,str);
+
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20230823101239747.png" alt="image-20230823101239747"></p>
+<h2 id="网络地址初始化"><a href="#网络地址初始化" class="headerlink" title="网络地址初始化"></a>网络地址初始化</h2><p>结合前面的内容，介绍套接字创建过程中，常见的网络信息初始化方法：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">sockaddr_in</span> addr<span class="token punctuation">;</span>
+<span class="token keyword">char</span> <span class="token operator">*</span>serv_ip <span class="token operator">=</span> <span class="token string">"211.217,168.13"</span><span class="token punctuation">;</span>          <span class="token comment">//声明IP地址族</span>
+<span class="token keyword">char</span> <span class="token operator">*</span>serv_port <span class="token operator">=</span> <span class="token string">"9190"</span><span class="token punctuation">;</span>                  <span class="token comment">//声明端口号字符串</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>addr<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>addr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>            <span class="token comment">//结构体变量 addr 的所有成员初始化为0</span>
+addr<span class="token punctuation">.</span>sin_family <span class="token operator">=</span> AF_INET<span class="token punctuation">;</span>                 <span class="token comment">//制定地址族</span>
+addr<span class="token punctuation">.</span>sin_addr<span class="token punctuation">.</span>s_addr <span class="token operator">=</span> <span class="token function">inet_addr</span><span class="token punctuation">(</span>serv_ip<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">//基于字符串的IP地址初始化</span>
+addr<span class="token punctuation">.</span>sin_port <span class="token operator">=</span> <span class="token function">htons</span><span class="token punctuation">(</span><span class="token function">atoi</span><span class="token punctuation">(</span>serv_port<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">//基于字符串的IP地址端口号初始化</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="INADDR-ANY"><a href="#INADDR-ANY" class="headerlink" title="INADDR_ANY"></a>INADDR_ANY</h3><p>每次创建服务器端套接字都要输入IP地址会有些繁琐，此时可如下初始化地址信息：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">struct</span> <span class="token class-name">sockaddr_in</span> addr<span class="token punctuation">;</span>
+<span class="token keyword">char</span> <span class="token operator">*</span> serv_port <span class="token operator">=</span> <span class="token string">"9190"</span><span class="token punctuation">;</span>
+<span class="token function">memset</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>addr<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span>addr<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+addr<span class="token punctuation">.</span>sin_family <span class="token operator">=</span> AF_INET<span class="token punctuation">;</span>
+add<span class="token punctuation">.</span>sin_addr<span class="token punctuation">.</span>s_addr <span class="token operator">=</span> <span class="token function">htonl</span><span class="token punctuation">(</span>INADDR_ANY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+addr<span class="token punctuation">.</span>sin_port <span class="token operator">=</span> <span class="token function">htons</span><span class="token punctuation">(</span><span class="token function">atoi</span><span class="token punctuation">(</span>serv_port<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>与之前方式的区别</strong></p>
+<blockquote>
+<p>与之前方式最大的区别在于，利用常数INADDR_ANY分配服务器端的IP地址。<br>——若采用这种方式，则可自动获取运行服务器端的计算机IP地址，不必亲自输入。<br>——而且，若同一计算机中已分配多个IP地址(多宿主(Multi-homed)计算机，一般路由器属于这一类)，则只要端口号一致，就可以从不同IP地址接收数据。<br>因此，服务器端中优先考虑这种方式。而客户端中除非带有一部分服务器端功能，否则不会采用。</p>
+</blockquote>
+<p><strong>创建服务器端套接字时需要IP地址的原因</strong></p>
+<blockquote>
+<p><strong>问题：</strong> 初始化服务器端套接字时应分配所属计算机的IP地址，因为初始化时使用的IP地址非常明确，那为何还要进行IP初始化呢？<br><strong>答案：</strong> 同一计算机中可以分配多个IP地址，实际IP地址的个数与计算机中安装的NIC的数量相等。即使是服务器端套接字，也需要决定应接收哪个IP地址传来的(哪个NIC传来的)数据。因此，服务器端套接字初始化过程中要求IP地址信息。另外，若只有一个NIC，则直接使用INADDR_ANY。</p>
+</blockquote>
+<h2 id="Windows实现-1"><a href="#Windows实现-1" class="headerlink" title="Windows实现"></a>Windows实现</h2><pre class="line-numbers language-none"><code class="language-none">#include &lt;stdio.h&gt;
+#include &lt;winsock2.h&gt;
+
+void ErrorHandling(char *message);
+
+int main(int agrc, char* agrv[])
+&#123;
+	WSADATA wsaData;
+
+	unsigned short host_port &#x3D; 0x1234;
+	unsigned short net_port;
+	unsigned long host_addr &#x3D; 0x12345678;
+	unsigned long net_addr;
+	
+	if(WSAStartup(MAKEWORD(2,2),&amp;wsaData) !&#x3D; 0)
+		ErrorHandling(&quot;WSAStartup() error!&quot;);
+
+	net_port &#x3D; htons(host_port);
+	net_addr &#x3D; htonl(host_addr);
+
+	printf(&quot;Host ordered port: %#x \n&quot;, host_port);
+	printf(&quot;Network ordered port: %#x \n&quot;, net_port);
+	printf(&quot;Host ordered address: %#lx \n&quot;, host_addr);
+	printf(&quot;Network ordered address: %#lx \n&quot;, net_addr);
+
+	WSACleanup();
+	return 0;
+
+&#125;
+
+void ErrorHandling(char *message)
+&#123;
+	fputs(message, stderr);
+	fputc(&#39;\n&#39;, stderr);
+	exit(1);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">#define _WINSOCK_DEPRECATED_NO_WARNINGS 1
+#define _CRT_SECURE_NO_WARNINGS 1
+#include&lt;stdio.h&gt;
+#include&lt;winsock2.h&gt;
+
+int main(int argc, char* argv[])
+&#123;
+	WSADATA wsaData;
+	if(WSAStartup(MAKEWORD(2,2),&amp;wsaData)!&#x3D;0)
+	&#123;
+		printf(&quot;WSAStartup failed\n&quot;);
+		return 1;
+	&#125;
+
+	&#123;
+		char* addr &#x3D; &quot;127.212.124.78&quot;;
+		unsigned long conv_addr &#x3D; inet_addr(addr);
+		if(conv_addr &#x3D;&#x3D; INADDR_NONE)
+			printf(&quot;Error occured! \n&quot;);
+		else
+			printf(&quot;Network ordered integer addr: %#lx \n&quot;,conv_addr);
+	&#125;
+
+
+	&#123;
+		struct sockaddr_in addr;
+		char* strPtr;
+		char strArr[20];
+
+		addr.sin_addr.s_addr &#x3D; htonl(0x1020304);
+		strPtr &#x3D; inet_ntoa(addr.sin_addr);
+		strcpy(strArr,strPtr);
+
+		printf(&quot;Dotted-Decimal notation3 %s \n&quot;,strArr);
+	&#125;
+
+	WSACleanup();
+	return 0;
+
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/">http://charliechen114514.github.io/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Windows-32API/">Windows 32API</a><a class="post-meta__tags" href="/tags/C-C-Linux/">C/C++. Linux</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2023/08/22/Effective-Modern-C-1-auto-And-template/" title="Effective Modern C++ 1: auto And template"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Effective Modern C++ 1: auto And template</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/06/06/Learn-Windows-API-Semester-I/" title="Learn_Windows_API-Semester-I"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-06-06</div><div class="title">Learn_Windows_API-Semester-I</div></div></a></div><div><a href="/2023/08/15/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E5%AF%BC%E8%AE%BA/" title="Linux漫游——导论"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-15</div><div class="title">Linux漫游——导论</div></div></a></div><div><a href="/2023/08/16/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" title="Linux漫游——系统调用"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-16</div><div class="title">Linux漫游——系统调用</div></div></a></div><div><a href="/2023/08/17/Unix-network-programming-Guidance/" title="Unix网络编程 - 1"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">Unix网络编程 - 1</div></div></a></div><div><a href="/2023/08/19/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6IO%E6%93%8D%E4%BD%9C/" title="Linux漫游——文件IO操作"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-19</div><div class="title">Linux漫游——文件IO操作</div></div></a></div><div><a href="/2023/08/20/%E5%B5%8C%E5%85%A5%E5%BC%8FC%E4%BF%AE%E5%85%BB%E2%80%94%E2%80%94%E5%89%8D%E5%AF%BC/" title="嵌入式C修养——前导"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-20</div><div class="title">嵌入式C修养——前导</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">31</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">21</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#1-%E7%90%86%E8%A7%A3%E7%BD%91%E7%BB%9C%E5%92%8C%E5%A5%97%E6%8E%A5%E5%AD%97"><span class="toc-number">1.</span> <span class="toc-text">1. 理解网络和套接字</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%81%E7%A8%8B"><span class="toc-number">1.1.</span> <span class="toc-text">流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SC-c"><span class="toc-number">1.1.1.</span> <span class="toc-text">SC.c</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Sc-h"><span class="toc-number">1.1.2.</span> <span class="toc-text">Sc.h</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF"><span class="toc-number">1.1.3.</span> <span class="toc-text">服务器端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF"><span class="toc-number">1.1.4.</span> <span class="toc-text">客户端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Windows%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.5.</span> <span class="toc-text">Windows实现</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%AB%AF-1"><span class="toc-number">1.1.6.</span> <span class="toc-text">服务器端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF-1"><span class="toc-number">1.1.7.</span> <span class="toc-text">客户端</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A5%97%E6%8E%A5%E5%AD%97%E7%B1%BB%E5%9E%8B%E5%92%8C%E5%8D%8F%E8%AE%AE%E8%AE%BE%E7%BD%AE"><span class="toc-number">2.</span> <span class="toc-text">套接字类型和协议设置</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%95%A5%E6%98%AF%E5%8D%8F%E8%AE%AE"><span class="toc-number">2.1.</span> <span class="toc-text">啥是协议</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#socket%E5%87%BD%E6%95%B0"><span class="toc-number">2.2.</span> <span class="toc-text">socket函数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SOCK-STREAM%EF%BC%9A%E9%9D%A2%E5%90%91%E9%93%BE%E6%8E%A5%E7%9A%84%E5%A5%97%E6%8E%A5%E5%AD%97"><span class="toc-number">2.2.1.</span> <span class="toc-text">SOCK_STREAM：面向链接的套接字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SOCK-DGRAM"><span class="toc-number">2.2.2.</span> <span class="toc-text">SOCK_DGRAM</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E4%B8%AA%E5%8F%82%E6%95%B0%E2%80%A6"><span class="toc-number">2.2.3.</span> <span class="toc-text">第三个参数…</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%9C%B0%E5%9D%80%E7%BB%84%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%BA%8F%E5%88%97"><span class="toc-number">3.</span> <span class="toc-text">地址组与数据序列</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E9%85%8D%E7%BB%99%E5%A5%97%E6%8E%A5%E5%AD%97%E7%9A%84IP%E5%92%8C%E7%AB%AF%E5%8F%A3"><span class="toc-number">3.1.</span> <span class="toc-text">分配给套接字的IP和端口</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9C%B0%E5%9D%80%E4%BF%A1%E6%81%AF%E8%A1%A8%E7%A4%BA"><span class="toc-number">3.2.</span> <span class="toc-text">地址信息表示</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#sin-family"><span class="toc-number">3.2.1.</span> <span class="toc-text">sin_family</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sin-port"><span class="toc-number">3.2.2.</span> <span class="toc-text">sin_port</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sin-addr"><span class="toc-number">3.2.3.</span> <span class="toc-text">sin_addr</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#sin-zero"><span class="toc-number">3.2.4.</span> <span class="toc-text">sin_zero</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%AD%97%E8%8A%82%E5%BA%8F%E5%92%8C%E5%9C%B0%E5%9D%80%E5%8F%98%E6%8D%A2"><span class="toc-number">3.3.</span> <span class="toc-text">网络字节序和地址变换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9D%80%E7%9A%84%E5%88%9D%E5%A7%8B%E5%8C%96%E4%B8%8E%E5%88%86%E9%85%8D"><span class="toc-number">3.4.</span> <span class="toc-text">网络地址的初始化与分配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E7%BB%9C%E5%9C%B0%E5%9D%80%E5%88%9D%E5%A7%8B%E5%8C%96"><span class="toc-number">3.5.</span> <span class="toc-text">网络地址初始化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#INADDR-ANY"><span class="toc-number">3.5.1.</span> <span class="toc-text">INADDR_ANY</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Windows%E5%AE%9E%E7%8E%B0-1"><span class="toc-number">3.6.</span> <span class="toc-text">Windows实现</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/" title="TCP/IP 网络编程笔记——1，2，3"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TCP/IP 网络编程笔记——1，2，3"/></a><div class="content"><a class="title" href="/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/" title="TCP/IP 网络编程笔记——1，2，3">TCP/IP 网络编程笔记——1，2，3</a><time datetime="2023-08-23T02:37:26.000Z" title="发表于 2023-08-23 10:37:26">2023-08-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/22/Effective-Modern-C-1-auto-And-template/" title="Effective Modern C++ 1: auto And template"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Effective Modern C++ 1: auto And template"/></a><div class="content"><a class="title" href="/2023/08/22/Effective-Modern-C-1-auto-And-template/" title="Effective Modern C++ 1: auto And template">Effective Modern C++ 1: auto And template</a><time datetime="2023-08-22T02:58:43.000Z" title="发表于 2023-08-22 10:58:43">2023-08-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/20/%E5%B5%8C%E5%85%A5%E5%BC%8FC%E4%BF%AE%E5%85%BB%E2%80%94%E2%80%94%E5%89%8D%E5%AF%BC/" title="嵌入式C修养——前导"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="嵌入式C修养——前导"/></a><div class="content"><a class="title" href="/2023/08/20/%E5%B5%8C%E5%85%A5%E5%BC%8FC%E4%BF%AE%E5%85%BB%E2%80%94%E2%80%94%E5%89%8D%E5%AF%BC/" title="嵌入式C修养——前导">嵌入式C修养——前导</a><time datetime="2023-08-20T15:08:58.000Z" title="发表于 2023-08-20 23:08:58">2023-08-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/19/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E2%80%94%E2%80%94%E5%AF%BC%E8%AE%BA%E4%B8%8E%E4%B8%89%E7%A7%8D%E5%8D%8F%E8%AE%AE/" title="Unix网络编程——导论与三种协议"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Unix网络编程——导论与三种协议"/></a><div class="content"><a class="title" href="/2023/08/19/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E2%80%94%E2%80%94%E5%AF%BC%E8%AE%BA%E4%B8%8E%E4%B8%89%E7%A7%8D%E5%8D%8F%E8%AE%AE/" title="Unix网络编程——导论与三种协议">Unix网络编程——导论与三种协议</a><time datetime="2023-08-19T09:47:32.000Z" title="发表于 2023-08-19 17:47:32">2023-08-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/08/19/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6IO%E6%93%8D%E4%BD%9C/" title="Linux漫游——文件IO操作"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux漫游——文件IO操作"/></a><div class="content"><a class="title" href="/2023/08/19/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6IO%E6%93%8D%E4%BD%9C/" title="Linux漫游——文件IO操作">Linux漫游——文件IO操作</a><time datetime="2023-08-19T03:07:37.000Z" title="发表于 2023-08-19 11:07:37">2023-08-19</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
