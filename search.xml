@@ -134,9 +134,9 @@
       
         <tags>
             
-            <tag> Windows 32API </tag>
-            
             <tag> C/C++. Linux </tag>
+            
+            <tag> Windows 32API </tag>
             
         </tags>
       
@@ -385,9 +385,9 @@
             
             <tag> C/C++ </tag>
             
-            <tag> Algorithm </tag>
-            
             <tag> Java </tag>
+            
+            <tag> Algorithm </tag>
             
         </tags>
       
@@ -471,11 +471,11 @@
       
         <tags>
             
+            <tag> Pytorch </tag>
+            
             <tag> Python </tag>
             
             <tag> AI </tag>
-            
-            <tag> Pytorch </tag>
             
         </tags>
       
@@ -570,9 +570,9 @@
       
         <tags>
             
-            <tag> Opencv </tag>
-            
             <tag> Python </tag>
+            
+            <tag> Opencv </tag>
             
         </tags>
       
@@ -614,9 +614,9 @@
             
             <tag> C/C++ </tag>
             
-            <tag> Algorithm </tag>
-            
             <tag> Java </tag>
+            
+            <tag> Algorithm </tag>
             
         </tags>
       
@@ -635,9 +635,9 @@
       
         <tags>
             
-            <tag> Opencv </tag>
-            
             <tag> Qt </tag>
+            
+            <tag> Opencv </tag>
             
         </tags>
       
