@@ -1,0 +1,462 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>MIT6S081-Online-course 2-lab1 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="MIT6S081 2​        这次，我们着重来完成Lab1的实验要求 尝试调用sleep函数TASK：Implement the UNIX program sleep for xv6; your sleep should pause for a user-specified number of ticks. A tick is a notion of time defined by the">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MIT6S081-Online-course 2-lab1">
+<meta property="og:url" content="http://charliechen114514.github.io/2023/10/19/MIT6S081-Online-course-2-lab1/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="MIT6S081 2​        这次，我们着重来完成Lab1的实验要求 尝试调用sleep函数TASK：Implement the UNIX program sleep for xv6; your sleep should pause for a user-specified number of ticks. A tick is a notion of time defined by the">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2023-10-19T11:06:51.000Z">
+<meta property="article:modified_time" content="2023-10-19T11:07:59.893Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="Operating System">
+<meta property="article:tag" content="Assembly">
+<meta property="article:tag" content="C">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2023/10/19/MIT6S081-Online-course-2-lab1/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'MIT6S081-Online-course 2-lab1',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2023-10-19 19:07:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">MIT6S081-Online-course 2-lab1</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-19T11:06:51.000Z" title="发表于 2023-10-19 19:06:51">2023-10-19</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2023-10-19T11:07:59.893Z" title="更新于 2023-10-19 19:07:59">2023-10-19</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">3.5k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>20分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="MIT6S081-Online-course 2-lab1"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="MIT6S081-2"><a href="#MIT6S081-2" class="headerlink" title="MIT6S081 2"></a>MIT6S081 2</h1><p>​        这次，我们着重来完成Lab1的实验要求</p>
+<h2 id="尝试调用sleep函数"><a href="#尝试调用sleep函数" class="headerlink" title="尝试调用sleep函数"></a>尝试调用sleep函数</h2><p>TASK：Implement the UNIX program <code>sleep</code> for xv6; your <code>sleep</code> should pause for a user-specified number of ticks. A tick is a notion of time defined by the xv6 kernel, namely the time between two interrupts from the timer chip. Your solution should be in the file <code>user/sleep.c</code>.</p>
+<p>​        可以发现，我们的sleep系统调用已经被实现了。这里不过是为了进一步熟悉文件夹结构而设立的：</p>
+<blockquote>
+<p><code>By the way: MIT6S081</code>已经把提示说的很详细了：</p>
+</blockquote>
+<p>Some hints:</p>
+<ul>
+<li>Before you start coding, read Chapter 1 of the <a target="_blank" rel="noopener" href="https://pdos.csail.mit.edu/6.S081/2021/xv6/book-riscv-rev2.pdf">xv6 book</a>.</li>
+<li>Look at some of the other programs in <code>user/</code> (e.g., <code>user/echo.c</code>, <code>user/grep.c</code>, and <code>user/rm.c</code>) to see how you can obtain the command-line arguments passed to a program.</li>
+<li>If the user forgets to pass an argument, sleep should print an error message.</li>
+<li>The command-line argument is passed as a string; you can convert it to an integer using <code>atoi</code> (see user/ulib.c).</li>
+<li>Use the system call <code>sleep</code>.</li>
+<li>See <code>kernel/sysproc.c</code> for the xv6 kernel code that implements the <code>sleep</code> system call (look for <code>sys_sleep</code>), <code>user/user.h</code> for the C definition of <code>sleep</code> callable from a user program, and <code>user/usys.S</code> for the assembler code that jumps from user code into the kernel for <code>sleep</code>.</li>
+<li>Make sure <code>main</code> calls <code>exit()</code> in order to exit your program.</li>
+<li>Add your <code>sleep</code> program to <code>UPROGS</code> in Makefile; once you’ve done that, <code>make qemu</code> will compile your program and you’ll be able to run it from the xv6 shell.</li>
+<li>Look at Kernighan and Ritchie’s book <em>The C programming language (second edition)</em> (K&amp;R) to learn about C.</li>
+</ul>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">#include&lt;kernel&#x2F;types.h&gt;
+#include&lt;user&#x2F;user.h&gt;
+
+&#x2F;&#x2F; solution I
+void main(int argc, char* argv[])&#123;
+	if(argc !&#x3D; 2)&#123;
+		printf(&quot;Usage:%s n(n stands for the seconds you wait)&quot;, argv[0]);
+		exit(1);
+	&#125;
+	int ticks &#x3D; atoi(argv[1]);
+	sleep(ticks);
+	exit(0);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        实现如上，很简单</p>
+<p><img src="image-20231016143230697.png" alt="image-20231016143230697"></p>
+<p>​        可以看到这里程序短暂的停止了一会儿。</p>
+<h2 id="ping-pong"><a href="#ping-pong" class="headerlink" title="ping!pong!"></a>ping!pong!</h2><p>​        Write a program that uses UNIX system calls to ‘’ping-pong’’ a byte between two processes over a pair of pipes, one for each direction. The parent should send a byte to the child; the child should print “<pid>: received ping”, where <pid> is its process ID, write the byte on the pipe to the parent, and exit; the parent should read the byte from the child, print “<pid>: received pong”, and exit. Your solution should be in the file <code>user/pingpong.c</code>.</p>
+<p>Some hints:</p>
+<ul>
+<li>Use <code>pipe</code> to create a pipe.</li>
+<li>Use <code>fork</code> to create a child.</li>
+<li>Use <code>read</code> to read from the pipe, and <code>write</code> to write to the pipe.</li>
+<li>Use <code>getpid</code> to find the process ID of the calling process.</li>
+<li>Add the program to <code>UPROGS</code> in Makefile.</li>
+<li>User programs on xv6 have a limited set of library functions available to them. You can see the list in <code>user/user.h</code>; the source (other than for system calls) is in <code>user/ulib.c</code>, <code>user/printf.c</code>, and <code>user/umalloc.c</code>.</li>
+</ul>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">#include &quot;..&#x2F;kernel&#x2F;types.h&quot;
+#include &quot;..&#x2F;user&#x2F;user.h&quot;
+
+int main(int argc, char **argv)
+&#123;
+    char buf;
+    &#x2F;&#x2F; pipefd[0] read end
+    &#x2F;&#x2F; pipefd[1] write end
+    int pipefd[2];
+    if (pipe(pipefd) &#x3D;&#x3D; -1)
+    &#123;
+        fprintf(2, &quot;Cannot create a pipe\n&quot;);
+        exit(-1);
+    &#125;
+    int child_pid &#x3D; fork();
+    if (child_pid &#x3D;&#x3D; -1)
+    &#123;
+        fprintf(2, &quot;Cannot fork a child process\n&quot;);
+        exit(-1);
+    &#125;
+
+    &#x2F;&#x2F; parent process
+    &#x2F;&#x2F; 1st: send a byte to child
+    &#x2F;&#x2F; 2nd: recv a byte from child
+    if (child_pid &gt; 0)
+    &#123;
+        char p_send &#x3D; &#39;a&#39;;
+        write(pipefd[1], &amp;p_send, sizeof(p_send));
+        close(pipefd[1]);
+
+        &#x2F;&#x2F; wait child exit
+        wait(0);
+
+        read(pipefd[0], &amp;buf, sizeof(buf));
+        printf(&quot;%d: received pong: %c\n&quot;, getpid(), buf);
+        close(pipefd[0]);
+    &#125;
+    &#x2F;&#x2F; child process
+    &#x2F;&#x2F; 1st: recv a byte from parent
+    &#x2F;&#x2F; 2nd: send a byte to parent
+    if (child_pid &#x3D;&#x3D; 0)
+    &#123;
+        read(pipefd[0], &amp;buf, sizeof(buf));
+        printf(&quot;%d: received ping: %c\n&quot;, getpid(), buf);
+
+        char c_send &#x3D; &#39;b&#39;;
+        write(pipefd[1], &amp;c_send, sizeof(c_send));
+
+        close(pipefd[0]);
+        close(pipefd[1]);
+        exit(0);
+    &#125;
+    exit(0);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20231016173717650.png" alt="image-20231016173717650"></p>
+<p>​        <code>By the way:</code>这个里面使用到了管道的知识。</p>
+<p>（1）父进程创建管道，得到两个文件描述符指向管道的两端</p>
+<p>（2）父进程fork出子进程，子进程也有两个文件描述符指向同⼀管道。</p>
+<p>（3）父进程关闭fd[0],子进程关闭fd[1]，即父进程关闭管道读端,⼦进程关闭管道写端（因为管道只支持单向通信）。父进程可以往管道⾥写,⼦进程可以从管道⾥读,管道是⽤环形队列实现的,数据从写端流⼊从读端流出,这样就实现了进程间通信。<br><img src="SouthEast.png" alt="这里写图片描述"></p>
+<h2 id="质数筛"><a href="#质数筛" class="headerlink" title="质数筛"></a>质数筛</h2><p>Your goal is to use <code>pipe</code> and <code>fork</code> to set up the pipeline. The first process feeds the numbers 2 through 35 into the pipeline. For each prime number, you will arrange to create one process that reads from its left neighbor over a pipe and writes to its right neighbor over another pipe. Since xv6 has limited number of file descriptors and processes, the first process can stop at 35.</p>
+<p>Some hints:</p>
+<ul>
+<li>Be careful to close file descriptors that a process doesn’t need, because otherwise your program will run xv6 out of resources before the first process reaches 35.</li>
+<li>Once the first process reaches 35, it should wait until the entire pipeline terminates, including all children, grandchildren, &amp;c. Thus the main primes process should only exit after all the output has been printed, and after all the other primes processes have exited.</li>
+<li>Hint: <code>read</code> returns zero when the write-side of a pipe is closed.</li>
+<li>It’s simplest to directly write 32-bit (4-byte) <code>int</code>s to the pipes, rather than using formatted ASCII I/O.</li>
+<li>You should create the processes in the pipeline only as they are needed.</li>
+<li>Add the program to <code>UPROGS</code> in Makefile.</li>
+</ul>
+<p>BYD这个题很难，我尝试了一下后面放弃了，决定当一个面像CP的程序员。但是查看玩思路之后，我发现，他巧妙的利用了进程和管道。换而言之，我们将单轮质数筛选的过程放在子进程和父进程的通信中完成。子进程和父进程反复的提取存活下来的数列中最小的那个数    </p>
+<p>​        2可以存活，直接走第一次主线程中for循环的write,第一次开线程的时一read进来就是2，并且打印。然后子 - 父进程传递给下一个循环，子进程则是继续前进，在开完子线程之后成为父进程筛选数据写给子进程后消亡。这个过程就是这样的描述：</p>
+<p><img src="6e3df42148fd1dc9c5c938dfa10dea98.png" alt="img"></p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">#include&quot;kernel&#x2F;types.h&quot;
+#include&quot;user&#x2F;user.h&quot;
+
+
+void primeWork(int* pre_fd)
+&#123;
+	close(pre_fd[1]); &#x2F;&#x2F; close the written part of the father fd
+	
+	int n, son_pipefd[2]; &#x2F;&#x2F; init the son_branch pipe, or you can say it forward_pipe
+	
+	if(pipe(son_pipefd) &#x3D;&#x3D; -1)
+	&#123;
+		fprintf(2, &quot;Failed to init the pipe!&quot;);
+		exit(-1);
+	&#125;
+	
+	&#x2F;&#x2F; what we read is always the first living number
+	&#x2F;&#x2F; The smallest number is yet always be a prime
+	if(read(pre_fd[0], &amp;n, sizeof(int)) &#x3D;&#x3D; sizeof(int))
+	&#123;
+		printf(&quot;the prime: %d\n&quot;, n);
+		
+		int child_pid &#x3D; fork();
+		
+		if(child_pid !&#x3D; 0)
+		&#123;
+			primeWork(son_pipefd); &#x2F;&#x2F; pass forward the pipe to the next 
+			exit(0); 
+		&#125;
+		else
+		&#123;
+			close(son_pipefd[0]); &#x2F;&#x2F; do not read, just write info to the son proc that is left to the undivison nums
+			int temp;
+			
+			while(read(pre_fd[0], &amp;temp, sizeof(int)) &#x3D;&#x3D; sizeof(int)) &#x2F;&#x2F; if previoused leaving is exsited
+			&#123;
+				if(temp % n !&#x3D; 0)
+				&#123;
+					write(son_pipefd[1], &amp;temp, sizeof(int)); &#x2F;&#x2F; then write, which pass the current check(undividable)
+				&#125;
+			&#125;
+			
+			close(son_pipefd[1]); &#x2F;&#x2F; erase and free the proc
+			exit(0);
+		&#125;
+	&#125; 
+													
+
+&#125;
+
+int main(int agrc, char* agrv[])
+&#123;
+	int mainPipeFd[2];
+	
+	if(pipe(mainPipeFd) &#x3D;&#x3D; -1)
+	&#123;
+		fprintf(2, &quot;Failed to init the pipe!&quot;);
+		exit(-1);
+	&#125;
+	
+	int child_pid &#x3D; fork();
+	
+	if(child_pid &#x3D;&#x3D; 0)
+	&#123;
+		primeWork(mainPipeFd);
+		exit(0);
+	&#125;
+	
+	close(mainPipeFd[0]);
+	
+	int limit &#x3D; 35;
+    if (agrc &#x3D;&#x3D; 2)
+    &#123;
+        limit &#x3D; atoi(agrv[1]);
+    &#125;
+    
+    &#x2F;&#x2F; on the next step, we are suppose to write all integers to the pipeline
+    
+    for(int i &#x3D; 2; i &lt; limit; i++)
+    &#123;
+    	int curEpochWrittenBytes &#x3D; 0;
+    	if( (curEpochWrittenBytes &#x3D; write(mainPipeFd[1], &amp;i, sizeof(int))) !&#x3D; sizeof(int))
+    	&#123;
+    		fprintf(2, &quot;Failed to write precises bytes of ints %d\n&quot;, i);
+    	&#125;
+    &#125;
+    
+    close(mainPipeFd[1]);
+    wait(0); &#x2F;&#x2F; wait all threads end
+    exit(0);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="相关资源"><a href="#相关资源" class="headerlink" title="相关资源"></a>相关资源</h1><h2 id="Bell-Labs-and-CSP-Threads"><a href="#Bell-Labs-and-CSP-Threads" class="headerlink" title="Bell Labs and CSP Threads"></a>Bell Labs and CSP Threads</h2><p><a target="_blank" rel="noopener" href="http://swtch.com/~rsc/">Russ Cox</a><br><em>rsc@swtch.com</em></p>
+<p>Also available in <a target="_blank" rel="noopener" href="http://science.webhostinggeeks.com/bell-laboratorije">Serbo-Croatian</a>, <a target="_blank" rel="noopener" href="https://www.autonvaraosatpro.fi/blogi/2017/08/24/bell-labs-och-csp-tradar/">Swedish</a></p>
+<p><strong>Introduction</strong></p>
+<p>This page is a slice of the history of concurrent programming, focusing on one particular lineage of Hoare’s language of communicating sequential processes (CSP) <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#1">[1]</a> <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#1a">[1a]</a>. Concurrent programming in this style is interesting for reasons not of efficiency but of clarity. That is, it is a widespread mistake to think only of concurrent programming as a means to increase performance, <em>e.g.</em>, to overlap disk I/O requests, to reduce latency by prefetching results to expected queries, or to take advantage of multiple processors. Such advantages are important but not relevant to this discussion. After all, they can be realized in other styles, such as asynchronous event-driven programming. Instead, we are interested in concurrent programming because it provides a natural abstraction that can make some programs much simpler.</p>
+<p><strong>What this is not</strong></p>
+<p>Most computer science undergraduates are forced to read Andrew Birrell’s <a target="_blank" rel="noopener" href="http://gatekeeper.research.compaq.com/pub/DEC/SRC/research-reports/SRC-035.pdf">“An Introduction to Programming with Threads.”</a> The SRC threads model is the one used by most thread packages currently available. The problem with all of these is that they are too low-level. Unlike the communication primitive provided by Hoare, the primitives in the SRC-style threading module must be combined with other techniques, usually shared memory, in order to be used effectively. In general, programmers tend not to build their own higher-level constructs, and are left frustrated by needing to pay attention to such low-level details.</p>
+<p>For the moment, push Birrell’s tutorial out of your mind. This is a different thread model. If you approach it as a different thread model, you may well find it much easier to understand.</p>
+<p><strong>Communicating Sequential Processes</strong></p>
+<p>By 1978, there were many proposed methods in use for communication and synchronization in the context of programming multiprocessors. Shared memory was the most common communication mechanism, and semaphores, critical regions, and monitors were among the synchronization mechanisms. C. A. R. Hoare addressed both issues with a single language primitive: synchronous communication. In Hoare’s CSP language, processes communicate by sending or receiving values from named unbuffered channels. Since the channels are unbuffered, the send operation blocks until the value has been transferred to a receiver, thus providing a mechanism for synchronization.</p>
+<p>One of Hoare’s examples is that of reformatting 80-column cards for printing on a 125-column printer. In his solution, one process reads a card at a time, sending the disassembled contents character by character to a second process. This second process assembles groups of 125 characters, sending the groups to the line printer. This sounds trivial, but in the absence of buffered I/O libraries, the necessary bookkeeping involved in a single-process solution is onerous. In fact, buffered I/O libraries are really just encapsulations of these two sorts of processes that export the single-character communication interface.</p>
+<p>As another example, which Hoare credits to Doug McIlroy, consider the generation of all primes less than a thousand. The sieve of Eratosthenes can be simulated by a pipeline of processes executing the following pseudocode:</p>
+<pre class="line-numbers language-none"><code class="language-none">p &#x3D; get a number from left neighbor
+print p
+loop:
+    n &#x3D; get a number from left neighbor
+    if (p does not divide n)
+        send n to right neighbor<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>A generating process can feed the numbers 2, 3, 4, …, 1000 into the left end of the pipeline: the first process in the line eliminates the multiples of 2, the second eliminates the multiples of 3, the third eliminates the multiples of 5, and so on:</p>
+<p><img src="sieve.gif" alt="img"></p>
+<p>The linear pipeline nature of the examples thus far is misrepresentative of the general nature of CSP, but even restricted to linear pipelines, the model is quite powerful. The power has been forcefully demonstrated by the success of the filter-and-pipeline approach for which the Unix operating system is well known <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#2">[2]</a> Indeed, pipelines predate Hoare’s paper. In an internal Bell Labs memo dated October 11, 1964, Doug McIlroy was toying with ideas that would become Unix pipelines: “We should have some ways of coupling programs like garden hose—screw in another segment when it becomes necessary to massage data in another way. This is the way of IO also.” <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#3">[3]</a></p>
+<p>Hoare’s communicating processes are more general than typical Unix shell pipelines, since they can be connected in arbitrary patterns. In fact, Hoare gives as an example a 3x3 matrix of processes somewhat like the prime sieve that can be used to multiply a vector by a 3x3 square matrix.</p>
+<p>Of course, the Unix pipe mechanism doesn’t require the linear layout; only the shell syntax does. McIlroy reports toying with syntax for a shell with general plumbing early on but not liking the syntax enough to implement it (personal communication, 2011). Later shells did support some restricted forms of non-linear pipelines. Rochkind’s 2dsh supports dags; Tom Duff’s rc supports trees.</p>
+<p>Hoare’s language was novel and influential, but lacking in a few key aspects. The main defect is that the unbuffered channels used for communication are not first-class objects: they cannot be stored in variables, passed as arguments to functions, or sent across channels. As a result of this, the communication structure must be fixed while writing the program. Hence we must write a program to print the first 1000 primes rather than the first <em>n</em> primes, and to multiply a vector by a 3x3 matrix rather than an <em>n</em>x<em>n</em> matrix.</p>
+<p><strong>Pan and Promela</strong></p>
+<p>In 1980, barely two years after Hoare’s paper, Gerard Holzmann and Rob Pike created a protocol analyzer called pan that takes a CSP dialect as input. Pan’s CSP dialect had concatenation, selection, and looping, but no variables. Even so, Holzmann reports that “Pan found its first error in a Bell Labs data-switch control protocol on 21 November 1980. ” <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#14">[14]</a>. That dialect may well have been the first CSP language at Bell Labs, and it certainly provided Pike with experience using and implementing a CSP-like language, his first of many.</p>
+<p>Holzmann’s protocol analyzer developed into the Spin model checker and its Promela language, which features first-class channels in the same way as Newsqueak (q.v.).</p>
+<p><strong>Newsqueak</strong></p>
+<p>Moving in a different direction, Luca Cardelli and Rob Pike developed the ideas in CSP into the Squeak mini-language <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#4">[4]</a> for generating user interface code. (This Squeak is distinct from the Squeak Smalltalk implementation.) Pike later expanded Squeak into the fully-fledged programming language Newsqueak <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#5">[5]</a><a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#6">[6]</a> which begat Plan 9’s Alef <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#7">[7]</a> <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#8">[8]</a>, Inferno’s Limbo <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#9">[9]</a>, and Google’s Go <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#13">[13]</a>. The main semantic advantage of Newsqueak over Squeak is that Newsqueak treats communications channels as first-class objects: unlike in CSP and Squeak, channels <em>can</em> be stored in variables, passed as arguments to functions, and sent across channels. This in turn enables the programmatic construction of the communication structure, thus allowing the creation of more complex structures than would be reasonable to design by hand. In particular, Doug McIlroy demonstrated how the communication facilities of Newsqueak can be employed to write elegant programs for manipulating symbolic power series <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#10">[10]</a>. Similar attempts in traditional languages tend to mire in bookkeeping. In a similar vein, Rob Pike demonstrated how the communication facilities can be employed to break out of the common event-based programming model, writing a concurrent window system <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#11">[11]</a>.</p>
+<p><strong>Alef</strong></p>
+<p>Alef <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#7">[7]</a> <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#8">[8]</a> was a language designed by Phil Winterbottom to apply the Newsqueak ideas to a full-fledged systems programming language. Alef has two types of what we have been calling processes: procs and threads. The program is organized into one or more procs, which are shared-memory operating system processes that can be preemptively scheduled. Each proc contains one or more tasks, which are cooperatively scheduled coroutines. Note that each task is assigned to a particular proc: they do not migrate between procs.</p>
+<p>The main use of procs is to provide contexts that can block for I/O independently of the main tasks. (Plan 9 has no select call, and even on Unix you need multiple procs if you want to overlap computation with non-network I/O.) The Acme paper <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#12">[12]</a> has a nice brief discussion of procs and threads, as do <a target="_blank" rel="noopener" href="http://herpolhode.com/rob/lec5.pdf">the lecture notes about the Plan 9 window system</a>, also mentioned below.</p>
+<p><strong>Limbo</strong></p>
+<p>The Inferno operating system is a Plan 9 spinoff intended for set-top boxes. Its programming language, Limbo <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#9">[9]</a>, was heavily influenced by Alef. It removed the distinction between procs and tasks, effectively having just procs, though they were of lighter weight than what most people think of as processes. All parallelism is preemptive. It is interesting that despite this, the language provides no real support for locking. Instead, the channel communication typically provides enough synchronization and encourages programmers to arrange that there is always a clear owner for any piece of data. Explicit locking is unnecessary.</p>
+<p><strong>Libthread</strong></p>
+<p>Back in the Plan 9 world, the Alef compilers turned out to be difficult to maintain as Plan 9 was ported to ever more architectures. Libthread was originally created to port Alef programs to C, so that the Alef compilers could be retired. Alef’s procs and tasks are called procs and threads in libthread. The <a target="_blank" rel="noopener" href="http://plan9.bell-labs.com/magic/man2html/2/thread">manual page</a> is the definitive reference.</p>
+<p><strong>Go</strong></p>
+<p>Rob Pike and Ken Thompson moved on to Google and placed CSP at the center of the <a target="_blank" rel="noopener" href="http://golang.org/">Go language</a>‘s concurrency support.</p>
+<p><strong>Getting Started</strong></p>
+<p>To get a feel for the model, especially how processes and threads interact, it is worth reading the Alef User’s Guide <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#8">[8]</a>. The first thirty slides of <a target="_blank" rel="noopener" href="http://wwwhome.cs.utwente.nl/~sape/gos/chap15.pdf">this presentation</a> are a good introduction to how Alef constructs are represented in C.</p>
+<p>The best examples of the power of the CSP model are McIlroy’s and Pike’s papers, mentioned above <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#10">[10]</a> <a target="_blank" rel="noopener" href="https://swtch.com/~rsc/thread/#11">[11]</a>.</p>
+<p>Rob Pike’s home page contains lecture notes from a course on concurrent programming: an <a target="_blank" rel="noopener" href="http://herpolhode.com/rob/lec1.pdf">introduction</a>, and slides about the two aforementioned papers: <a target="_blank" rel="noopener" href="http://herpolhode.com/rob/lec3.pdf">squinting</a> and <a target="_blank" rel="noopener" href="http://herpolhode.com/rob/lec5.pdf">window system</a>. The last of the three provides a good example of how Plan 9 programs typically use procs and tasks.</p>
+<p>Rob Pike gave a <a target="_blank" rel="noopener" href="http://video.google.com/videoplay?docid=810232012617965344">tech talk at Google</a> that provides a good introduction (57 minute video).</p>
+<p>Rob Pike’s half of his <a target="_blank" rel="noopener" href="http://www.youtube.com/watch?v=jgVhBThJdXc">2010 Google I/O talk with Russ Cox</a> shows how to use channels and Go’s concurrency to implement a load balancing work management system.</p>
+<p><strong>Related Resources</strong></p>
+<p><a target="_blank" rel="noopener" href="http://www.cs.uchicago.edu/~jhr">John Reppy</a> has applied the same ideas to ML, producing <a target="_blank" rel="noopener" href="http://cml.cs.uchicago.edu/">Concurrent ML</a>. He used CML to build, among other things, the <a target="_blank" rel="noopener" href="http://people.cs.uchicago.edu/~jhr/eXene/">eXene</a> multithreaded (non-event-driven) X Window System toolkit.</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2023/10/19/MIT6S081-Online-course-2-lab1/">http://charliechen114514.github.io/2023/10/19/MIT6S081-Online-course-2-lab1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Operating-System/">Operating System</a><a class="post-meta__tags" href="/tags/Assembly/">Assembly</a><a class="post-meta__tags" href="/tags/C/">C</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2023/10/19/MIT6S081-Online-course-3/" title="MIT6S081-Online-course 3"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">MIT6S081-Online-course 3</div></div></a></div><div class="next-post pull-right"><a href="/2023/10/16/MIT-6S081-online-course-I/" title="MIT_6S081_online_course I"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">MIT_6S081_online_course I</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/10/16/MIT-6S081-online-course-I/" title="MIT_6S081_online_course I"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-16</div><div class="title">MIT_6S081_online_course I</div></div></a></div><div><a href="/2023/10/19/MIT6S081-Online-course-3/" title="MIT6S081-Online-course 3"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-19</div><div class="title">MIT6S081-Online-course 3</div></div></a></div><div><a href="/2023/10/19/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%BF%98%E5%8E%9F%E7%9C%9F%E7%9B%B8-1-2/" title="操作系统还原真相 1-3"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-10-19</div><div class="title">操作系统还原真相 1-3</div></div></a></div><div><a href="/2023/07/13/%E5%8A%A8%E6%89%8B%E6%95%B4%E4%B8%80%E4%B8%AA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%8E%A9%E7%8E%A9%EF%BC%881%EF%BC%89/" title="动手整一个操作系统玩玩（1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-13</div><div class="title">动手整一个操作系统玩玩（1）</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">40</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">23</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#MIT6S081-2"><span class="toc-number">1.</span> <span class="toc-text">MIT6S081 2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B0%9D%E8%AF%95%E8%B0%83%E7%94%A8sleep%E5%87%BD%E6%95%B0"><span class="toc-number">1.1.</span> <span class="toc-text">尝试调用sleep函数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ping-pong"><span class="toc-number">1.2.</span> <span class="toc-text">ping!pong!</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B4%A8%E6%95%B0%E7%AD%9B"><span class="toc-number">1.3.</span> <span class="toc-text">质数筛</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%9B%B8%E5%85%B3%E8%B5%84%E6%BA%90"><span class="toc-number">2.</span> <span class="toc-text">相关资源</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Bell-Labs-and-CSP-Threads"><span class="toc-number">2.1.</span> <span class="toc-text">Bell Labs and CSP Threads</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/10/19/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%BF%98%E5%8E%9F%E7%9C%9F%E7%9B%B8-1-2/" title="操作系统还原真相 1-3"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="操作系统还原真相 1-3"/></a><div class="content"><a class="title" href="/2023/10/19/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%BF%98%E5%8E%9F%E7%9C%9F%E7%9B%B8-1-2/" title="操作系统还原真相 1-3">操作系统还原真相 1-3</a><time datetime="2023-10-19T11:09:39.000Z" title="发表于 2023-10-19 19:09:39">2023-10-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/10/19/MIT6S081-Online-course-3/" title="MIT6S081-Online-course 3"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MIT6S081-Online-course 3"/></a><div class="content"><a class="title" href="/2023/10/19/MIT6S081-Online-course-3/" title="MIT6S081-Online-course 3">MIT6S081-Online-course 3</a><time datetime="2023-10-19T11:08:09.000Z" title="发表于 2023-10-19 19:08:09">2023-10-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/10/19/MIT6S081-Online-course-2-lab1/" title="MIT6S081-Online-course 2-lab1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MIT6S081-Online-course 2-lab1"/></a><div class="content"><a class="title" href="/2023/10/19/MIT6S081-Online-course-2-lab1/" title="MIT6S081-Online-course 2-lab1">MIT6S081-Online-course 2-lab1</a><time datetime="2023-10-19T11:06:51.000Z" title="发表于 2023-10-19 19:06:51">2023-10-19</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/10/16/MIT-6S081-online-course-I/" title="MIT_6S081_online_course I"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MIT_6S081_online_course I"/></a><div class="content"><a class="title" href="/2023/10/16/MIT-6S081-online-course-I/" title="MIT_6S081_online_course I">MIT_6S081_online_course I</a><time datetime="2023-10-16T05:37:17.000Z" title="发表于 2023-10-16 13:37:17">2023-10-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/09/05/Deep-Qt-Learn-1/" title="Deep Qt Learn-1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Deep Qt Learn-1"/></a><div class="content"><a class="title" href="/2023/09/05/Deep-Qt-Learn-1/" title="Deep Qt Learn-1">Deep Qt Learn-1</a><time datetime="2023-09-05T12:24:22.000Z" title="发表于 2023-09-05 20:24:22">2023-09-05</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
