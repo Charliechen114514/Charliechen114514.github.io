@@ -1,0 +1,574 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>设计模式小记5 Adapter | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="设计模式小记 5Adapter（适配器模式）概论​        Adapter（适配器模式）属于结构型模式，别名 wrapper，结构性模式关注的是如何组合类与对象，以获得更大的结构，我们平常工作大部分时间都在与这种设计模式打交道。 ​        意图：将一个类的接口转换成客户希望的另一个接口。Adapter 模式使得原本由于接口不兼容而不能在一起工作的那些类可以一起工作。 ​">
+<meta property="og:type" content="article">
+<meta property="og:title" content="设计模式小记5 Adapter">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B05-Adapter/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="设计模式小记 5Adapter（适配器模式）概论​        Adapter（适配器模式）属于结构型模式，别名 wrapper，结构性模式关注的是如何组合类与对象，以获得更大的结构，我们平常工作大部分时间都在与这种设计模式打交道。 ​        意图：将一个类的接口转换成客户希望的另一个接口。Adapter 模式使得原本由于接口不兼容而不能在一起工作的那些类可以一起工作。 ​">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-01-05T03:44:06.000Z">
+<meta property="article:modified_time" content="2024-01-05T03:45:06.767Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="Design_Pattern">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B05-Adapter/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '设计模式小记5 Adapter',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-01-05 11:45:06'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">26</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">设计模式小记5 Adapter</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-01-05T03:44:06.000Z" title="发表于 2024-01-05 11:44:06">2024-01-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-01-05T03:45:06.767Z" title="更新于 2024-01-05 11:45:06">2024-01-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>10分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="设计模式小记5 Adapter"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="设计模式小记-5"><a href="#设计模式小记-5" class="headerlink" title="设计模式小记 5"></a>设计模式小记 5</h1><h2 id="Adapter（适配器模式）"><a href="#Adapter（适配器模式）" class="headerlink" title="Adapter（适配器模式）"></a><strong>Adapter（适配器模式）</strong></h2><h3 id="概论"><a href="#概论" class="headerlink" title="概论"></a>概论</h3><p>​        Adapter（适配器模式）属于结构型模式，别名 <code>wrapper</code>，结构性模式关注的是如何组合类与对象，以获得更大的结构，我们平常工作大部分时间都在与这种设计模式打交道。</p>
+<p>​        <strong>意图：将一个类的接口转换成客户希望的另一个接口。Adapter 模式使得原本由于接口不兼容而不能在一起工作的那些类可以一起工作。</strong></p>
+<p>​        这个设计模式的意图很好懂，就是把接口不兼容问题抹平。注意，也仅仅能解决接口不一致的问题，而不能解决功能不一致的问题。</p>
+<h3 id="举例子"><a href="#举例子" class="headerlink" title="举例子"></a><strong>举例子</strong></h3><p>​        如果看不懂上面的意图介绍，没有关系，设计模式需要在日常工作里用起来，结合例子可以加深你的理解，下面我准备了三个例子，让你体会什么场景下会用到这种设计模式。</p>
+<h4 id="接口转换器"><a href="#接口转换器" class="headerlink" title="接口转换器"></a><strong>接口转换器</strong></h4><p>​        插座的种类很多，我们都用过许多适配器，将不同的插头进行转换，可以在不替换插座的情况下正常使用。USB 接口转换也同样精彩，有将 TypeC 接口转换为 TypeA 的，也有将 TypeA 接口转换为 TypeC 的，支持双向转换。接口转换器就是我们在生活中使用到的适配器模式，因为厂商并没有生产一个新的插座，我们也没有因为接口不适配而换一个手机，一切只需要一个接口转换器即可，这就是运用设计模式的收益。</p>
+<h4 id="数据库-ORM"><a href="#数据库-ORM" class="headerlink" title="数据库 ORM"></a><strong>数据库 ORM</strong></h4><p>ORM 屏蔽了 SQL 这一层，带来的好处是不需要理解不同 SQL 语法之间的区别，对于通用功能，ORM 会根据不同的平台，比如 Postgresql、Mysql 进行 SQL 的转换。</p>
+<p>对 ORM 来说，屏蔽不同平台的差异，就是利用适配器模式做到的。</p>
+<h4 id="API-Deprecated"><a href="#API-Deprecated" class="headerlink" title="API Deprecated"></a><strong>API Deprecated</strong></h4><p>​        当一个广泛使用的库进行了含有 break change 的升级时，往往要留给开发者足够的时间去升级，而不能升级后就直接挂掉，因此被废弃的 API 要标记为 <code>deprecated</code>，而这种被废弃标记的 API 的实际实现，往往是使用新的 API 替代，这种场景正是使用了适配器模式，将新的 API 适配到旧的 API，实现 API Deprecated。</p>
+<h3 id="意图解释"><a href="#意图解释" class="headerlink" title="意图解释"></a><strong>意图解释</strong></h3><p>上面三个例子都满足下面两个条件：</p>
+<blockquote>
+<ol>
+<li>API 不兼容：因为接口的不同；数据库 SQL 语法的不同；框架 API 的不同。</li>
+<li>但能力已支持：插座都拥有充电或读取能力；不同的 SQL 都拥有查询数据库能力；新 API 覆盖了旧 API 的能力。这样就可以通过适配器满足 Adapter 的意图：</li>
+</ol>
+</blockquote>
+<p><strong>意图：将一个类的接口转换成客户希望的另一个接口。Adapter 模式使得原本由于接口不兼容而不能在一起工作的那些类可以一起工作。</strong></p>
+<h3 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h3><blockquote>
+<p>使用一个已经存在的类，但是他的接口不符合我们的需求</p>
+<p>创建一个可以复用的类，它可以和其他不相关的类一块协同工作</p>
+</blockquote>
+<h3 id="结构图"><a href="#结构图" class="headerlink" title="结构图"></a><strong>结构图</strong></h3><p>适配器的实现分为继承与组合模式。</p>
+<p>下面是名词解释：</p>
+<ul>
+<li><code>Adapter</code> 适配器，把 <code>Adeptee</code> 适配成 <code>Target</code>。</li>
+<li><code>Adaptee</code> 被适配的内容，比如不兼容的接口。</li>
+<li><code>Target</code> 适配为的内容，比如需要用的接口。</li>
+</ul>
+<p>继承：</p>
+<p><img src="v2-658b2c7b7d8b34459d5bdade96f0cf65_1440w.webp" alt="img"></p>
+<p>​        适配器继承 <code>Adaptee</code> 并实现 <code>Target</code>，适用场景是 <code>Adaptee</code> 与 <code>Target</code> 结构类似的情况，因为这样只需要实现部分差异化即可。</p>
+<p>组合：</p>
+<p><img src="v2-e6ff85b132e9b119580af68a3439a78b_1440w.webp" alt="img"></p>
+<p>​        组合的拓展性更强，但工作量更大，如果 <code>Target</code> 与 <code>Adaptee</code> 结构差异较大，适合用组合模式。</p>
+<h2 id="代码例子"><a href="#代码例子" class="headerlink" title="代码例子"></a><strong>代码例子</strong></h2><p>下面例子使用 typescript 编写。</p>
+<h3 id="typescript"><a href="#typescript" class="headerlink" title="typescript"></a>typescript</h3><p>继承：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">interface</span> <span class="token class-name">ITarget</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 标准方式是 hello</span>
+  <span class="token function-variable function">hello</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Adaptee</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 要被适配的类方法叫 sayHello</span>
+  <span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 适配器继承 Adaptee 并实现 ITarget</span>
+<span class="token keyword">class</span> <span class="token class-name">Adapter</span> <span class="token keyword">extends</span> <span class="token class-name">Adaptee</span> <span class="token keyword">implements</span> <span class="token class-name">ITarget</span> <span class="token punctuation">&#123;</span>
+  <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 用 sayHello 对接到 hello</span>
+    <span class="token keyword">super</span><span class="token punctuation">.</span><span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>组合：</p>
+<pre class="line-numbers language-typescript" data-language="typescript"><code class="language-typescript"><span class="token keyword">interface</span> <span class="token class-name">ITarget</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 标准方式是 hello</span>
+  <span class="token function-variable function">hello</span><span class="token operator">:</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=></span> <span class="token keyword">void</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token keyword">class</span> <span class="token class-name">Adaptee</span> <span class="token punctuation">&#123;</span>
+  <span class="token comment">// 要被适配的类方法叫 sayHello</span>
+  <span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token builtin">console</span><span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'hello'</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span>
+
+<span class="token comment">// 适配器继承 Adaptee 并实现 ITarget</span>
+<span class="token keyword">class</span> <span class="token class-name">Adapter</span> <span class="token keyword">implements</span> <span class="token class-name">ITarget</span> <span class="token punctuation">&#123;</span>
+  <span class="token keyword">private</span> adaptee<span class="token operator">:</span> Adaptee 
+
+  <span class="token function">constructor</span><span class="token punctuation">(</span>adaptee<span class="token operator">:</span> Adaptee<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>adaptee <span class="token operator">=</span> adaptee
+  <span class="token punctuation">&#125;</span>
+
+  <span class="token function">hello</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+    <span class="token comment">// 用 adaptee.sayHello 对接到 hello</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>adaptee<span class="token punctuation">.</span><span class="token function">sayHello</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+  <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="实现（java）"><a href="#实现（java）" class="headerlink" title="实现（java）"></a>实现（java）</h3><p>​        我们有一个 <em>MediaPlayer</em> 接口和一个实现了 <em>MediaPlayer</em> 接口的实体类 <em>AudioPlayer</em>。默认情况下，<em>AudioPlayer</em> 可以播放 mp3 格式的音频文件。</p>
+<p>我们还有另一个接口 <em>AdvancedMediaPlayer</em> 和实现了 <em>AdvancedMediaPlayer</em> 接口的实体类。该类可以播放 vlc 和 mp4 格式的文件。</p>
+<p>我们想要让 <em>AudioPlayer</em> 播放其他格式的音频文件。为了实现这个功能，我们需要创建一个实现了 <em>MediaPlayer</em> 接口的适配器类 <em>MediaAdapter</em>，并使用 <em>AdvancedMediaPlayer</em> 对象来播放所需的格式。</p>
+<p><em>AudioPlayer</em> 使用适配器类 <em>MediaAdapter</em> 传递所需的音频类型，不需要知道能播放所需格式音频的实际类。<em>AdapterPatternDemo</em> 类使用 <em>AudioPlayer</em> 类来播放各种格式。</p>
+<p><img src="20210223-adapter.png" alt="适配器模式的 UML 图"></p>
+<h4 id="步骤-1"><a href="#步骤-1" class="headerlink" title="步骤 1"></a>步骤 1</h4><p>为媒体播放器和更高级的媒体播放器创建接口。</p>
+<h5 id="MediaPlayer-java"><a href="#MediaPlayer-java" class="headerlink" title="MediaPlayer.java"></a>MediaPlayer.java</h5><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">MediaPlayer</span> <span class="token punctuation">&#123;</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">play</span><span class="token punctuation">(</span><span class="token class-name">String</span> audioType<span class="token punctuation">,</span> <span class="token class-name">String</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<h5 id="AdvancedMediaPlayer-java"><a href="#AdvancedMediaPlayer-java" class="headerlink" title="AdvancedMediaPlayer.java"></a>AdvancedMediaPlayer.java</h5><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">interface</span> <span class="token class-name">AdvancedMediaPlayer</span> <span class="token punctuation">&#123;</span> 
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">playVlc</span><span class="token punctuation">(</span><span class="token class-name">String</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">playMp4</span><span class="token punctuation">(</span><span class="token class-name">String</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="步骤-2"><a href="#步骤-2" class="headerlink" title="步骤 2"></a>步骤 2</h4><p>创建实现了 <em>AdvancedMediaPlayer</em> 接口的实体类。</p>
+<h5 id="VlcPlayer-java"><a href="#VlcPlayer-java" class="headerlink" title="VlcPlayer.java"></a>VlcPlayer.java</h5><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">VlcPlayer</span> <span class="token keyword">implements</span> <span class="token class-name">AdvancedMediaPlayer</span><span class="token punctuation">&#123;</span>
+   <span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">playVlc</span><span class="token punctuation">(</span><span class="token class-name">String</span> fileName<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Playing vlc file. Name: "</span><span class="token operator">+</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>      
+   <span class="token punctuation">&#125;</span>
+ 
+   <span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">playMp4</span><span class="token punctuation">(</span><span class="token class-name">String</span> fileName<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">//什么也不做</span>
+   <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h5 id="Mp4Player-java"><a href="#Mp4Player-java" class="headerlink" title="Mp4Player.java"></a>Mp4Player.java</h5><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">Mp4Player</span> <span class="token keyword">implements</span> <span class="token class-name">AdvancedMediaPlayer</span><span class="token punctuation">&#123;</span>
+ 
+   <span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">playVlc</span><span class="token punctuation">(</span><span class="token class-name">String</span> fileName<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token comment">//什么也不做</span>
+   <span class="token punctuation">&#125;</span>
+ 
+   <span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">playMp4</span><span class="token punctuation">(</span><span class="token class-name">String</span> fileName<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Playing mp4 file. Name: "</span><span class="token operator">+</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>      
+   <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="步骤-3"><a href="#步骤-3" class="headerlink" title="步骤 3"></a>步骤 3</h4><p>创建实现了 <em>MediaPlayer</em> 接口的适配器类。</p>
+<h5 id="MediaAdapter-java"><a href="#MediaAdapter-java" class="headerlink" title="MediaAdapter.java"></a>MediaAdapter.java</h5><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">MediaAdapter</span> <span class="token keyword">implements</span> <span class="token class-name">MediaPlayer</span> <span class="token punctuation">&#123;</span>
+ 
+   <span class="token class-name">AdvancedMediaPlayer</span> advancedMusicPlayer<span class="token punctuation">;</span>
+ 
+   <span class="token keyword">public</span> <span class="token class-name">MediaAdapter</span><span class="token punctuation">(</span><span class="token class-name">String</span> audioType<span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>audioType<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"vlc"</span><span class="token punctuation">)</span> <span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+         advancedMusicPlayer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">VlcPlayer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>       
+      <span class="token punctuation">&#125;</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>audioType<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"mp4"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+         advancedMusicPlayer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Mp4Player</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>  
+   <span class="token punctuation">&#125;</span>
+ 
+   <span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">play</span><span class="token punctuation">(</span><span class="token class-name">String</span> audioType<span class="token punctuation">,</span> <span class="token class-name">String</span> fileName<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>audioType<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"vlc"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+         advancedMusicPlayer<span class="token punctuation">.</span><span class="token function">playVlc</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span><span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>audioType<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"mp4"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+         advancedMusicPlayer<span class="token punctuation">.</span><span class="token function">playMp4</span><span class="token punctuation">(</span>fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+   <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="步骤-4"><a href="#步骤-4" class="headerlink" title="步骤 4"></a>步骤 4</h4><p>创建实现了 <em>MediaPlayer</em> 接口的实体类。</p>
+<h5 id="AudioPlayer-java"><a href="#AudioPlayer-java" class="headerlink" title="AudioPlayer.java"></a>AudioPlayer.java</h5><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AudioPlayer</span> <span class="token keyword">implements</span> <span class="token class-name">MediaPlayer</span> <span class="token punctuation">&#123;</span>
+   <span class="token class-name">MediaAdapter</span> mediaAdapter<span class="token punctuation">;</span> 
+ 
+   <span class="token annotation punctuation">@Override</span>
+   <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">play</span><span class="token punctuation">(</span><span class="token class-name">String</span> audioType<span class="token punctuation">,</span> <span class="token class-name">String</span> fileName<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>    
+ 
+      <span class="token comment">//播放 mp3 音乐文件的内置支持</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>audioType<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"mp3"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+         <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Playing mp3 file. Name: "</span><span class="token operator">+</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>         
+      <span class="token punctuation">&#125;</span> 
+      <span class="token comment">//mediaAdapter 提供了播放其他文件格式的支持</span>
+      <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>audioType<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"vlc"</span><span class="token punctuation">)</span> 
+         <span class="token operator">||</span> audioType<span class="token punctuation">.</span><span class="token function">equalsIgnoreCase</span><span class="token punctuation">(</span><span class="token string">"mp4"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">&#123;</span>
+         mediaAdapter <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MediaAdapter</span><span class="token punctuation">(</span>audioType<span class="token punctuation">)</span><span class="token punctuation">;</span>
+         mediaAdapter<span class="token punctuation">.</span><span class="token function">play</span><span class="token punctuation">(</span>audioType<span class="token punctuation">,</span> fileName<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+      <span class="token keyword">else</span><span class="token punctuation">&#123;</span>
+         <span class="token class-name">System</span><span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"Invalid media. "</span><span class="token operator">+</span>
+            audioType <span class="token operator">+</span> <span class="token string">" format not supported"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">&#125;</span>
+   <span class="token punctuation">&#125;</span>   
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="步骤-5"><a href="#步骤-5" class="headerlink" title="步骤 5"></a>步骤 5</h4><p>使用 AudioPlayer 来播放不同类型的音频格式。</p>
+<h5 id="AdapterPatternDemo-java"><a href="#AdapterPatternDemo-java" class="headerlink" title="AdapterPatternDemo.java"></a>AdapterPatternDemo.java</h5><pre class="line-numbers language-java" data-language="java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AdapterPatternDemo</span> <span class="token punctuation">&#123;</span>
+   <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token class-name">String</span><span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+      <span class="token class-name">AudioPlayer</span> audioPlayer <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AudioPlayer</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ 
+      audioPlayer<span class="token punctuation">.</span><span class="token function">play</span><span class="token punctuation">(</span><span class="token string">"mp3"</span><span class="token punctuation">,</span> <span class="token string">"beyond the horizon.mp3"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      audioPlayer<span class="token punctuation">.</span><span class="token function">play</span><span class="token punctuation">(</span><span class="token string">"mp4"</span><span class="token punctuation">,</span> <span class="token string">"alone.mp4"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      audioPlayer<span class="token punctuation">.</span><span class="token function">play</span><span class="token punctuation">(</span><span class="token string">"vlc"</span><span class="token punctuation">,</span> <span class="token string">"far far away.vlc"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+      audioPlayer<span class="token punctuation">.</span><span class="token function">play</span><span class="token punctuation">(</span><span class="token string">"avi"</span><span class="token punctuation">,</span> <span class="token string">"mind me.avi"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+   <span class="token punctuation">&#125;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="步骤-6"><a href="#步骤-6" class="headerlink" title="步骤 6"></a>步骤 6</h4><p>执行程序，输出结果：</p>
+<pre class="line-numbers language-none"><code class="language-none">Playing mp3 file. Name: beyond the horizon.mp3
+Playing mp4 file. Name: alone.mp4
+Playing vlc file. Name: far far away.vlc
+Invalid media. avi format not supported<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="C-中"><a href="#C-中" class="headerlink" title="C++中"></a>C++中</h3><p>​        我们需要在C++中<strong>尝试公共继承Target类（就是客户类），私有继承我们的被代理类（也就是库类）</strong></p>
+<p>​        这样我们就会使用桥接器的公共接口来配适我们的开发，从而封装我们的库私有接口。</p>
+<p>​        我们来举个例子</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include &lt;iostream&gt;
+#define MSG(X) std::cout &lt;&lt; X &lt;&lt; std::endl;
+
+class AbsProduct&#123;
+public:
+    virtual ~AbsProduct() &#x3D; default;
+&#125;;
+
+class ProductA : public AbsProduct
+&#123;
+public:
+    virtual void processInA()&#123;
+        MSG(&quot;Process in A method&quot;);
+    &#125;
+&#125;;
+
+class ProductB : public AbsProduct
+&#123;
+public:
+    virtual void processInB()&#123;
+        MSG(&quot;Process in B method&quot;);
+    &#125;
+&#125;;
+
+class ProcessInAvailableProductAbs
+&#123;
+public:
+    virtual void process() &#x3D; 0;
+&#125;;
+
+class ProcessInAvailableProduct : public ProcessInAvailableProductAbs , private ProductA, private ProductB
+&#123;
+public:
+    enum class SupportClass&#123;
+        PRO_A,
+        PRO_B
+    &#125;;
+
+    ProcessInAvailableProduct() &#x3D; delete;
+
+    ProcessInAvailableProduct(SupportClass _class)&#123;
+        switch (_class) &#123;
+            case SupportClass::PRO_A:
+                pro &#x3D; new ProductA;
+                break;
+            case SupportClass::PRO_B:
+                pro &#x3D; new ProductB;
+                break;
+            default:
+                break;
+        &#125;
+        choice &#x3D; _class;
+    &#125;
+
+    virtual void process() override&#123;
+        switch (choice) &#123;
+            case SupportClass::PRO_A:
+            &#123;
+                ProductA* a &#x3D; dynamic_cast&lt;ProductA*&gt;(pro);
+                a-&gt;processInA();
+
+            &#125;break;
+            case SupportClass::PRO_B:
+            &#123;
+                ProductB* b &#x3D; dynamic_cast&lt;ProductB*&gt;(pro);
+                b-&gt;processInB();
+            &#125;break;
+        &#125;
+    &#125;
+
+private:
+    AbsProduct*     pro;
+    SupportClass choice;
+&#125;;
+
+int main()
+&#123;
+    ProcessInAvailableProduct solution(ProcessInAvailableProduct::SupportClass::PRO_A);
+    solution.process();
+    ProcessInAvailableProduct solution2(ProcessInAvailableProduct::SupportClass::PRO_B);
+    solution2.process();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="弊端"><a href="#弊端" class="headerlink" title="弊端"></a><strong>弊端</strong></h3><p><strong>使用适配器模式本身就可能是个问题</strong>，因为一个好的系统内部不应该做任何侨界，模型应该保持一致性。只有在如下情况才考虑使用适配器模式：</p>
+<ol>
+<li>新老系统接替，改造成本非常高。</li>
+<li>三方包适配。</li>
+<li>新旧 API 兼容。</li>
+<li>统一多个类的接口。一般可以结合工厂方法使用。</li>
+</ol>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h3><p>适配器模式也复合开闭原则，在不对原有对象改造的前提下，构造一个适配器就能完成模块衔接。</p>
+<p>适配器模式的实现分为类与对象模式，类模式用继承，对象模式用组合，分别适用于 <code>Adaptee</code> 与 <code>Target</code> 结构相似与结构差异较大的场景，在任何情况下，组合模式都是灵活性最高的。</p>
+<p>最后用一张图概括一下适配器模式的思维：</p>
+<p><img src="v2-b31b68d187bb25ebab70904f86488a5f_1440w.webp" alt="img"></p>
+<h3 id="复盘："><a href="#复盘：" class="headerlink" title="复盘："></a>复盘：</h3><p><strong>意图：</strong>将一个类的接口转换成客户希望的另外一个接口。适配器模式使得原本由于接口不兼容而不能一起工作的那些类可以一起工作。</p>
+<p><strong>主要解决：</strong>主要解决在软件系统中，常常要将一些”现存的对象”放到新的环境中，而新环境要求的接口是现对象不能满足的。</p>
+<p><strong>何时使用：</strong> 1、系统需要使用现有的类，而此类的接口不符合系统的需要。 2、想要建立一个可以重复使用的类，用于与一些彼此之间没有太大关联的一些类，包括一些可能在将来引进的类一起工作，这些源类不一定有一致的接口。 3、通过接口转换，将一个类插入另一个类系中。（比如老虎和飞禽，现在多了一个飞虎，在不增加实体的需求下，增加一个适配器，在里面包容一个虎对象，实现飞的接口。）</p>
+<p><strong>如何解决：</strong>继承或依赖（推荐）。</p>
+<p><strong>关键代码：</strong>适配器继承或依赖已有的对象，实现想要的目标接口。</p>
+<p><strong>应用实例：</strong> 1、美国电器 110V，中国 220V，就要有一个适配器将 110V 转化为 220V。 2、JAVA JDK 1.1 提供了 Enumeration 接口，而在 1.2 中提供了 Iterator 接口，想要使用 1.2 的 JDK，则要将以前系统的 Enumeration 接口转化为 Iterator 接口，这时就需要适配器模式。 3、在 LINUX 上运行 WINDOWS 程序。 4、JAVA 中的 jdbc。</p>
+<p><strong>优点：</strong> 1、可以让任何两个没有关联的类一起运行。 2、提高了类的复用。 3、增加了类的透明度。 4、灵活性好。</p>
+<p><strong>缺点：</strong> 1、过多地使用适配器，会让系统非常零乱，不易整体进行把握。比如，明明看到调用的是 A 接口，其实内部被适配成了 B 接口的实现，一个系统如果太多出现这种情况，无异于一场灾难。因此如果不是很有必要，可以不使用适配器，而是直接对系统进行重构。 2.由于 JAVA 至多继承一个类，所以至多只能适配一个适配者类，而且目标类必须是抽象类。</p>
+<p><strong>使用场景：</strong>有动机地修改一个正常运行的系统的接口，这时应该考虑使用适配器模式。</p>
+<p><strong>注意事项：</strong>适配器不是在详细设计时添加的，而是解决正在服役的项目的问题。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B05-Adapter/">http://charliechen114514.github.io/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B05-Adapter/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C/">C/C++</a><a class="post-meta__tags" href="/tags/Design-Pattern/">Design_Pattern</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B06-Bridge/" title="设计模式小记6 Bridge"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">设计模式小记6 Bridge</div></div></a></div><div class="next-post pull-right"><a href="/2024/01/04/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-1/" title="重新学习Linux系统编程 1"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">重新学习Linux系统编程 1</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/01/01/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B01-Abstract-Factory/" title="设计模式小记1 - Abstract Factory"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-01</div><div class="title">设计模式小记1 - Abstract Factory</div></div></a></div><div><a href="/2024/01/02/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B02-Builder/" title="设计模式小记2 Builder"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-02</div><div class="title">设计模式小记2 Builder</div></div></a></div><div><a href="/2024/01/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B03-Factory-Mode/" title="设计模式小记3 Factory_Mode"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-04</div><div class="title">设计模式小记3 Factory_Mode</div></div></a></div><div><a href="/2024/01/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B04-Prototype/" title="设计模式小记4 Prototype"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-04</div><div class="title">设计模式小记4 Prototype</div></div></a></div><div><a href="/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B06-Bridge/" title="设计模式小记6 Bridge"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-05</div><div class="title">设计模式小记6 Bridge</div></div></a></div><div><a href="/2023/06/06/Algorithm-RecursionSpecial/" title="Algorithm_RecursionSpecial"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-06-06</div><div class="title">Algorithm_RecursionSpecial</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div><div id="comment-switch"><span class="first-comment">Giscus</span><span class="switch-btn"></span><span class="second-comment">Gitalk</span></div></div><div class="comment-wrap"><div><div id="giscus-wrap"></div></div><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">26</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B0-5"><span class="toc-number">1.</span> <span class="toc-text">设计模式小记 5</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Adapter%EF%BC%88%E9%80%82%E9%85%8D%E5%99%A8%E6%A8%A1%E5%BC%8F%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">Adapter（适配器模式）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A6%82%E8%AE%BA"><span class="toc-number">1.1.1.</span> <span class="toc-text">概论</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BE%E4%BE%8B%E5%AD%90"><span class="toc-number">1.1.2.</span> <span class="toc-text">举例子</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A5%E5%8F%A3%E8%BD%AC%E6%8D%A2%E5%99%A8"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">接口转换器</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E5%BA%93-ORM"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">数据库 ORM</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#API-Deprecated"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">API Deprecated</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%84%8F%E5%9B%BE%E8%A7%A3%E9%87%8A"><span class="toc-number">1.1.3.</span> <span class="toc-text">意图解释</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF"><span class="toc-number">1.1.4.</span> <span class="toc-text">使用场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%93%E6%9E%84%E5%9B%BE"><span class="toc-number">1.1.5.</span> <span class="toc-text">结构图</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A3%E7%A0%81%E4%BE%8B%E5%AD%90"><span class="toc-number">1.2.</span> <span class="toc-text">代码例子</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#typescript"><span class="toc-number">1.2.1.</span> <span class="toc-text">typescript</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%EF%BC%88java%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">实现（java）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-1"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">步骤 1</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#MediaPlayer-java"><span class="toc-number">1.2.2.1.1.</span> <span class="toc-text">MediaPlayer.java</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#AdvancedMediaPlayer-java"><span class="toc-number">1.2.2.1.2.</span> <span class="toc-text">AdvancedMediaPlayer.java</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-2"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">步骤 2</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#VlcPlayer-java"><span class="toc-number">1.2.2.2.1.</span> <span class="toc-text">VlcPlayer.java</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#Mp4Player-java"><span class="toc-number">1.2.2.2.2.</span> <span class="toc-text">Mp4Player.java</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-3"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">步骤 3</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#MediaAdapter-java"><span class="toc-number">1.2.2.3.1.</span> <span class="toc-text">MediaAdapter.java</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-4"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">步骤 4</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#AudioPlayer-java"><span class="toc-number">1.2.2.4.1.</span> <span class="toc-text">AudioPlayer.java</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-5"><span class="toc-number">1.2.2.5.</span> <span class="toc-text">步骤 5</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#AdapterPatternDemo-java"><span class="toc-number">1.2.2.5.1.</span> <span class="toc-text">AdapterPatternDemo.java</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%AD%A5%E9%AA%A4-6"><span class="toc-number">1.2.2.6.</span> <span class="toc-text">步骤 6</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#C-%E4%B8%AD"><span class="toc-number">1.2.3.</span> <span class="toc-text">C++中</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%8A%E7%AB%AF"><span class="toc-number">1.2.4.</span> <span class="toc-text">弊端</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.5.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%8D%E7%9B%98%EF%BC%9A"><span class="toc-number">1.2.6.</span> <span class="toc-text">复盘：</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B06-Bridge/" title="设计模式小记6 Bridge"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式小记6 Bridge"/></a><div class="content"><a class="title" href="/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B06-Bridge/" title="设计模式小记6 Bridge">设计模式小记6 Bridge</a><time datetime="2024-01-05T03:44:32.000Z" title="发表于 2024-01-05 11:44:32">2024-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B05-Adapter/" title="设计模式小记5 Adapter"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式小记5 Adapter"/></a><div class="content"><a class="title" href="/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B05-Adapter/" title="设计模式小记5 Adapter">设计模式小记5 Adapter</a><time datetime="2024-01-05T03:44:06.000Z" title="发表于 2024-01-05 11:44:06">2024-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/04/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-1/" title="重新学习Linux系统编程 1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="重新学习Linux系统编程 1"/></a><div class="content"><a class="title" href="/2024/01/04/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-1/" title="重新学习Linux系统编程 1">重新学习Linux系统编程 1</a><time datetime="2024-01-04T11:51:35.000Z" title="发表于 2024-01-04 19:51:35">2024-01-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B04-Prototype/" title="设计模式小记4 Prototype"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式小记4 Prototype"/></a><div class="content"><a class="title" href="/2024/01/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B04-Prototype/" title="设计模式小记4 Prototype">设计模式小记4 Prototype</a><time datetime="2024-01-04T02:56:34.000Z" title="发表于 2024-01-04 10:56:34">2024-01-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B03-Factory-Mode/" title="设计模式小记3 Factory_Mode"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式小记3 Factory_Mode"/></a><div class="content"><a class="title" href="/2024/01/04/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E8%AE%B03-Factory-Mode/" title="设计模式小记3 Factory_Mode">设计模式小记3 Factory_Mode</a><time datetime="2024-01-04T02:56:23.000Z" title="发表于 2024-01-04 10:56:23">2024-01-04</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script><script>function loadGiscus () {
+  let nowTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+
+  const config = Object.assign({
+    src: 'https://giscus.app/client.js',
+    'data-repo': 'Charliechen114514/Charliechen114514.github.io',
+    'data-repo-id': 'R_kgDOI2hS0Q',
+    'data-category-id': 'DIC_kwDOI2hS0c4CT2wo',
+    'data-mapping': 'pathname',
+    'data-theme': nowTheme,
+    'data-reactions-enabled': '1',
+    crossorigin: 'anonymous',
+    async: true
+  },null)
+
+  let ele = document.createElement('script')
+  for (let key in config) {
+    ele.setAttribute(key, config[key])
+  }
+  document.getElementById('giscus-wrap').insertAdjacentElement('afterbegin',ele)
+}
+
+function changeGiscusTheme () {
+  const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light'
+
+  function sendMessage(message) {
+    const iframe = document.querySelector('iframe.giscus-frame');
+    if (!iframe) return;
+    iframe.contentWindow.postMessage({ giscus: message }, 'https://giscus.app');
+  }
+
+  sendMessage({
+    setConfig: {
+      theme: theme
+    }
+  });
+}
+
+if ('Giscus' === 'Giscus' || !false) {
+  if (false) btf.loadComment(document.getElementById('giscus-wrap'), loadGiscus)
+  else loadGiscus()
+} else {
+  function loadOtherComment () {
+    loadGiscus()
+  }
+}</script><script>function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '427c57fd70a25e225fbf',
+      clientSecret: 'be8c6d207dc7fff7f2a7bfbcdf93402f84352e41',
+      repo: 'Charliechen114514.github.io',
+      owner: 'Charliechen114514',
+      admin: ['Charliechen114514'],
+      id: '80188a6720201ffef1a8a71201820d2d',
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    getCSS('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css')
+    getScript('https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Giscus' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
