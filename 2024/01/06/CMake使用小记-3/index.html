@@ -1,0 +1,353 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>CMake使用小记-3 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="CMake小记3: find_package以opencv为例​        我们下面就要开始讲授难一些的内容了：也就是当我们的程序需要外部库才能消除未定义符号从而正确的完成构建之后，我们应该如何使用CMake来帮助构建程序。 ​        本文的测试程序如下： #include &lt;opencv2&#x2F;highgui.hpp&gt; #include &lt;opencv2&amp;#x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="CMake使用小记-3">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/01/06/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-3/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="CMake小记3: find_package以opencv为例​        我们下面就要开始讲授难一些的内容了：也就是当我们的程序需要外部库才能消除未定义符号从而正确的完成构建之后，我们应该如何使用CMake来帮助构建程序。 ​        本文的测试程序如下： #include &lt;opencv2&#x2F;highgui.hpp&gt; #include &lt;opencv2&amp;#x">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-01-06T10:36:42.000Z">
+<meta property="article:modified_time" content="2024-01-06T10:39:38.394Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="Cmake">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/01/06/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'CMake使用小记-3',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-01-06 18:39:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">26</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">CMake使用小记-3</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-01-06T10:36:42.000Z" title="发表于 2024-01-06 18:36:42">2024-01-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-01-06T10:39:38.394Z" title="更新于 2024-01-06 18:39:38">2024-01-06</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.4k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="CMake使用小记-3"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="CMake小记3-find-package"><a href="#CMake小记3-find-package" class="headerlink" title="CMake小记3: find_package"></a>CMake小记3: find_package</h1><h2 id="以opencv为例"><a href="#以opencv为例" class="headerlink" title="以opencv为例"></a>以opencv为例</h2><p>​        我们下面就要开始讲授难一些的内容了：也就是当我们的程序需要外部库才能消除未定义符号从而正确的完成构建之后，我们应该如何使用CMake来帮助构建程序。</p>
+<p>​        本文的测试程序如下：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include &lt;opencv2&#x2F;highgui.hpp&gt;
+#include &lt;opencv2&#x2F;opencv.hpp&gt;
+using namespace cv;
+std::string path &#x3D; &quot;&#x2F;home&#x2F;charliechen114514&#x2F;LocalGitProject&#x2F;CodesExperiments&#x2F;C++&#x2F;Cmake_5&#x2F;desktop2.png&quot;; 
+&#x2F;&#x2F; 注意path换成自己图片的路径，需要注意的是不要含中文名，否则解析可能存在问题
+
+int main()
+&#123;
+    Mat pic &#x3D; imread(path);
+    if(pic.empty())
+    &#123;
+        std::cerr   &lt;&lt; &quot;Can not find the target pic path:&gt; &quot; \
+                    &lt;&lt; path &lt;&lt; &quot;\n&quot;;
+        return -1;
+    &#125;
+    std::cout &lt;&lt; &quot;Try to show the image:&gt; &quot; &lt;&lt; path; 
+    imshow(&quot;Pic&quot;, pic);
+    waitKey(0);
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="find-package简单介绍"><a href="#find-package简单介绍" class="headerlink" title="find_package简单介绍"></a><code>find_package</code>简单介绍</h2><p>​        这个函数表示的是CMake查找包的意思。我们这一次打算拿著名的计算机视觉开源库<code>Opencv</code>来完成这样的事情。</p>
+<p>​        我们首先应用起来之前学习CMakeLists知识，来整点：</p>
+<pre class="line-numbers language-cmake" data-language="cmake"><code class="language-cmake"><span class="token comment"># Blocks are used to ensure the cmake version</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token punctuation">$&#123;</span><span class="token variable">CMAKE_VERSION</span><span class="token punctuation">&#125;</span> <span class="token operator">VERSION_LESS</span> <span class="token number">3.24</span><span class="token punctuation">)</span>
+    <span class="token keyword">cmake_minimum_required</span><span class="token punctuation">(</span><span class="token property">VERSION</span> <span class="token punctuation">$&#123;</span><span class="token variable">CMAKE_MAJOR_VERSION</span><span class="token punctuation">&#125;</span>.<span class="token punctuation">$&#123;</span><span class="token variable">CMAKE_MINOR_VERSION</span><span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+    <span class="token keyword">message</span><span class="token punctuation">(</span>STATUS <span class="token string">"version less 3.24, switch to <span class="token interpolation"><span class="token punctuation">$&#123;</span><span class="token variable">CMAKE_MAJOR_VERSION</span><span class="token punctuation">&#125;</span></span>.<span class="token interpolation"><span class="token punctuation">$&#123;</span><span class="token variable">CMAKE_MINOR_VERSION</span><span class="token punctuation">&#125;</span></span>"</span><span class="token punctuation">)</span>
+<span class="token keyword">else</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+    <span class="token keyword">cmake_minimum_required</span><span class="token punctuation">(</span><span class="token property">VERSION</span> <span class="token number">3.24</span><span class="token punctuation">)</span>
+    <span class="token keyword">message</span><span class="token punctuation">(</span>STATUS <span class="token string">"version is good, no need to switch"</span><span class="token punctuation">)</span>
+<span class="token keyword">endif</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token comment"># Block End</span>
+
+<span class="token keyword">project</span><span class="token punctuation">(</span>First_CMake_Project
+	<span class="token property">VERSION</span> <span class="token number">1.0</span>
+        DESCRIPTION <span class="token string">"A demo for using imported libraries"</span><span class="token punctuation">)</span>
+<span class="token comment"># SET THIS AS DEBUG MODE, for I need DEBUG lol        </span>
+<span class="token function">SET</span><span class="token punctuation">(</span><span class="token variable">CMAKE_BUILD_TYPE</span> <span class="token string">"Debug"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        鲁莽的直接找包可能会出现：</p>
+<p><img src="image-20240106154751929.png" alt="image-20240106154751929"></p>
+<p>​        我们下面来看看find_package到底是如何找包的：</p>
+<p>​        </p>
+<h3 id="find-package工作模式"><a href="#find-package工作模式" class="headerlink" title="find_package工作模式"></a>find_package工作模式</h3><p>​        find_package命令有两种工作模式，这两种工作模式的不同决定了其搜包路径的不同：</p>
+<blockquote>
+<p>Module模式<br>find_package命令基础工作模式(Basic Signature)，也是默认工作模式。</p>
+<p>Config模式<br>find_package命令高级工作模式(Full Signature)。 只有在find_package()中指定CONFIG、NO_MODULE等关键字，或者Module模式查找失败后才会进入到Config模式。</p>
+</blockquote>
+<pre class="line-numbers language-cmake" data-language="cmake"><code class="language-cmake"><span class="token keyword">find_package</span><span class="token punctuation">(</span>&lt;package<span class="token punctuation">></span> [version] [EXACT] [QUIET] [MODULE]
+             [REQUIRED] [[COMPONENTS] [components...]]
+             [OPTIONAL_COMPONENTS components...]
+             [NO_POLICY_SCOPE]<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><strong>参数解释：</strong></p>
+<blockquote>
+<p><strong>package</strong>：必填参数。需要查找的包名，注意大小写。</p>
+<p><strong>version和EXACT</strong>：可选参数，version指定的是版本，如果指定就必须检查找到的包的版本是否和<strong>version</strong>兼容。如果指定<strong>EXACT</strong>则表示必须完全匹配的版本而不是兼容版本就可以。</p>
+<p><strong>QUIET</strong>：可选参数，表示如果查找失败，不会在屏幕进行输出（但是如果指定了<strong>REQUIRED</strong>字段，则<strong>QUIET</strong>无效，仍然会输出查找失败提示语）。</p>
+<p><strong>MODULE</strong>：可选字段。前面提到说“如果<strong>Module</strong>模式查找失败则回退到<strong>Config</strong>模式进行查找”，但是假如加入了<strong>MODULE</strong>选项，那么就只在<strong>Module</strong>模式查找，如果<strong>Module</strong>模式下查找失败并不切换到<strong>Config</strong>模式查找。</p>
+<p><strong>REQUIRED</strong>：可选字段。表示一定要找到包，找不到的话就立即停掉整个CMake。<strong>而如果不指定REQUIRED则CMake会继续执行。</strong></p>
+<p><strong>COMPONENTS，components</strong>：可选字段，表示查找的包中必须要找到的组件(components），如果有任何一个找不到就算失败，类似于<strong>REQUIRED</strong>，导致CMake停止执行。</p>
+</blockquote>
+<h3 id="Module模式查找顺序"><a href="#Module模式查找顺序" class="headerlink" title="Module模式查找顺序"></a>Module模式查找顺序</h3><p><strong>Module</strong>模式下是要查找到名为<code>Find&lt;PackageName&gt;.cmake</code>的配置文件。</p>
+<p>​        Module模式只有两个查找路径：<strong>CMAKE_MODULE_PATH</strong>和<strong>CMake</strong>安装路径下的<strong>Modules</strong>目录，<br><strong>搜包路径依次为：</strong></p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">CMAKE_MODULE_PATH
+CMAKE_ROOT<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        先在<strong>CMAKE_MODULE_PATH</strong>变量对应的路径中查找。如果路径为空，或者路径中查找失败，则在CMake安装目录（即<strong>CMAKE_ROOT</strong>变量）下的<strong>Modules</strong>目录下（通常为<code>/usr/share/cmake-3.10/Modules</code>，3.10是我的CMake版本）查找。这两个变量可以在<code>CMakeLists.txt</code>文件中打印查看具体内容：</p>
+<pre class="line-numbers language-cmake" data-language="cmake"><code class="language-cmake"><span class="token keyword">message</span><span class="token punctuation">(</span>STATUS <span class="token string">"CMAKE_MODULE_PATH = <span class="token interpolation"><span class="token punctuation">$&#123;</span><span class="token variable">CMAKE_MODULE_PATH</span><span class="token punctuation">&#125;</span></span>"</span><span class="token punctuation">)</span>
+<span class="token keyword">message</span><span class="token punctuation">(</span>STATUS <span class="token string">"CMAKE_ROOT = <span class="token interpolation"><span class="token punctuation">$&#123;</span><span class="token variable">CMAKE_ROOT</span><span class="token punctuation">&#125;</span></span>"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>其中<strong>CMAKE_MODULE_PATH</strong>默认为空，可以利用<code>set</code>命令赋值。</p>
+<p>在安装CMake时，CMake为我们提供了很多开发库的<code>FindXXX.cmake</code>模块文件，可以通过命令查询：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">cmake --help-module-list <span class="token operator">|</span> <span class="token function">grep</span> <span class="token parameter variable">-E</span> ^Find<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="Config模式用法"><a href="#Config模式用法" class="headerlink" title="Config模式用法"></a>Config模式用法</h3><p><strong>Config</strong>模式的完整命令参数为：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">find_package<span class="token punctuation">(</span><span class="token operator">&lt;</span>package<span class="token operator">></span> <span class="token punctuation">[</span>version<span class="token punctuation">]</span> <span class="token punctuation">[</span>EXACT<span class="token punctuation">]</span> <span class="token punctuation">[</span>QUIET<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>REQUIRED<span class="token punctuation">]</span> <span class="token punctuation">[</span><span class="token punctuation">[</span>COMPONENTS<span class="token punctuation">]</span> <span class="token punctuation">[</span>components<span class="token punctuation">..</span>.<span class="token punctuation">]</span><span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>CONFIG<span class="token operator">|</span>NO_MODULE<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>NO_POLICY_SCOPE<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>NAMES name1 <span class="token punctuation">[</span>name2 <span class="token punctuation">..</span>.<span class="token punctuation">]</span><span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>CONFIGS config1 <span class="token punctuation">[</span>config2 <span class="token punctuation">..</span>.<span class="token punctuation">]</span><span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>HINTS path1 <span class="token punctuation">[</span>path2 <span class="token punctuation">..</span>. <span class="token punctuation">]</span><span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>PATHS path1 <span class="token punctuation">[</span>path2 <span class="token punctuation">..</span>. <span class="token punctuation">]</span><span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>PATH_SUFFIXES suffix1 <span class="token punctuation">[</span>suffix2 <span class="token punctuation">..</span>.<span class="token punctuation">]</span><span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>NO_DEFAULT_PATH<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>NO_CMAKE_ENVIRONMENT_PATH<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>NO_CMAKE_PATH<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>NO_SYSTEM_ENVIRONMENT_PATH<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>NO_CMAKE_PACKAGE_REGISTRY<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>NO_CMAKE_BUILDS_PATH<span class="token punctuation">]</span> <span class="token comment"># Deprecated; does nothing.</span>
+             <span class="token punctuation">[</span>NO_CMAKE_SYSTEM_PATH<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>NO_CMAKE_SYSTEM_PACKAGE_REGISTRY<span class="token punctuation">]</span>
+             <span class="token punctuation">[</span>CMAKE_FIND_ROOT_PATH_BOTH <span class="token operator">|</span>
+              ONLY_CMAKE_FIND_ROOT_PATH <span class="token operator">|</span>
+              NO_CMAKE_FIND_ROOT_PATH<span class="token punctuation">]</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        相比于<strong>Module</strong>模式，<strong>Config</strong>模式的参数更多，也更复杂，但实际在使用过程中我们并不会用到所有参数，大部分参数都是可选的，我们只需要掌握基本的参数用法即可。其中具体查找库并给<code>XXX_INCLUDE_DIRS</code>和<code>XXX_LIBRARIES</code>两个变量赋值的操作由XXXConfig.cmake模块完成。</p>
+<p>​        两种模式看起来似乎差不多，不过CMake默认采取Module模式，如果Module模式未找到库，才会采取Config模式。如果XXX_DIR路径下找不到XXXConfig.cmake文件，则会找/usr/local/lib/cmake/XXX/中的XXXConfig.cmake文件。总之，Config模式是一个备选策略。通常，库安装时会拷贝一份XXXConfig.cmake到系统目录中，因此在没有显式指定搜索路径时也可以顺利找到。</p>
+<h3 id="Config模式查找顺序"><a href="#Config模式查找顺序" class="headerlink" title="Config模式查找顺序"></a>Config模式查找顺序</h3><p>​        <strong>Config</strong>模式下是要查找名为<code>&lt;PackageName&gt;Config.cmake</code>或<code>&lt;lower-case-package-name&gt;-config.cmake</code>的模块文件。</p>
+<p><strong>搜包路径依次为：</strong><br>        与<strong>Module</strong>模式不同，<strong>Config</strong>模式需要查找的路径非常多，也要匹配很多的可能性，因此有些路径是首先作为<strong>根目录</strong>，然后进行子目录的匹配， 具体查找顺序为：</p>
+<blockquote>
+<p>1、名为<code>&lt;PackageName&gt;_DIR</code>的CMake变量或环境变量路径， 默认为空。<br><strong>这个路径是非根目录路径，需要指定到<code>&lt;PackageName&gt;Config.cmake</code>或<code>&lt;lower-case-package-name&gt;-config.cmake</code>文件所在目录才能找到。</strong><br>2、名为<code>CMAKE_PREFIX_PATH</code>、<code>CMAKE_FRAMEWORK_PATH</code>、<code>CMAKE_APPBUNDLE_PATH</code>的CMake变量或<strong>环境变量</strong>路径<br><strong>根目录</strong>，默认都为空。<br>3、<code>PATH</code>环境变量路径<br><strong>根目录</strong>，默认为系统环境<code>PATH</code>环境变量值。其实这个路径才是<strong>Config</strong>模式大部分情况下能够查找到安装到系统中各种库的原因。<br>这个路径的查找规则为：</p>
+<blockquote>
+<p>遍历<code>PATH</code>环境变量中的各路径，如果该路径如果以bin或sbin结尾，则<strong>自动回退到上一级目录</strong>得到根目录。例如我的<code>PATH</code>路径包括：</p>
+</blockquote>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">echo $PATH
+&#x2F;home&#x2F;charliechen114514&#x2F;miniconda3&#x2F;bin:&#x2F;home&#x2F;charliechen114514&#x2F;miniconda3&#x2F;condabin:&#x2F;home&#x2F;charliechen114514&#x2F;.cargo&#x2F;bin:&#x2F;usr&#x2F;local&#x2F;sbin:&#x2F;usr&#x2F;local&#x2F;bin:&#x2F;usr&#x2F;sbin:&#x2F;usr&#x2F;bin:&#x2F;sbin:&#x2F;bin:&#x2F;usr&#x2F;games:&#x2F;usr&#x2F;local&#x2F;games:&#x2F;snap&#x2F;bin:&#x2F;snap&#x2F;bin:&#x2F;opt&#x2F;Typora-linux-x64<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>在上述指明的是<strong>根目录</strong>路径时，CMake会首先检查这些<strong>根目录</strong>路径下是否有名为<code>&lt;PackageName&gt;Config.cmake</code>或<code>&lt;lower-case-package-name&gt;-config.cmake</code>的模块文件，如果没有，CMake会继续<strong>检查或匹配</strong>这些根目录下的以下路径（<code>&lt;PackageName&gt;_DIR</code>路径不是根目录路径）：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token operator">&lt;</span>prefix<span class="token operator">></span>/<span class="token punctuation">(</span>lib/<span class="token operator">&lt;</span>arch<span class="token operator">>|</span>lib<span class="token operator">|</span>share<span class="token punctuation">)</span>/cmake/<span class="token operator">&lt;</span>name<span class="token operator">></span>*/
+<span class="token operator">&lt;</span>prefix<span class="token operator">></span>/<span class="token punctuation">(</span>lib/<span class="token operator">&lt;</span>arch<span class="token operator">>|</span>lib<span class="token operator">|</span>share<span class="token punctuation">)</span>/<span class="token operator">&lt;</span>name<span class="token operator">></span>*/ 
+<span class="token operator">&lt;</span>prefix<span class="token operator">></span>/<span class="token punctuation">(</span>lib/<span class="token operator">&lt;</span>arch<span class="token operator">>|</span>lib<span class="token operator">|</span>share<span class="token punctuation">)</span>/<span class="token operator">&lt;</span>name<span class="token operator">></span>*/<span class="token punctuation">(</span>cmake<span class="token operator">|</span>CMake<span class="token punctuation">)</span>/<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        其中为系统架构名，如Ubuntu下一般为：<code>/usr/lib/x86_64-linux-gnu</code>，整个<code>(lib/&lt;arch&gt;|lib|share)</code>为可选路径，例如OpenCV库而言会<strong>检查或匹配</strong><code>&lt;prefix&gt;/OpenCV/</code>、<code>&lt;prefix&gt;/lib/x86_64-linux-gnu/OpenCV/</code>、<code>&lt;prefix&gt;/lib/share/OpenCV/</code>、<code>&lt;prefix&gt;/share/OpenCV/</code>等路径；name为包名，不区分大小写<code>&lt;name&gt;*</code>意思是包名后接一些版本后等字符也是合法的，如<code>pcl-1.9</code>也会被找到。</p>
+<h4 id="3-4-查找指定包建议"><a href="#3-4-查找指定包建议" class="headerlink" title="3.4 查找指定包建议"></a>3.4 查找指定包建议</h4><p>​        上面的查找规则整体看起来好像很复杂，但其实我们在安装库的时候都会自动配置安装到对的位置，一般都不会出现问题。如果我们需要指定特定的库，我们也只需要设置<strong>优先级最高</strong>的几个变量名即可。包括下面两种情况：</p>
+<p>1、如果你明确知道想要查找的库<code>&lt;PackageName&gt;Config.cmake</code>或<code>&lt;lower-case-package-name&gt;-config.cmake</code>文件所在路径，为了能够准确定位到这个包，可以直接设置变量<code>&lt;PackageName&gt;_DIR</code>为具体路径，如：</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">set<span class="token punctuation">(</span>OpenCV_DIR <span class="token string">"/usr/local/cmake/opencv4/"</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​        就可以明确需要查找的OpenCV包的路径了。</p>
+<p>2、如果你有多个包的配置文件需要查找，可以将这些配置文件都统一放在一个命名为<code>cmake</code>的文件夹下，然后设置变量<code>CMAKE_PREFIX_PATH</code>变量指向这个<code>cmake</code>文件夹路径，<strong>需要注意根据上述的匹配规则，此时每个包的配置文件需要单独放置在命名为包名的文件夹下（文件夹名不区分大小写）</strong>，否则会提示找不到。</p>
+<h3 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h3><p>​        我们实际上就是要求CMake通过<code>find_package</code>来查找包的配置，我们首先需要保证<code>find&lt;PackName&gt;.cmake</code>或者是<code>&#123;PackName&#125;Config.cmake</code>，一般的配置无需太过在意参数，想要使用特殊版本的包可以指定版本或者是手动设置DIR路径。</p>
+<h3 id="继续设置CMake"><a href="#继续设置CMake" class="headerlink" title="继续设置CMake"></a>继续设置CMake</h3><p>​        CMake支持pkg-config找包，可以使用如下的模板</p>
+<pre class="line-numbers language-cmake" data-language="cmake"><code class="language-cmake"><span class="token comment"># 先设置PkgConfig的路径，一般都可以找到</span>
+<span class="token comment"># if using apt, then use in this way, apt-installed Opencv usually provide the .pc files</span>
+<span class="token keyword">find_package</span><span class="token punctuation">(</span>PkgConfig<span class="token punctuation">)</span>
+<span class="token function">pkg_check_modules</span><span class="token punctuation">(</span>OPENCV IMPORTED_TARGET opencv<span class="token punctuation">)</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span><span class="token operator">NOT</span> OPENCV_FOUND<span class="token punctuation">)</span>
+<span class="token keyword">message</span><span class="token punctuation">(</span>STATUS <span class="token string">"Package-config can not find opencv*.pc, if you wanna find by pkg-config, move opencv*.pc to the findable path! /usr/share/pkgConfig"</span><span class="token punctuation">)</span>
+<span class="token keyword">find_package</span><span class="token punctuation">(</span>OpenCV REQUIRED<span class="token punctuation">)</span>
+<span class="token keyword">endif</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment"># Blocks are used in shown the Opencv Config message</span>
+<span class="token keyword">message</span><span class="token punctuation">(</span><span class="token string">"Opencv targeted!"</span><span class="token punctuation">)</span>
+<span class="token keyword">message</span><span class="token punctuation">(</span>STATUS <span class="token string">"Opencv Related Message is on the below\n\n\n"</span><span class="token punctuation">)</span>
+<span class="token keyword">message</span><span class="token punctuation">(</span>STATUS <span class="token string">"OpenCV_DIR = <span class="token interpolation"><span class="token punctuation">$&#123;</span><span class="token variable">OpenCV_DIR</span><span class="token punctuation">&#125;</span></span>"</span><span class="token punctuation">)</span>
+<span class="token keyword">message</span><span class="token punctuation">(</span>STATUS <span class="token string">"OpenCV_INCLUDE_DIRS = <span class="token interpolation"><span class="token punctuation">$&#123;</span><span class="token variable">OpenCV_INCLUDE_DIRS</span><span class="token punctuation">&#125;</span></span>"</span><span class="token punctuation">)</span>
+<span class="token keyword">message</span><span class="token punctuation">(</span>STATUS <span class="token string">"OpenCV_LIBS = <span class="token interpolation"><span class="token punctuation">$&#123;</span><span class="token variable">OpenCV_LIBS</span><span class="token punctuation">&#125;</span></span>"</span><span class="token punctuation">)</span>
+<span class="token comment"># Blocks End</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        基本上就结束了：我们补完构建的部分</p>
+<pre class="line-numbers language-cmake" data-language="cmake"><code class="language-cmake"><span class="token keyword">set</span><span class="token punctuation">(</span>Executable_Name <span class="token string">"first_run_opencv"</span><span class="token punctuation">)</span>
+<span class="token comment"># link the libs</span>
+<span class="token keyword">include_directories</span><span class="token punctuation">(</span><span class="token punctuation">$&#123;</span>OpenCV_INCLUDE_DIRS<span class="token punctuation">&#125;</span><span class="token punctuation">)</span>
+<span class="token keyword">add_executable</span><span class="token punctuation">(</span><span class="token punctuation">$&#123;</span>Executable_Name<span class="token punctuation">&#125;</span> TryOpencv.cpp<span class="token punctuation">)</span>
+<span class="token keyword">target_link_libraries</span><span class="token punctuation">(</span><span class="token punctuation">$&#123;</span>Executable_Name<span class="token punctuation">&#125;</span> <span class="token punctuation">$&#123;</span>OpenCV_LIBS<span class="token punctuation">&#125;</span><span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        现在我们cmake ..试试</p>
+<p><img src="image-20240106183243955.png" alt="image-20240106183243955"></p>
+<p>​        可以了。</p>
+<pre class="line-numbers language-none"><code class="language-none">make<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240106183505562.png" alt="image-20240106183505562"></p>
+<p><img src="image-20240106183516089.png" alt="image-20240106183516089"></p>
+<p>​        嗯，就这样。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/01/06/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-3/">http://charliechen114514.github.io/2024/01/06/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-3/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Cmake/">Cmake</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E5%AD%A6/" title="设计模式小学"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">设计模式小学</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/02/16/Cmake-%E7%AE%80%E5%8D%95%E7%AC%94%E8%AE%B0%EF%BC%881%EF%BC%89/" title="Cmake 简单笔记 （1）"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-02-16</div><div class="title">Cmake 简单笔记 （1）</div></div></a></div><div><a href="/2024/01/01/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B01/" title="CMake使用小记1"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-01</div><div class="title">CMake使用小记1</div></div></a></div><div><a href="/2024/01/02/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-2/" title="CMake使用小记 2"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-02</div><div class="title">CMake使用小记 2</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">51</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">26</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#CMake%E5%B0%8F%E8%AE%B03-find-package"><span class="toc-number">1.</span> <span class="toc-text">CMake小记3: find_package</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%A5opencv%E4%B8%BA%E4%BE%8B"><span class="toc-number">1.1.</span> <span class="toc-text">以opencv为例</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#find-package%E7%AE%80%E5%8D%95%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">find_package简单介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#find-package%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.1.</span> <span class="toc-text">find_package工作模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Module%E6%A8%A1%E5%BC%8F%E6%9F%A5%E6%89%BE%E9%A1%BA%E5%BA%8F"><span class="toc-number">1.2.2.</span> <span class="toc-text">Module模式查找顺序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Config%E6%A8%A1%E5%BC%8F%E7%94%A8%E6%B3%95"><span class="toc-number">1.2.3.</span> <span class="toc-text">Config模式用法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Config%E6%A8%A1%E5%BC%8F%E6%9F%A5%E6%89%BE%E9%A1%BA%E5%BA%8F"><span class="toc-number">1.2.4.</span> <span class="toc-text">Config模式查找顺序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-4-%E6%9F%A5%E6%89%BE%E6%8C%87%E5%AE%9A%E5%8C%85%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">3.4 查找指定包建议</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">1.2.5.</span> <span class="toc-text">总结</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%BB%A7%E7%BB%AD%E8%AE%BE%E7%BD%AECMake"><span class="toc-number">1.2.6.</span> <span class="toc-text">继续设置CMake</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/01/06/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-3/" title="CMake使用小记-3"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CMake使用小记-3"/></a><div class="content"><a class="title" href="/2024/01/06/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-3/" title="CMake使用小记-3">CMake使用小记-3</a><time datetime="2024-01-06T10:36:42.000Z" title="发表于 2024-01-06 18:36:42">2024-01-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E5%AD%A6/" title="设计模式小学"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="设计模式小学"/></a><div class="content"><a class="title" href="/2024/01/05/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E5%B0%8F%E5%AD%A6/" title="设计模式小学">设计模式小学</a><time datetime="2024-01-05T12:43:51.000Z" title="发表于 2024-01-05 20:43:51">2024-01-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/04/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-1/" title="重新学习Linux系统编程 1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="重新学习Linux系统编程 1"/></a><div class="content"><a class="title" href="/2024/01/04/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-1/" title="重新学习Linux系统编程 1">重新学习Linux系统编程 1</a><time datetime="2024-01-04T11:51:35.000Z" title="发表于 2024-01-04 19:51:35">2024-01-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/02/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-2/" title="CMake使用小记 2"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CMake使用小记 2"/></a><div class="content"><a class="title" href="/2024/01/02/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-2/" title="CMake使用小记 2">CMake使用小记 2</a><time datetime="2024-01-02T10:40:41.000Z" title="发表于 2024-01-02 18:40:41">2024-01-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/01/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B01/" title="CMake使用小记1"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CMake使用小记1"/></a><div class="content"><a class="title" href="/2024/01/01/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B01/" title="CMake使用小记1">CMake使用小记1</a><time datetime="2024-01-01T13:52:30.000Z" title="发表于 2024-01-01 21:52:30">2024-01-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
