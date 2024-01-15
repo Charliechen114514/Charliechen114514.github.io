@@ -1,0 +1,861 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>重新学习Linux系统编程-2 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="重新学习Linux系统2文件IO​        对于文件操作，我们首先要打开文件。内核会为每一个打开的文件维护一个文件列表，这个就是一个普通的非负整数数组，这些非负的整数就是文件的描述符。用户和内核空间都会把文件描述丰富作为唯一的cookies记载。 ​        对于出错的文件操作状态，会返回一个-1表示无法为文件分配文件描述符。 ​        按照惯例：每一个进程都会有三个默认的文件">
+<meta property="og:type" content="article">
+<meta property="og:title" content="重新学习Linux系统编程-2">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/01/15/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-2/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="重新学习Linux系统2文件IO​        对于文件操作，我们首先要打开文件。内核会为每一个打开的文件维护一个文件列表，这个就是一个普通的非负整数数组，这些非负的整数就是文件的描述符。用户和内核空间都会把文件描述丰富作为唯一的cookies记载。 ​        对于出错的文件操作状态，会返回一个-1表示无法为文件分配文件描述符。 ​        按照惯例：每一个进程都会有三个默认的文件">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-01-15T05:50:39.000Z">
+<meta property="article:modified_time" content="2024-01-15T05:51:15.327Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++. Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/01/15/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-2/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '重新学习Linux系统编程-2',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-01-15 13:51:15'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">重新学习Linux系统编程-2</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-01-15T05:50:39.000Z" title="发表于 2024-01-15 13:50:39">2024-01-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-01-15T05:51:15.327Z" title="更新于 2024-01-15 13:51:15">2024-01-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">5.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>27分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="重新学习Linux系统编程-2"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="重新学习Linux系统2"><a href="#重新学习Linux系统2" class="headerlink" title="重新学习Linux系统2"></a>重新学习Linux系统2</h1><h2 id="文件IO"><a href="#文件IO" class="headerlink" title="文件IO"></a>文件IO</h2><p>​        对于文件操作，我们首先要打开文件。内核会为每一个打开的文件维护一个文件列表，这个就是一个普通的非负整数数组，这些非负的整数就是文件的描述符。用户和内核空间都会把文件描述丰富作为唯一的cookies记载。</p>
+<p>​        对于出错的文件操作状态，会返回一个-1表示无法为文件分配文件描述符。</p>
+<p>​        按照惯例：每一个进程都会有三个默认的文件描述符：</p>
+<blockquote>
+<p>0：标准输入</p>
+<p>1：标准输出</p>
+<p>2：标准错误</p>
+</blockquote>
+<p>​        在Linux下，所有的可以读写的设备等都可以被看作是文件，因而可以使用文件描述符代表描述之。</p>
+<p>​        对于多进程的情况下，我们需要注意的是：子进程会持有一个与父进程相同的文件列表副本。但是区别在于——子进程的文件关闭不会影响到父进程</p>
+<h3 id="打开文件"><a href="#打开文件" class="headerlink" title="打开文件"></a>打开文件</h3><p>​        我们使用系统调用open来打开一个文件，返回一个文件句柄：</p>
+<pre class="line-numbers language-C" data-language="C"><code class="language-C">#include &lt;sys&#x2F;types.h&gt;
+#include &lt;sys&#x2F;stat.h&gt;
+#include &lt;fcntl.h&gt;
+
+int open(const char* name, int flags);
+int open(const char* name, int flags, mode_t mode);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        <code>flags</code>参数是由一个或者是多个标志位组合而成。它只支持三种访问方式：</p>
+<blockquote>
+<p><code>O_RDONLY</code>，<code>O_WRONLY</code>，<code>O_RDWR</code></p>
+</blockquote>
+<p>​        分别表示的是只读，只写，和读写均可。注意，我们必须严格的遵守模式来操作。比如说不可以对只读文件做写操作，反之亦然。</p>
+<p>​        如果我们想要文件进行读写操作，不可以简单的<code>O_RDONLY | O_WRONLY</code>，会报错。而是<code>O_RDWR</code></p>
+<p>​        还有其他的模式：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>O_APPEND</td>
+<td>追加模式，实际上就是将文件指针移动到文件末尾</td>
+</tr>
+<tr>
+<td>O_ASYNC</td>
+<td>当指定的文件可读或者是可写的时候，发出信号SIGIO。适用于FIFO，管道，socket和终端，不适合普通文件</td>
+</tr>
+<tr>
+<td>O_CLOEXEC</td>
+<td>当执行新的进程的时候，会自动关闭文件</td>
+</tr>
+<tr>
+<td>O_CREAT</td>
+<td>当name指定的文件不存在的时候，内核会自动创建</td>
+</tr>
+<tr>
+<td>O_DIRECT</td>
+<td>直接IO</td>
+</tr>
+<tr>
+<td>O_DIRECTORY</td>
+<td>当目标不是文件夹时调用失败，内部实际上调用的是opendir</td>
+</tr>
+<tr>
+<td>O_EXCL</td>
+<td>根O_CREAT一起使用，实际上说明的是如果文件创建时存在了会返回失败，单独使用没有任何意义</td>
+</tr>
+<tr>
+<td>O_LARGEFILE</td>
+<td>现在是默认参数，不理会</td>
+</tr>
+<tr>
+<td>O_NOATIME+</td>
+<td>再读文件的时候，不会更新文件的最后访问时间，适用于那些频繁的进行读写操作的文件</td>
+</tr>
+<tr>
+<td>O_NOCTTY</td>
+<td>不是成为这个进程的终端，很少使用</td>
+</tr>
+<tr>
+<td>O_NOFOLLOW</td>
+<td>指向符号链接的时候会调用失败，正常情况下指向符号链接时候会解析之并且打开</td>
+</tr>
+<tr>
+<td>O_NONBLOCK</td>
+<td>不以阻塞方式打开，这个只是用于FIFO</td>
+</tr>
+<tr>
+<td>O_SYNC</td>
+<td>打开文件用于同步IO，在数据从物理上写到磁盘之前，写操作都不会完成</td>
+</tr>
+<tr>
+<td>O_TRUNC</td>
+<td>如果文件存在，且是普通文件，还是具有写权限者，这个标志会把文件长度截断为0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>​        这个文件的所有者是进程的有效uid</p>
+<p>​        mode参数实际上指代的是文件对于创建者，同组者，所有人的权限如何。这里不赘述具体的mode有哪些，可以自行man。</p>
+<p>​        creat函数可以被认为是特殊的open,它实际上就是创建一个新文件：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">int</span> <span class="token function">creat</span><span class="token punctuation">(</span><span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> name<span class="token punctuation">,</span> <span class="token class-name">mode_t</span> mode<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> <span class="token function">open</span><span class="token punctuation">(</span>mame<span class="token punctuation">,</span> O_WRONLY <span class="token operator">|</span> O_CREAT <span class="token operator">|</span> O_TRUNC<span class="token punctuation">,</span> mode<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        当然，如果出错了，fd会返回-1，同时errno会被设置为相应的错误码。</p>
+<h3 id="read读取文件"><a href="#read读取文件" class="headerlink" title="read读取文件"></a>read读取文件</h3><p>​        下面就是讨论系统调用read:</p>
+<pre class="line-numbers language-none"><code class="language-none">#include&lt;unistd.h&gt;
+
+ssize_t read(int fd, void* buf, size_t len);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        每一次调用read函数的时候，会从fd指向文件的当前偏移量读取len字节到buf所指向的内存中去。</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">unsigned</span> <span class="token keyword">long</span> word<span class="token punctuation">;</span>
+<span class="token class-name">ssize_t</span> nr<span class="token punctuation">;</span>
+nr <span class="token operator">=</span> <span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> <span class="token operator">&amp;</span>word<span class="token punctuation">,</span> <span class="token keyword">sizeof</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span>nr <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token comment">// Error occurred!</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        我们下面分析read的返回结果：</p>
+<blockquote>
+<p>调用值返回len: 结果和预期的完全一致</p>
+<p>小于len但是大于0：没读完，可能发生了信号中断或者是其他错误，，再次执行read可以把剩下的字节读完或者是给出错误信息</p>
+<p>返回0：表示EOF。没有数据可读了</p>
+<p>调用返回-1，且errno == EINTR:受到了阻塞，调用可以恢复（再次调用即可）</p>
+<p>调用返回-1，且errno === EAGAIN：表示的是再次调用会发生阻塞，没有可读的东西，可以稍后尝试</p>
+<p>调用返回-1,且errno被设置为其他的值，说明调用确实不可以回复。</p>
+</blockquote>
+<p>​        我们还可以去非阻塞的读：意味着只要读到数据就立即返回，这里我们需要检查的是EAGAIN，他表示的是我们的数据有没有读全</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">char</span> buf<span class="token punctuation">[</span>SIZE<span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token class-name">ssize_t</span> nr<span class="token punctuation">;</span>
+
+start<span class="token operator">:</span>
+nr <span class="token operator">=</span> <span class="token function">read</span><span class="token punctuation">(</span>fd<span class="token punctuation">,</span> buf<span class="token punctuation">,</span> SIZE<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span><span class="token punctuation">(</span>nr <span class="token operator">==</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>errno <span class="token operator">==</span> EINTR<span class="token punctuation">)</span>
+        <span class="token keyword">goto</span> start<span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>errno <span class="token operator">==</span> EAGAIN<span class="token punctuation">)</span>
+        <span class="token comment">// DO STH LATER</span>
+    <span class="token keyword">else</span>
+        <span class="token comment">// Handle Error</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="调用write写"><a href="#调用write写" class="headerlink" title="调用write写"></a>调用write写</h3><p>​        写文件最常见的是</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;unistd.h&gt;
+
+ssize_t write(int fd, const void* buf, size_t size);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​        总是会从当前位置开始写，对于不支持“seek“的设备则是会从起始位置开始写。</p>
+<p>​        当然，写操作中，返回的是写了多少字节。返回的是-1的时候表示出错了，基本的判断方式仍然可以沿用read的方式，这里不再赘述</p>
+<h3 id="Append追加"><a href="#Append追加" class="headerlink" title="Append追加"></a>Append追加</h3><p>​        我们将会从文件的尾端开始操作。在多线程中他总是保证文件指针总是指向文件的末尾</p>
+<h3 id="同步IO"><a href="#同步IO" class="headerlink" title="同步IO"></a>同步IO</h3><p>​    为了保证我们的IO是同步的，系统提供一些API保证数据会被真正刷新到磁盘上去</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;unistd.h&gt;
+
+int fsync(int fd);
+int fdatasync(int fd);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        这个调用是原子性的，保证在没有写到磁盘结束之前是不会返回的。</p>
+<h3 id="O-SYNC标志位"><a href="#O-SYNC标志位" class="headerlink" title="O_SYNC标志位"></a>O_SYNC标志位</h3><p>​        可以认为是在写操作执行完毕之后，隐式的调用了<code>fsync()</code>，这样就是同步IO的语义</p>
+<h3 id="关闭文件"><a href="#关闭文件" class="headerlink" title="关闭文件"></a>关闭文件</h3><pre class="line-numbers language-none"><code class="language-none">#include &lt;unistd.h&gt;
+int close(int fd);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​        系统调用<code>close()</code>会取消当前的fd和文件的映射关系。注意，关闭文件并不意味着它的写操作会全部的执行，如果需要保证，则需要进行同步IO操作。</p>
+<p>​        当我们关闭文件的最后一个文件的描述符的时候，内核会认为这个关于这个文件的数据结构已经被释放掉了。</p>
+<h3 id="使用lseek来查找"><a href="#使用lseek来查找" class="headerlink" title="使用lseek来查找"></a>使用lseek来查找</h3><p>​        lseek只是更新文件指针，不会做出其他任何的其他操作</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;sys&#x2F;types.h&gt;
+#include &lt;unistd.h&gt;
+
+off_t lseek(int fd, off_t pos, int origin);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        origin参数可以有以下这几种取值：</p>
+<blockquote>
+<p>SEEK_CUR：设置为当前的位置加上偏移量</p>
+<p>SEEK_END：设置为文件长度加上POS的偏移</p>
+<p>SEEK_SET：设置成pos的位置</p>
+</blockquote>
+<h3 id="使用pread-amp-amp-pwrite来进行位置操作的文件读写"><a href="#使用pread-amp-amp-pwrite来进行位置操作的文件读写" class="headerlink" title="使用pread &amp;&amp; pwrite来进行位置操作的文件读写"></a>使用pread &amp;&amp; pwrite来进行位置操作的文件读写</h3><p>​        也就是说，这两个API支持在调用读写之前进行<code>lseek()</code>，并且还有这些优势：</p>
+<blockquote>
+<p>更加容易使用：反向或者是随机的进行反向或者是查找定位</p>
+<p>调用结束之前不会改变文件指针</p>
+<p>不会在使用lseek的时候有竞争</p>
+</blockquote>
+<h3 id="文件截断"><a href="#文件截断" class="headerlink" title="文件截断"></a>文件截断</h3><pre class="line-numbers language-none"><code class="language-none">#include &lt;sys&#x2F;types.h&gt;
+#include &lt;unistd.h&gt;
+
+int ftruncate(int fd, off_t len);
+int truncate(const char* path, off_t len);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​        对文件进行截断处理</p>
+<h3 id="多路IO设计"><a href="#多路IO设计" class="headerlink" title="多路IO设计"></a>多路IO设计</h3><blockquote>
+<p>对任何组内的IO准备就绪的时候进行通知</p>
+<p>不可用的情况下就处于睡眠状态</p>
+<p>在文件准备好的时候进行唤醒</p>
+<p>没有阻塞的处理所有的文件IO</p>
+<p>返回第一步</p>
+</blockquote>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;sys/select.h></span></span>
+
+<span class="token keyword">int</span> <span class="token function">select</span><span class="token punctuation">(</span>
+	fd_set<span class="token operator">*</span> readfds<span class="token punctuation">,</span>
+    fd_set<span class="token operator">*</span> writefds<span class="token punctuation">,</span>
+    fd_set<span class="token operator">*</span> exceptfds<span class="token punctuation">,</span>
+    
+    <span class="token keyword">struct</span> <span class="token class-name">timeval</span><span class="token operator">*</span> timeout
+<span class="token punctuation">)</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="虚拟文件系统"><a href="#虚拟文件系统" class="headerlink" title="虚拟文件系统"></a>虚拟文件系统</h3><p>​        这是一种有效的抽象机制，使得Linux系统可以在根本不需要了解其他文件系统的底层的时候就可以对之进行操作。实际上就是在底层的时候结合判断调用对应的底层API</p>
+<h3 id="页缓存和页回写"><a href="#页缓存和页回写" class="headerlink" title="页缓存和页回写"></a>页缓存和页回写</h3><p>​        页缓存和页回写是一种基于“时间局部性”原理的技术，也就是说，刚被写不久的内存可能会在稍后再次被写，这样我们可以先将之在内存中常驻一会，从而提升IO速度。</p>
+<h3 id="附录"><a href="#附录" class="headerlink" title="附录"></a>附录</h3><blockquote>
+<pre class="line-numbers language-none"><code class="language-none">man read<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</blockquote>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">READ(2)                    Linux Programmer's Manual                   READ(2)
+
+NAME
+       read - read from a file descriptor
+
+SYNOPSIS
+       #include &lt;unistd.h>
+
+       ssize_t read(int fd, void *buf, size_t count);
+
+DESCRIPTION
+       read()  attempts to read up to count bytes from file descriptor fd into
+       the buffer starting at buf.
+
+       On files that support seeking, the read operation commences at the file
+       offset, and the file offset is incremented by the number of bytes read.
+       If the file offset is at or past the end of file, no  bytes  are  read,
+       and read() returns zero.
+
+       If count is zero, read() may detect the errors described below.  In the
+       absence of any errors, or if read() does not check for errors, a read()
+       with a count of 0 returns zero and has no other effects.
+
+       According to POSIX.1, if count is greater than SSIZE_MAX, the result is
+       implementation-defined; see NOTES for the upper limit on Linux.
+
+RETURN VALUE
+       On success, the number of bytes read is returned (zero indicates end of
+       file),  and the file position is advanced by this number.  It is not an
+       error if this number is smaller than the  number  of  bytes  requested;
+       this  may happen for example because fewer bytes are actually available
+       right now (maybe because we were close to end-of-file,  or  because  we
+       are reading from a pipe, or from a terminal), or because read() was in‐
+       terrupted by a signal.  See also NOTES.
+
+       On error, -1 is returned, and errno  is  set  appropriately.   In  this
+       case,  it  is  left  unspecified  whether  the  file  position (if any)
+       changes.
+
+ERRORS
+       EAGAIN The file descriptor fd refers to a file other than a socket  and
+              has  been  marked  nonblocking  (O_NONBLOCK), and the read would
+              block.  See open(2) for further details on the O_NONBLOCK flag.
+
+       EAGAIN or EWOULDBLOCK
+              The file descriptor fd refers to a socket and  has  been  marked
+              nonblocking    (O_NONBLOCK),   and   the   read   would   block.
+              POSIX.1-2001 allows either error to be returned for  this  case,
+              and  does not require these constants to have the same value, so
+              a portable application should check for both possibilities.
+
+       EBADF  fd is not a valid file descriptor or is not open for reading.
+
+       EFAULT buf is outside your accessible address space.
+
+       EINTR  The call was interrupted by a signal before any data  was  read;
+              see signal(7).
+
+       EINVAL fd  is attached to an object which is unsuitable for reading; or
+              the file was opened with the O_DIRECT flag, and either  the  ad‐
+              dress  specified  in  buf,  the value specified in count, or the
+              file offset is not suitably aligned.
+
+       EINVAL fd was created via a call to  timerfd_create(2)  and  the  wrong
+              size  buffer was given to read(); see timerfd_create(2) for fur‐
+              ther information.
+
+       EIO    I/O error.  This will happen for example when the process is  in
+              a  background  process group, tries to read from its controlling
+              terminal, and either it is ignoring or blocking SIGTTIN  or  its
+              process  group  is  orphaned.  It may also occur when there is a
+              low-level I/O error while reading from a disk or tape.   A  fur‐
+              ther  possible  cause of EIO on networked filesystems is when an
+              advisory lock had been taken out on the file descriptor and this
+              lock  has been lost.  See the Lost locks section of fcntl(2) for
+              further details.
+
+       EISDIR fd refers to a directory.
+
+       Other errors may occur, depending on the object connected to fd.
+
+CONFORMING TO
+       SVr4, 4.3BSD, POSIX.1-2001.
+
+NOTES
+       The types size_t and ssize_t are, respectively, unsigned and signed in‐
+       teger data types specified by POSIX.1.
+
+       On  Linux,  read()  (and  similar  system  calls) will transfer at most
+       0x7ffff000 (2,147,479,552) bytes, returning the number of  bytes  actu‐
+       ally transferred.  (This is true on both 32-bit and 64-bit systems.)
+
+       On NFS filesystems, reading small amounts of data will update the time‐
+       stamp only the first time, subsequent calls may not  do  so.   This  is
+       caused  by  client  side attribute caching, because most if not all NFS
+       clients leave st_atime (last file access time) updates to  the  server,
+       and  client side reads satisfied from the client's cache will not cause
+       st_atime updates on the server as there are no server-side reads.  UNIX
+       semantics  can  be obtained by disabling client-side attribute caching,
+       but in most situations this will substantially increase server load and
+       decrease performance.
+
+BUGS
+       According to POSIX.1-2008/SUSv4 Section XSI 2.9.7 ("Thread Interactions
+       with Regular File Operations"):
+
+           All of the following functions shall be atomic with respect to each
+           other in the effects specified in POSIX.1-2008 when they operate on
+           regular files or symbolic links: ...
+
+       Among the APIs subsequently listed are read() and readv(2).  And  among
+       the  effects  that  should be atomic across threads (and processes) are
+       updates of the file offset.  However, on  Linux  before  version  3.14,
+       this  was  not  the  case: if two processes that share an open file de‐
+       scription (see open(2)) perform a read()  (or  readv(2))  at  the  same
+       time, then the I/O operations were not atomic with respect updating the
+       file offset, with the result that the reads in the two processes  might
+       (incorrectly)  overlap  in the blocks of data that they obtained.  This
+       problem was fixed in Linux 3.14.
+
+SEE ALSO
+       close(2), fcntl(2), ioctl(2), lseek(2), open(2), pread(2),  readdir(2),
+       readlink(2), readv(2), select(2), write(2), fread(3)
+
+COLOPHON
+       This  page  is  part of release 5.10 of the Linux man-pages project.  A
+       description of the project, information about reporting bugs,  and  the
+       latest     version     of     this    page,    can    be    found    at
+       https://www.kernel.org/doc/man-pages/.
+
+Linux                             2018-02-02                           READ(2)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<pre class="line-numbers language-none"><code class="language-none">man 2 write<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">WRITE(2)                   Linux Programmer&#39;s Manual                  WRITE(2)
+
+NAME
+       write - write to a file descriptor
+
+SYNOPSIS
+       #include &lt;unistd.h&gt;
+
+       ssize_t write(int fd, const void *buf, size_t count);
+
+DESCRIPTION
+       write() writes up to count bytes from the buffer starting at buf to the
+       file referred to by the file descriptor fd.
+
+       The number of bytes written may be less than  count  if,  for  example,
+       there  is  insufficient space on the underlying physical medium, or the
+       RLIMIT_FSIZE resource limit is encountered (see setrlimit(2)),  or  the
+       call was interrupted by a signal handler after having written less than
+       count bytes.  (See also pipe(7).)
+
+       For a seekable file (i.e., one to which lseek(2) may  be  applied,  for
+       example,  a  regular  file) writing takes place at the file offset, and
+       the file offset is incremented by the number of bytes actually written.
+       If  the  file was open(2)ed with O_APPEND, the file offset is first set
+       to the end of the file before writing.  The adjustment of the file off‐
+       set and the write operation are performed as an atomic step.
+
+       POSIX  requires  that  a  read(2)  that  can be proved to occur after a
+       write() has returned will return the  new  data.   Note  that  not  all
+       filesystems are POSIX conforming.
+
+       According to POSIX.1, if count is greater than SSIZE_MAX, the result is
+       implementation-defined; see NOTES for the upper limit on Linux.
+
+RETURN VALUE
+       On success, the number of bytes written is returned.  On error,  -1  is
+       returned, and errno is set to indicate the cause of the error.
+
+       Note  that  a  successful  write() may transfer fewer than count bytes.
+       Such partial writes can occur for various reasons; for example, because
+       there was insufficient space on the disk device to write all of the re‐
+       quested bytes, or because a blocked write() to a socket, pipe, or simi‐
+       lar  was interrupted by a signal handler after it had transferred some,
+       but before it had transferred all of the requested bytes.  In the event
+       of  a partial write, the caller can make another write() call to trans‐
+       fer the remaining bytes.  The subsequent call will either transfer fur‐
+       ther bytes or may result in an error (e.g., if the disk is now full).
+
+       If  count is zero and fd refers to a regular file, then write() may re‐
+       turn a failure status if one of the errors below is  detected.   If  no
+       errors are detected, or error detection is not performed, 0 will be re‐
+       turned without causing any other effect.   If  count  is  zero  and  fd
+       refers  to a file other than a regular file, the results are not speci‐
+       fied.
+
+ERRORS
+       EAGAIN The file descriptor fd refers to a file other than a socket  and
+              has  been  marked  nonblocking (O_NONBLOCK), and the write would
+              block.  See open(2) for further details on the O_NONBLOCK flag.
+
+       EAGAIN or EWOULDBLOCK
+              The file descriptor fd refers to a socket and  has  been  marked
+              nonblocking   (O_NONBLOCK),   and   the   write   would   block.
+              POSIX.1-2001 allows either error to be returned for  this  case,
+              and  does not require these constants to have the same value, so
+              a portable application should check for both possibilities.
+
+       EBADF  fd is not a valid file descriptor or is not open for writing.
+
+       EDESTADDRREQ
+              fd refers to a datagram socket for which a peer address has  not
+              been set using connect(2).
+
+       EDQUOT The user&#39;s quota of disk blocks on the filesystem containing the
+              file referred to by fd has been exhausted.
+
+       EFAULT buf is outside your accessible address space.
+
+       EFBIG  An attempt was made to write a file that exceeds the implementa‐
+              tion-defined maximum file size or the process&#39;s file size limit,
+              or to write at a position past the maximum allowed offset.
+
+       EINTR  The call was interrupted by a signal before any data  was  writ‐
+              ten; see signal(7).
+
+       EINVAL fd  is attached to an object which is unsuitable for writing; or
+              the file was opened with the O_DIRECT flag, and either  the  ad‐
+              dress  specified  in  buf,  the value specified in count, or the
+              file offset is not suitably aligned.
+
+       EIO    A low-level I&#x2F;O error occurred while modifying the inode.   This
+              error may relate to the write-back of data written by an earlier
+              write(), which may have been issued to a different file descrip‐
+              tor  on the same file.  Since Linux 4.13, errors from write-back
+              come with a promise that they may  be  reported  by  subsequent.
+              write()  requests, and will be reported by a subsequent fsync(2)
+              (whether or not they were also reported by write()).  An  alter‐
+              nate  cause  of EIO on networked filesystems is when an advisory
+              lock had been taken out on the file descriptor and this lock has
+              been  lost.   See the Lost locks section of fcntl(2) for further
+              details.
+
+       ENOSPC The device containing the file referred to by fd has no room for
+              the data.
+
+       EPERM  The operation was prevented by a file seal; see fcntl(2).
+
+       EPIPE  fd is connected to a pipe or socket whose reading end is closed.
+              When this happens the writing process will also receive  a  SIG‐
+              PIPE  signal.  (Thus, the write return value is seen only if the
+              program catches, blocks or ignores this signal.)
+
+       Other errors may occur, depending on the object connected to fd.
+
+CONFORMING TO
+       SVr4, 4.3BSD, POSIX.1-2001.
+
+       Under SVr4 a write may be interrupted and return EINTR  at  any  point,
+       not just before any data is written.
+
+NOTES
+       The types size_t and ssize_t are, respectively, unsigned and signed in‐
+       teger data types specified by POSIX.1.
+
+       A successful return from write() does not make any guarantee that  data
+       has  been  committed  to  disk.  On some filesystems, including NFS, it
+       does not even guarantee that space has successfully been  reserved  for
+       the  data.   In  this case, some errors might be delayed until a future
+       write(), fsync(2), or even close(2).  The only way to  be  sure  is  to
+       call fsync(2) after you are done writing all your data.
+
+       If  a  write()  is interrupted by a signal handler before any bytes are
+       written, then the call fails with the error EINTR; if it is interrupted
+       after  at  least  one byte has been written, the call succeeds, and re‐
+       turns the number of bytes written.
+
+       On Linux, write() (and similar system  calls)  will  transfer  at  most
+       0x7ffff000  (2,147,479,552)  bytes, returning the number of bytes actu‐
+       ally transferred.  (This is true on both 32-bit and 64-bit systems.)
+
+       An error return value while performing write() using  direct  I&#x2F;O  does
+       not  mean  the entire write has failed. Partial data may be written and
+       the data at the file offset on which the write() was  attempted  should
+       be considered inconsistent.
+
+BUGS
+       According to POSIX.1-2008&#x2F;SUSv4 Section XSI 2.9.7 (&quot;Thread Interactions
+       with Regular File Operations&quot;):
+
+           All of the following functions shall be atomic with respect to each
+           other in the effects specified in POSIX.1-2008 when they operate on
+           regular files or symbolic links: ...
+
+       Among the APIs subsequently listed  are  write()  and  writev(2).   And
+       among  the effects that should be atomic across threads (and processes)
+       are updates of the file offset.  However, on Linux before version 3.14,
+       this  was  not  the  case: if two processes that share an open file de‐
+       scription (see open(2)) perform a write() (or writev(2))  at  the  same
+       time, then the I&#x2F;O operations were not atomic with respect updating the
+       file offset, with the result that the blocks of data output by the  two
+       processes might (incorrectly) overlap.  This problem was fixed in Linux
+       3.14.
+
+SEE ALSO
+       close(2), fcntl(2), fsync(2), ioctl(2), lseek(2),  open(2),  pwrite(2),
+       read(2), select(2), writev(2), fwrite(3)
+
+COLOPHON
+       This  page  is  part of release 5.10 of the Linux man-pages project.  A
+       description of the project, information about reporting bugs,  and  the
+       latest     version     of     this    page,    can    be    found    at
+       https:&#x2F;&#x2F;www.kernel.org&#x2F;doc&#x2F;man-pages&#x2F;.
+
+Linux                             2019-10-10                          WRITE(2)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<pre class="line-numbers language-none"><code class="language-none">&gt;man 2 lseek<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">LSEEK(2)                   Linux Programmer&#39;s Manual                  LSEEK(2)
+
+NAME
+       lseek - reposition read&#x2F;write file offset
+
+SYNOPSIS
+       #include &lt;sys&#x2F;types.h&gt;
+       #include &lt;unistd.h&gt;
+
+       off_t lseek(int fd, off_t offset, int whence);
+
+DESCRIPTION
+       lseek()  repositions the file offset of the open file description asso‐
+       ciated with the file descriptor fd to the argument offset according  to
+       the directive whence as follows:
+
+       SEEK_SET
+              The file offset is set to offset bytes.
+
+       SEEK_CUR
+              The  file  offset  is  set  to  its current location plus offset
+              bytes.
+
+       SEEK_END
+              The file offset is set to the  size  of  the  file  plus  offset
+              bytes.
+
+       lseek()  allows  the  file  offset to be set beyond the end of the file
+       (but this does not change the size of the  file).   If  data  is  later
+       written  at  this  point,  subsequent  reads  of the data in the gap (a
+       &quot;hole&quot;) return null bytes (&#39;\0&#39;) until data is  actually  written  into
+       the gap.
+
+   Seeking file data and holes
+       Since  version  3.1, Linux supports the following additional values for
+       whence:
+
+       SEEK_DATA
+              Adjust the file offset to the next location in the file  greater
+              than  or  equal  to offset containing data.  If offset points to
+              data, then the file offset is set to offset.
+
+       SEEK_HOLE
+              Adjust the file offset to the next hole in the file greater than
+              or equal to offset.  If offset points into the middle of a hole,
+              then the file offset is set to offset.  If there is no hole past
+              offset,  then the file offset is adjusted to the end of the file
+              (i.e., there is an implicit hole at the end of any file).
+
+       In both of the above cases, lseek() fails if offset points past the end
+       of the file.
+
+       These  operations  allow  applications to map holes in a sparsely allo‐
+       cated file.  This can be useful for applications such  as  file  backup
+       tools,  which  can save space when creating backups and preserve holes,
+       if they have a mechanism for discovering holes.
+
+       For the purposes of these operations, a hole is  a  sequence  of  zeros
+       that  (normally) has not been allocated in the underlying file storage.
+       However, a filesystem is not obliged to report holes, so  these  opera‐
+       tions  are not a guaranteed mechanism for mapping the storage space ac‐
+       tually allocated to a file.  (Furthermore, a sequence of zeros that ac‐
+       tually  has  been written to the underlying storage may not be reported
+       as a hole.)  In the simplest implementation, a filesystem  can  support
+       the  operations by making SEEK_HOLE always return the offset of the end
+       of the file, and making SEEK_DATA always return offset (i.e.,  even  if
+       the  location  referred to by offset is a hole, it can be considered to
+       consist of data that is a sequence of zeros).
+
+       The _GNU_SOURCE feature test macro must be defined in order  to  obtain
+       the definitions of SEEK_DATA and SEEK_HOLE from &lt;unistd.h&gt;.
+
+       The  SEEK_HOLE and SEEK_DATA operations are supported for the following
+       filesystems:
+
+       *  Btrfs (since Linux 3.1)
+
+       *  OCFS (since Linux 3.2)
+
+       *  XFS (since Linux 3.5)
+
+       *  ext4 (since Linux 3.8)
+
+       *  tmpfs(5) (since Linux 3.8)
+
+       *  NFS (since Linux 3.18)
+
+       *  FUSE (since Linux 4.5)
+
+       *  GFS2 (since Linux 4.15)
+
+RETURN VALUE
+       Upon successful completion, lseek() returns the resulting offset  loca‐
+       tion  as  measured  in bytes from the beginning of the file.  On error,
+       the value (off_t) -1 is returned and errno is set to indicate  the  er‐
+       ror.
+
+ERRORS
+       EBADF  fd is not an open file descriptor.
+
+       EINVAL whence  is  not  valid.   Or: the resulting file offset would be
+              negative, or beyond the end of a seekable device.
+
+       ENXIO  whence is SEEK_DATA or SEEK_HOLE, and offset is beyond  the  end
+              of  the file, or whence is SEEK_DATA and offset is within a hole
+              at the end of the file.
+
+       EOVERFLOW
+              The resulting file offset cannot be represented in an off_t.
+
+       ESPIPE fd is associated with a pipe, socket, or FIFO.
+
+CONFORMING TO
+       POSIX.1-2001, POSIX.1-2008, SVr4, 4.3BSD.
+
+       SEEK_DATA and SEEK_HOLE are nonstandard extensions also present in  So‐
+       laris,  FreeBSD,  and DragonFly BSD; they are proposed for inclusion in
+       the next POSIX revision (Issue 8).
+
+NOTES
+       See open(2) for a discussion of the relationship between file  descrip‐
+       tors, open file descriptions, and files.
+
+       If  the  O_APPEND file status flag is set on the open file description,
+       then a write(2) always moves the file offset to the end  of  the  file,
+       regardless of the use of lseek().
+
+       The off_t data type is a signed integer data type specified by POSIX.1.
+
+       Some  devices are incapable of seeking and POSIX does not specify which
+       devices must support lseek().
+
+       On Linux, using lseek() on a terminal device fails with the  error  ES‐
+       PIPE.
+
+SEE ALSO
+       dup(2),   fallocate(2),   fork(2),   open(2),   fseek(3),   lseek64(3),
+       posix_fallocate(3)
+
+COLOPHON
+       This page is part of release 5.10 of the Linux  man-pages  project.   A
+       description  of  the project, information about reporting bugs, and the
+       latest    version    of    this    page,    can     be     found     at
+       https:&#x2F;&#x2F;www.kernel.org&#x2F;doc&#x2F;man-pages&#x2F;.
+
+Linux                             2020-08-13                          LSEEK(2)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/01/15/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-2/">http://charliechen114514.github.io/2024/01/15/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-2/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C-Linux/">C/C++. Linux</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/01/15/Missing-Class-In-CS-I-Vim-Bash/" title="Missing Class In CS I_Vim_Bash"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Missing Class In CS I_Vim_Bash</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/08/30/Linux%E6%BC%AB%E6%B8%B8-%E6%9B%B4%E6%B7%B1%E5%B1%82%E6%AC%A1%E7%9A%84%E6%96%87%E4%BB%B6IO/" title="Linux漫游 更深层次的文件IO"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-30</div><div class="title">Linux漫游 更深层次的文件IO</div></div></a></div><div><a href="/2023/08/15/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E5%AF%BC%E8%AE%BA/" title="Linux漫游——导论"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-15</div><div class="title">Linux漫游——导论</div></div></a></div><div><a href="/2023/08/19/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E6%96%87%E4%BB%B6IO%E6%93%8D%E4%BD%9C/" title="Linux漫游——文件IO操作"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-19</div><div class="title">Linux漫游——文件IO操作</div></div></a></div><div><a href="/2023/08/16/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E7%B3%BB%E7%BB%9F%E8%B0%83%E7%94%A8/" title="Linux漫游——系统调用"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-16</div><div class="title">Linux漫游——系统调用</div></div></a></div><div><a href="/2023/08/30/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E6%97%B6%E9%97%B4%E4%B8%8E%E7%B3%BB%E7%BB%9F%E9%99%90%E5%88%B6/" title="Linux漫游——时间与系统限制"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-30</div><div class="title">Linux漫游——时间与系统限制</div></div></a></div><div><a href="/2023/08/30/Linux%E6%BC%AB%E6%B8%B8%E2%80%94%E2%80%94%E7%94%A8%E6%88%B7%E4%B8%8E%E7%BB%84%EF%BC%8C%E8%BF%9B%E7%A8%8B%E5%87%AD%E8%AF%81/" title="Linux漫游——用户与组，进程凭证"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-30</div><div class="title">Linux漫游——用户与组，进程凭证</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">28</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F2"><span class="toc-number">1.</span> <span class="toc-text">重新学习Linux系统2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%96%87%E4%BB%B6IO"><span class="toc-number">1.1.</span> <span class="toc-text">文件IO</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%93%E5%BC%80%E6%96%87%E4%BB%B6"><span class="toc-number">1.1.1.</span> <span class="toc-text">打开文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#read%E8%AF%BB%E5%8F%96%E6%96%87%E4%BB%B6"><span class="toc-number">1.1.2.</span> <span class="toc-text">read读取文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B0%83%E7%94%A8write%E5%86%99"><span class="toc-number">1.1.3.</span> <span class="toc-text">调用write写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Append%E8%BF%BD%E5%8A%A0"><span class="toc-number">1.1.4.</span> <span class="toc-text">Append追加</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5IO"><span class="toc-number">1.1.5.</span> <span class="toc-text">同步IO</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#O-SYNC%E6%A0%87%E5%BF%97%E4%BD%8D"><span class="toc-number">1.1.6.</span> <span class="toc-text">O_SYNC标志位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E9%97%AD%E6%96%87%E4%BB%B6"><span class="toc-number">1.1.7.</span> <span class="toc-text">关闭文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8lseek%E6%9D%A5%E6%9F%A5%E6%89%BE"><span class="toc-number">1.1.8.</span> <span class="toc-text">使用lseek来查找</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8pread-amp-amp-pwrite%E6%9D%A5%E8%BF%9B%E8%A1%8C%E4%BD%8D%E7%BD%AE%E6%93%8D%E4%BD%9C%E7%9A%84%E6%96%87%E4%BB%B6%E8%AF%BB%E5%86%99"><span class="toc-number">1.1.9.</span> <span class="toc-text">使用pread &amp;&amp; pwrite来进行位置操作的文件读写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%96%87%E4%BB%B6%E6%88%AA%E6%96%AD"><span class="toc-number">1.1.10.</span> <span class="toc-text">文件截断</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E8%B7%AFIO%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.1.11.</span> <span class="toc-text">多路IO设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.12.</span> <span class="toc-text">虚拟文件系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B5%E7%BC%93%E5%AD%98%E5%92%8C%E9%A1%B5%E5%9B%9E%E5%86%99"><span class="toc-number">1.1.13.</span> <span class="toc-text">页缓存和页回写</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%99%84%E5%BD%95"><span class="toc-number">1.1.14.</span> <span class="toc-text">附录</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/01/15/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-2/" title="重新学习Linux系统编程-2"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="重新学习Linux系统编程-2"/></a><div class="content"><a class="title" href="/2024/01/15/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E7%B3%BB%E7%BB%9F%E7%BC%96%E7%A8%8B-2/" title="重新学习Linux系统编程-2">重新学习Linux系统编程-2</a><time datetime="2024-01-15T05:50:39.000Z" title="发表于 2024-01-15 13:50:39">2024-01-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/15/Missing-Class-In-CS-I-Vim-Bash/" title="Missing Class In CS I_Vim_Bash"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Missing Class In CS I_Vim_Bash"/></a><div class="content"><a class="title" href="/2024/01/15/Missing-Class-In-CS-I-Vim-Bash/" title="Missing Class In CS I_Vim_Bash">Missing Class In CS I_Vim_Bash</a><time datetime="2024-01-15T05:48:18.000Z" title="发表于 2024-01-15 13:48:18">2024-01-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/15/xv6%E9%80%9F%E9%80%9A/" title="xv6速通"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="xv6速通"/></a><div class="content"><a class="title" href="/2024/01/15/xv6%E9%80%9F%E9%80%9A/" title="xv6速通">xv6速通</a><time datetime="2024-01-15T05:45:36.000Z" title="发表于 2024-01-15 13:45:36">2024-01-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/09/2024%E5%AF%92%E5%81%87%E6%95%B4%E6%B4%BB-C-Cppb%E9%AB%98%E7%BA%A7%E7%BC%96%E8%AF%91%E6%8A%80%E6%9C%AF/" title="2024寒假整活_C_Cppb高级编译技术"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="2024寒假整活_C_Cppb高级编译技术"/></a><div class="content"><a class="title" href="/2024/01/09/2024%E5%AF%92%E5%81%87%E6%95%B4%E6%B4%BB-C-Cppb%E9%AB%98%E7%BA%A7%E7%BC%96%E8%AF%91%E6%8A%80%E6%9C%AF/" title="2024寒假整活_C_Cppb高级编译技术">2024寒假整活_C_Cppb高级编译技术</a><time datetime="2024-01-09T12:55:43.000Z" title="发表于 2024-01-09 20:55:43">2024-01-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/06/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-3/" title="CMake使用小记-3"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="CMake使用小记-3"/></a><div class="content"><a class="title" href="/2024/01/06/CMake%E4%BD%BF%E7%94%A8%E5%B0%8F%E8%AE%B0-3/" title="CMake使用小记-3">CMake使用小记-3</a><time datetime="2024-01-06T10:36:42.000Z" title="发表于 2024-01-06 18:36:42">2024-01-06</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
