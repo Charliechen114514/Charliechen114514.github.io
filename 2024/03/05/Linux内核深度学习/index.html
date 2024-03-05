@@ -1,0 +1,736 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Linux内核深度学习 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Linux内核阅读本篇则是对《Linux系统进程》的一个扩展，主要是研究Linux内核的相关内容 绪论操作系统的基本概念​    操作系统主要是完成两个主要的目标   与硬件进行交互，为包含在硬件平台上的所有可能的低层可编程部件服务 为服务在计算机运行资源上的应用程序提供运行的环境  值得一提的是：操作系统在开机的时候，内核会被装入RAM，内核包含了操作系统的核心部分，其他更加像是交互的部分不会装">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux内核深度学习">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="Linux内核阅读本篇则是对《Linux系统进程》的一个扩展，主要是研究Linux内核的相关内容 绪论操作系统的基本概念​    操作系统主要是完成两个主要的目标   与硬件进行交互，为包含在硬件平台上的所有可能的低层可编程部件服务 为服务在计算机运行资源上的应用程序提供运行的环境  值得一提的是：操作系统在开机的时候，内核会被装入RAM，内核包含了操作系统的核心部分，其他更加像是交互的部分不会装">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-03-05T01:04:41.000Z">
+<meta property="article:modified_time" content="2024-03-05T01:05:50.414Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="Linux">
+<meta property="article:tag" content="Operating System">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux内核深度学习',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-05 09:05:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">52</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux内核深度学习</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-03-05T01:04:41.000Z" title="发表于 2024-03-05 09:04:41">2024-03-05</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-05T01:05:50.414Z" title="更新于 2024-03-05 09:05:50">2024-03-05</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">8.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>28分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux内核深度学习"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Linux内核阅读"><a href="#Linux内核阅读" class="headerlink" title="Linux内核阅读"></a>Linux内核阅读</h1><p>本篇则是对《Linux系统进程》的一个扩展，主要是研究Linux内核的相关内容</p>
+<h2 id="绪论"><a href="#绪论" class="headerlink" title="绪论"></a>绪论</h2><h3 id="操作系统的基本概念"><a href="#操作系统的基本概念" class="headerlink" title="操作系统的基本概念"></a>操作系统的基本概念</h3><p>​    操作系统主要是完成两个主要的目标</p>
+<blockquote>
+<ul>
+<li>与硬件进行交互，为包含在硬件平台上的所有可能的低层可编程部件服务</li>
+<li>为服务在计算机运行资源上的应用程序提供运行的环境</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">值得一提的是：操作系统在开机的时候，内核会被装入RAM，内核包含了操作系统的核心部分，其他更加像是交互的部分不会装入，只在用到的时候进行加载<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</blockquote>
+<hr>
+<p>​    硬件保障了应用程序不会直接跟底层打交道。为此，CPU被引入至少两种模式：用户程序的非特权模式和内核的特权模式。在Unix中的术语便是：用户态和内核态</p>
+<h3 id="多用户系统"><a href="#多用户系统" class="headerlink" title="多用户系统"></a>多用户系统</h3><p>​        他是一台可以并发和独立的执行分别属于两个或者是多个用户的诺干应用程序的计算机。</p>
+<blockquote>
+<ol>
+<li>核实用户身份的验证机制</li>
+<li>防止有错误的用户程序妨碍其他应用程序在系统的保护机制</li>
+<li>防止有恶意的用户程序干涉和窥视其他用户进程的活动的保护机制</li>
+<li>限制分配给每个用户的资源数的记账机制</li>
+</ol>
+</blockquote>
+<h3 id="用户和组"><a href="#用户和组" class="headerlink" title="用户和组"></a>用户和组</h3><p>​    所有的用户都是使用一个数字进行表示的，他就是User ID，每一个用户也属于一个组。</p>
+<h3 id="Unix内核概述"><a href="#Unix内核概述" class="headerlink" title="Unix内核概述"></a>Unix内核概述</h3><p>​    如前所示，CPU存在两个状态。对于大部分应用程序，他们一般是运行在用户态，只在需要内核服务（也就是需要向低层打交道的时候）的时候才会向操作系统请求陷入内核态，当请求完成后又会退回到用户态下。</p>
+<p>​    进程是动态的实体，在系统内通常只有有限的生存期。创建、撤销、及同步现有进程的任务都委托给内核中的一组例程来完成</p>
+<p>​    内核本身并不是一个进程，而是进程的管理者。进程<code>/</code>内核模式假定请求内核服务的进程使用所谓系统调用的特殊编程机制。每个系统调用都设置了一组识别进程请求的参数，然后执行与硬件相关的CPU指令完成从用户态到内核态的转换。</p>
+<p>​    除用户进程之外Unix系统还包括几个所谓内核进程的特权进程它们具有以下特点 ：</p>
+<blockquote>
+<ol>
+<li>他们以内核态运行在内核地址空间</li>
+<li>他们不需要与用户直接进行交互，因此不需要终端设备</li>
+<li>他们通常在系统启动的时候创建，然后一直活跃到系统关闭</li>
+</ol>
+</blockquote>
+<p>Unix中可以向内核态转换的几种常见的方式：</p>
+<blockquote>
+<ol>
+<li>进程调用系统调用</li>
+<li>正在执行进程的CPU抛出异常信号需要处理</li>
+<li>外围设备向CPU发出中断以等待一个事情的发生。</li>
+<li>内核线程被执行</li>
+</ol>
+</blockquote>
+<h4 id="进程的实现"><a href="#进程的实现" class="headerlink" title="进程的实现"></a>进程的实现</h4><p>​    为了保存进程的相关信息方便管理，我们需要存储运行时候的寄存器的值：</p>
+<ul>
+<li>PC和SP</li>
+<li>通用寄存器</li>
+<li>浮点寄存器</li>
+<li>包含CPU状态信息的处理器控制寄存器（处理器关键字，PSW）</li>
+<li>跟踪进程对RAM访问的寄存器</li>
+</ul>
+<h4 id="可重入的内核"><a href="#可重入的内核" class="headerlink" title="可重入的内核"></a>可重入的内核</h4><p>​    所有的Unix内核都可以重入：</p>
+<pre class="line-numbers language-none"><code class="language-none">重入一般可以理解为一个函数在同时多次调用，例如操作系统在进程调度过程中，或者单片机、处理器等的中断的时候会发生重入的现象。
+可重入的函数必须满足以下三个条件：
+
+（1）可以在执行的过程中可以被打断；
+
+（2）被打断之后，在该函数一次调用执行完之前，可以再次被调用（或进入，reentered)。
+
+（3）再次调用执行完之后，被打断的上次调用可以继续恢复执行，并正确执行。
+
+可重入函数可以在任意时刻被中断，稍后再继续运行，不会丢失数据。不可重入（non-reentrant）函数不能由超过一个任务所共享，除非能确保函数的互斥（或者使用信号量，或者在代码的关键部分禁用中断）。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    基于上述的陈述，事情变得显然：想要让函数可重入，他们只可以修改局部变量。</p>
+<p>​    如果一个硬件中断发生，可重入内核能挂起当前正在执行的进程，即使这个进程处于内核态。这种能力是非常重要的，因为这能提高发出中断的设备控制器的吞吐量。一旦设备已发出一个中断，他就一直等待直到CPU应答他为止。如果硬核内核能够快速应答，设备控制器在CPU处理中断时就能执行其他任务</p>
+<p>​    下面我们看看内核的可重入性以及他对内核组织的影响。内核控制路径表示的是内核处理系统调用，异常或者是中断所执行的指令序列。</p>
+<p>最最简单的情形下：CPU从第一天条指令开始执行到最后一条。更为复杂的情况在下面：</p>
+<blockquote>
+<ol>
+<li>运行在用户态下的进程调用一个系统调用，而相应的内核控制路径证实这个请求无法立即得到满足。然后内核控制路径调用调度程序选择一个新的进程投入运行结果，进程切换发生。第一个内核控制路径还没完成，而CPU又重新开始执行其他的内核控制路径。<strong>在这种情况下两条控制路径代表两个不同的进程在执行。</strong></li>
+<li>当运行一个内核控制路径时cpu检测到一个异常（例如访问一个不在RAM中的页）。第一个控制路径被挂起，而cpu开始执行合适的过程。在我们的例子中，这个过程能给进程分配一个新页，并从磁盘读取它的内容。当这个过程结束时，第一个控制路径可以恢复执行。在这种情况下两个控制路径代表同一个进程在执行。</li>
+<li>当CPU正在运行一个启动了中断的内核控制路径时，一个硬件中断发生。第一个内核控制路径还没执行完毕。CPU开始执行另一个内核控制路径来处理这个中断。当这个中断处理程序终止时，第一个内核控制路径恢复在这种情况下。两个内核控制路径运行在同一进程的可执行上下文中，所花费的系统CPU时间都算给这个进程。然而，中断处理程序无需代表这个进程进行</li>
+<li>在支持抢占式调度的内核中，CPU正在运行。而一个更加高优先级的进程加入就绪队列，则中断发生。在这种情况下第一个内核控制路径还没执行完毕，CPU代表高优先级进程又开始执行另一个内核控制路径。只有把内核编译成支持抢占式调度之后才可能出现这种情况</li>
+</ol>
+</blockquote>
+<h4 id="进程地址空间："><a href="#进程地址空间：" class="headerlink" title="进程地址空间："></a>进程地址空间：</h4><p>​    每一个进程都有他的私有地址空间，在用户态下运行达到进程涉及私有栈，数据区和代码区。</p>
+<p>​    内核的可重入性允许我们的多个内核控制路径可以轮流的执行。对于多个用户，代码区的内容可以并不用分开存储，而是公用。只需要保存每一个用户的数据即可</p>
+<p>​    Linux支持使用mmap将块设备上的文件和信息的一部分直接映射到进程的部分地址。于是，每一个进程地址空间就要包含这内存映射。</p>
+<h4 id="同步和临界区"><a href="#同步和临界区" class="headerlink" title="同步和临界区"></a>同步和临界区</h4><p>​    实现可重入内核的需要同步机制：他要求所有的内核控制路径的数据结构必须一致。否则可能产生错误。我们称呼那些将会修改全局变量的多个进程之间构成了<strong>竞争条件</strong>。</p>
+<p>​    一种方案就是生成那种非抢占式的内核，他无法被简单的挂起也无法被代替。另一种方案就是禁止中断</p>
+<h4 id="信号量Semaphore"><a href="#信号量Semaphore" class="headerlink" title="信号量Semaphore"></a>信号量Semaphore</h4><p><strong>定义：</strong></p>
+<p>有时被称为信号灯，是在多线程环境下使用的一种设施，是可以用来保证两个或多个关键代码段不被并发调用。</p>
+<p><strong>目的：</strong></p>
+<p>类似计数器，常用在多线程同步任务上，信号量可以在<strong>当前线程</strong>某个<strong>任务完成后</strong>，通知<strong>别的线程</strong>，再进行别的任务。</p>
+<p><strong>分类:</strong></p>
+<ul>
+<li><strong>二值信号量：</strong>信号量的值只有0和1，这和互斥量很类似，若资源被锁住，信号量的值为0，若资源可用，则信号量的值为1；</li>
+<li><strong>计数信号量：</strong>信号量的值在0到一个大于1的限制值之间，该计数表示可用的资源的个数。</li>
+</ul>
+<p>信号量在创建时需要设置一个初始值，表示同时可以有几个任务可以访问该信号量保护的共享资源，初始值为1就变成互斥锁Mutex，即同时只能有一个任务可以访问信号量保护的共享资源</p>
+<h2 id="内存寻址"><a href="#内存寻址" class="headerlink" title="内存寻址"></a>内存寻址</h2><p>​    在使用80x86处理器的时候，我们有三个地址需要注意：</p>
+<ol>
+<li>逻辑地址：包含在机器语言指令中用来指定一个操作数或一条操作指定的地址。这种寻址方式在8086著名的分段结构中表现得尤为具体。它使Ms dos或Windows程序员把程序分成若干段，每一个逻辑地址都有一个段和偏移量组成。偏移量指明了从段开始的地方到实际地址的偏移距离。</li>
+<li>线性地址也被称为虚拟地址，是一个32位无符号整数。可以用来表达高达4GB的地址线性地址通常用16进制数字表示。。</li>
+<li>物理地址用于内存芯片及内存单元寻址，他们从微处理器的地址引脚发送到内存总线上的电信号相对应。</li>
+</ol>
+<p>​    MMU通过一种分段单元的硬件电路，将逻辑地址转化为线性地址，然后分页单元再转化线性地址到物理地址。</p>
+<p>​    从80286开始，Intel微处理器开始以两种不同的方式执行地址转换，分别是保护模式和实模式。实模式是为了和早期的模型相互兼容。。。</p>
+<h3 id="段选择符和段寄存器"><a href="#段选择符和段寄存器" class="headerlink" title="段选择符和段寄存器"></a>段选择符和段寄存器</h3><p>​    一个逻辑地址是由两个部分组成的：段标识符和段偏移地址。前者16字节长：0, 1两位构成特权级（RPL），第二位表示的是表指示器（TI：是LDT还是GDT），后面的几位就是索引号。</p>
+<p>​    有六个段选择器：cs, ss, ds, es, fs, gs。注意，这三个有专门的用途：</p>
+<blockquote>
+<p>cs : 代码段寄存器</p>
+<p>ss : 栈寄存器</p>
+<p>ds : 数据段寄存器</p>
+</blockquote>
+<h3 id="段描述符"><a href="#段描述符" class="headerlink" title="段描述符"></a>段描述符</h3><p>​    每一个段都是一个8字节的段描述符表示，他展现了段的特征。段描述符分为GDT和LDT。一般而言只有一个GDT放在gdtr，每一个进程都有自己的LDT. 可以这样查看每一个位的含意。</p>
+<p><img src="o_2109191244474-1.png" alt="img"></p>
+<h4 id="P位"><a href="#P位" class="headerlink" title="P位"></a>P位</h4><p>  <code>P = 1</code>段描述符有效，<code>P = 0</code>段描述符无效。</p>
+<h4 id="Base"><a href="#Base" class="headerlink" title="Base"></a>Base</h4><p>  <code>Base</code>被分成了三个部分，从图可知：<code>Base</code>的低16位被放到了段描述符的低四个字节，高16位被均分到段描述符的高四个字节的头和尾。把它们依次拼接起来就是完整的<code>Base</code>。</p>
+<h4 id="Limit"><a href="#Limit" class="headerlink" title="Limit"></a>Limit</h4><p>  由图可知，把段描述符中所有的Limit拼接起来就只有20位。上一节教程说它有32位的Limit。那就是要看<code>G位</code>了。</p>
+<h4 id="G位"><a href="#G位" class="headerlink" title="G位"></a>G位</h4><p>  如果<code>G = 0</code>，说明段描述符中的Limit的单位是字节，段长度<code>Limit</code>范围可从1B～1MB，即在20位的前面补3个0即可；如果<code>G = 1</code>，说明段描述符中的Limit的单位是字节为4KB，即段长度Limit范围可从4KB～4GB，在20位的后面补充<code>FFF</code>即可。举个例子，如果Limit拼接后的为<code>FFFFF</code>，如果G为0则为<code>000FFFFF</code>，反之为<code>FFFFFFF</code>。</p>
+<h4 id="S位"><a href="#S位" class="headerlink" title="S位"></a>S位</h4><p>  <code>S = 1</code>代码段或者数据段描述符，<code>S = 0</code>系统段描述符。</p>
+<h4 id="TYPE域"><a href="#TYPE域" class="headerlink" title="TYPE域"></a>TYPE域</h4><p>  <code>TYPE域</code>是比较复杂的成员，它表示的含义受<code>S位</code>的影响。</p>
+<h4 id="当S位为1时"><a href="#当S位为1时" class="headerlink" title="当S位为1时"></a>当S位为1时</h4><p>  此时段描述符表示的是代码段或者数据段，如下图所示：</p>
+<p><img src="o_2109200324584--4.png" alt="img"></p>
+<p>  对于表格中Type域的属性和含义，如下表格所示：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:center">属性</th>
+<th style="text-align:center">含义</th>
+<th style="text-align:center">属性</th>
+<th style="text-align:center">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">A</td>
+<td style="text-align:center">访问位</td>
+<td style="text-align:center">E</td>
+<td style="text-align:center">向下扩展位</td>
+</tr>
+<tr>
+<td style="text-align:center">R</td>
+<td style="text-align:center">可读位</td>
+<td style="text-align:center">W</td>
+<td style="text-align:center">可写位</td>
+</tr>
+<tr>
+<td style="text-align:center">C</td>
+<td style="text-align:center">一致位</td>
+<td style="text-align:center"></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>  对于比较特殊的属性，我们将进一步介绍：</p>
+<h5 id="C位"><a href="#C位" class="headerlink" title="C位"></a>C位</h5><p>  <code>C = 1</code>：一致代码段；<code>C = 0</code>：非一致代码段。什么是一致代码段，什么是非一致代码段，将在后面的教程进行介绍。</p>
+<h5 id="E位"><a href="#E位" class="headerlink" title="E位"></a>E位</h5><p>  什么是向下拓展位，我们以<code>fs</code>为例来看一下如下示意图：</p>
+<p><img src="o_2109200327104-5.png" alt="img"></p>
+<p>  左边表示向上拓展，右边是向下拓展。即向上拓展<code>base</code>到<code>base+limit</code>之间区域有效，其余无效；向下拓展<code>base</code>到<code>base+limit</code>之间的区域无效，其余有效。这个位针对数据段有效。</p>
+<h4 id="当S位为0时"><a href="#当S位为0时" class="headerlink" title="当S位为0时"></a>当S位为0时</h4><p>  此时段描述符表示的是系统段，系统段有很多种，将会在后面的教程进行详细讲解。Type域每一个数值的含义如下图所示：</p>
+<p><img src="o_2109200325124-6.png" alt="img"></p>
+<h4 id="DB位"><a href="#DB位" class="headerlink" title="DB位"></a>DB位</h4><p>  <code>DB位</code>对不同的段具有不同的影响，情况如下：</p>
+<p>1️⃣ 对CS段的影响<br>  <code>D = 1</code>采用32位寻址方式,<code>D = 0</code>采用16位寻址方式。</p>
+<p>2️⃣ 对SS段的影响<br>  <code>D = 1</code>隐式堆栈访问指令（如：PUSH POP CALL）使用32位堆栈指针寄存器<code>ESP</code>，<code>D = 0</code>隐式堆栈访问指令（如：PUSH POP CALL）使用16位堆栈指针寄存器<code>SP</code>。</p>
+<p>3️⃣ 向下拓展的数据段<br>  <code>D = 1</code>段上线为<code>4GB</code>，<code>D = 0</code>段上线为<code>64KB</code>。至于是什么意思，我们来看下面一张图。</p>
+<p><img src="o_2109200412524-7.png" alt="img"></p>
+<p>  红色表示向下拓展能寻址的范围。可以看出，如果<code>D = 0</code>，就算原来能寻址<code>4GB</code>，因为<code>DB位</code>的限制导致最大范围是<code>64KB</code>。</p>
+<h4 id="DPL"><a href="#DPL" class="headerlink" title="DPL"></a>DPL</h4><p>  DPL(Descriptor Privilege Level)，即描述符特权级别，规定了访问该段所需要的特权级别是什么。如果通俗的理解，就是：如果你想访问我，那么你应该具备什么权限。</p>
+<h4 id="AVL"><a href="#AVL" class="headerlink" title="AVL"></a>AVL</h4><p>  AVL指示是否可供系统软件使用，由操作系统来使用，<code>CPU</code>并不使用它。</p>
+<h3 id="逻辑地址如何转化为线性地址"><a href="#逻辑地址如何转化为线性地址" class="headerlink" title="逻辑地址如何转化为线性地址"></a>逻辑地址如何转化为线性地址</h3><p>​    首先检查TI字段决定是去LDT还是GDT查描述表，然后从段选择符那里计算地址取出表中对应的数据乘以一个段描述符的大小。这个结果在跟ldtr或者是gdtr的结果相加，将逻辑地址的偏移量与Base字段值相加得到线性地址。</p>
+<h3 id="Linux中的分段"><a href="#Linux中的分段" class="headerlink" title="Linux中的分段"></a>Linux中的分段</h3><p>​    8086微处理器的分段鼓励程序员进行分段。但是Linux更喜欢分页的方式，它可以把同一个线性地址空间映射到不同的物理空间。</p>
+<blockquote>
+<p>原因如下：</p>
+<ul>
+<li>当所有进程使用相同的段寄存器值时，内存管理变得非常简单。也就是说他们能共享同样的一组线性地址</li>
+<li>Linux设计目标之一是可以把它移植到绝大多数流行的处理器平台上，然而RISC体系结构对分段的支持非常有限</li>
+</ul>
+</blockquote>
+<p>​    运行在用户态下的所有Linux进程都会使用一对相同的段来对指令和数据进行寻址，他们就是用户代码段和用户数据段。对于内核也是举一反三的</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>段</th>
+<th>Base</th>
+<th>G</th>
+<th>Limit</th>
+<th>S</th>
+<th>Type</th>
+<th>DPL</th>
+<th>D/B</th>
+<th>P</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>用户代码段</td>
+<td>0x00000000</td>
+<td>1</td>
+<td>0xfffff</td>
+<td>1</td>
+<td>10</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>用户数据段</td>
+<td>0x00000000</td>
+<td>1</td>
+<td>0xfffff</td>
+<td>1</td>
+<td>2</td>
+<td>3</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>内核代码段</td>
+<td>0x00000000</td>
+<td>1</td>
+<td>0xfffff</td>
+<td>1</td>
+<td>10</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td>内核数据段</td>
+<td>0x00000000</td>
+<td>1</td>
+<td>0xfffff</td>
+<td>1</td>
+<td>2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>​    Linux下的逻辑地址和线性地址的值是一致（段都从0x00000000开始），针对不同的CPL，寄存器选择不同层级的段选择符进行处理</p>
+<h3 id="Linux-GDT"><a href="#Linux-GDT" class="headerlink" title="Linux GDT"></a>Linux GDT</h3><p><img src="v2-3e2de1aef847ff7526dc3fb564c27e7b_1440w.webp" alt="img"></p>
+<p>​    GDT包含的18个段描述符指向下列的这些段：</p>
+<ul>
+<li>用户态和内核态的代码段和数据段共四个</li>
+<li>TSS</li>
+<li>一个包括缺省局部描述符表的段。这个段通常是被所有进程共享的</li>
+<li>三个局部线程存储段（TLS）。这种机制允许多线程应用使用最多三个局部于线程的数据段</li>
+<li>与高级电源管理相关的三个段</li>
+<li>与支持即插即用功能的BIOS服务程序相关的5个段</li>
+<li>被内核用来处理双重错误异常的特殊TSS段</li>
+</ul>
+<h3 id="Linux-LDT"><a href="#Linux-LDT" class="headerlink" title="Linux LDT"></a>Linux LDT</h3><h4 id="硬件单元中的分页"><a href="#硬件单元中的分页" class="headerlink" title="硬件单元中的分页"></a>硬件单元中的分页</h4><p>​    分页单元（Paging Unit）把线性地址转化为物理地址。我们在这个时候判断此次内存访问是否有效：无效的话就会抛出一个页异常。</p>
+<p>​    为了效率，我们把线性地址分成以固定长度为单位的组成为页，页内部的连续的线性地址被映射到连续的物理地址中。这样内核可以指定一个页的物理地址和存取权限，而不用指定页所包含的全部信息地址的存取权限。分页单元把所有的RAM分成固定长度的页框，有时叫做物理页。每一个页框包含一个页，也就是说一个页框的长度和一个页的长度一致。</p>
+<p>​    页框是主存的一部分，因此也是一个存储区域区分一个页和一个页框是非常重要的。前者只是一个数据块，，可以存放在任何页框或磁盘中。</p>
+<p>​    把线性地址映射到物理地址的数据结构成为页表，页表存放在主存中，并在启用分页单元之前必须由内核对页表进行适当的初始化。</p>
+<p>​    从80836开始所有的80x86处理器都支持分页它通过设置CR0寄存器的PG标志启用。当PG等于零时线性地址就会被解释成物理地址</p>
+<h4 id="常规分页"><a href="#常规分页" class="headerlink" title="常规分页"></a>常规分页</h4><p>​    32位的线性地址被分成三个域：</p>
+<blockquote>
+<p>Directory（目录）最高10位</p>
+<p>Table（页表）中间十位</p>
+<p>Offset（偏移量）最低十二位</p>
+</blockquote>
+<p>​    线性地址的转换分成两步完成，每一步都基于一种转换表。</p>
+<blockquote>
+<p>第一种转换表称为页目录表，第二种转化表称为页表</p>
+</blockquote>
+<p>​    使用这种二级模式的目的在于减少每个进程页表所需的RAM的数量。如果使用简单的一级页表，那将需要高达$2^{20}$个表项，也就是说在每项四个字节时需要4mbRAM来表示每一个进程的页表，即使一个进程并不使用那个范围内的所有地址。二级模式通过只为进程实际使用的那些虚拟内存区请求页表来减少内存使用量</p>
+<p>​    每个活动进程必须有一个分配给他的页目录，不过没有马必要马上为进程的所有页表分配而言。只有在进程实际需要一个页表时才给该页表分配RAM会更有效率。正在使用的页目录的物理地址存放在控制寄存器CR3中，线性地址那的Directory字段决定页目录中的目录项，而目录项指向适当的页表地址的table字段依次又决定页表中的表项，而表项含有页所在页框的物理地址。</p>
+<p>​    页目录项和页表项具有相同的结构：这是下面的字段说明：</p>
+<ul>
+<li><p>Field:<br>由于一个页框的容量是4KB，所以该物理地址的低12位总是0‘<br>若此页表结构指向的一个页目录项，则该字段的物理地址对应的物理页框里面的内容是一个页表。<br>若此页表结构指向的一个页表项，则该字段的物理地址对应的物理页框是一页数据</p>
+</li>
+<li><p>Present （P）:<br>若Present = 1，所指的页在内存中<br>若Present = 0，所指的页不在内存中.此时该结构中的其他位置可以由操作系统来支配，如果运行的的线性地址对用的页表项的Present = 0，则分页单元会将该线性地址存入寄存器cr2，并产生一个缺页异常:14号异常</p>
+</li>
+<li><p>Accessed (A):<br>分页单元堆相应的页框进行寻址时就设置这个标志.当选中页被交换出去时，该标志位就可以有操作系统来支配.分页单元从不重置这个标志</p>
+</li>
+<li><p>Dirty (D):<br>此标志只用于页表项中，用于标记页框有进行写操作</p>
+</li>
+<li><p>Read/Write (R/W):<br>页或者页表的存取权限</p>
+</li>
+<li><p>User/Supervisor (U/S):<br>页或者页表所需的特权级</p>
+</li>
+<li><p>Page Size：<br>只应用于目录项，若设置为1，则页目录项指的是4MB或者2MB的页框.</p>
+</li>
+<li><p>Global标志：</p>
+<p>只应用在页表项。用来防止常用页从TLB高速缓存中刷新出去。只有在CR四寄存器的页全局启用标志置位时这个标志才起作用</p>
+</li>
+</ul>
+<h4 id="硬件高速缓存"><a href="#硬件高速缓存" class="headerlink" title="硬件高速缓存"></a>硬件高速缓存</h4><p>​    为了缩小CPU和RAM的速度差距，我们引入了cache体系。基于局部性原理，程序很可能会反复访问一些地址，只需要将他们存储起来，访问的时候直接取出而不是走取页表流程将会大大增加程序处理的速度。对于转换后援的缓冲器称为TLB，他则是加快线性地址向物理地址的映射。</p>
+<h3 id="Linux分页"><a href="#Linux分页" class="headerlink" title="Linux分页"></a>Linux分页</h3><p><img src="v2-17b4417272da92339448189b6b92f1c1_1440w.webp" alt="img"></p>
+<p>每一个进程都有一个指针指向它自己的PGD(Page <a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=Global&amp;spm=1001.2101.3001.7020">Global</a> Directory)，PGD是一个物理页框。该页框包含有一组类型为pgd_t的结构。该类型有具体的架构代码中指定。例如在x86下，其定义如下：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span> pgd<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pgd_t</span><span class="token punctuation">;</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> pte_low<span class="token punctuation">,</span> pte_high<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pte_t</span><span class="token punctuation">;</span>
+<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span> pmd<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pmd_t</span><span class="token punctuation">;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>每种架构加载page tables的方式有所不同。例如x86架构下，每个进程的page tables是通过复制mm_struct-&gt;pgd到cr3寄存器进行加载的。</p>
+<ul>
+<li>PGD中的每一个active项都对应着一个物理页框，该页框包含一组PMD(Page Middle Directory)其类型为pmd_t。</li>
+<li>PMD对应的又是一个物理页框，PMD页框中时一组PTE(Page Table Entries)其类型为pte_t,</li>
+<li>PTE对应一个物理页框用于存放最终的数据。<br><img src="watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODUzNzczMA==,size_16,color_FFFFFF,t_70.png" alt="fenye"></li>
+</ul>
+<p>一条线性地址可能被切割为多个部分形成多级页表和页内偏移。为了帮助线性地址的切割，为每一级也表定义了一个宏：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token comment">/* PAGE_SHIFT determines the page size */</span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PAGE_SHIFT</span>	<span class="token expression"><span class="token number">12</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PAGE_SIZE</span>	<span class="token expression"><span class="token punctuation">(</span><span class="token number">1UL</span> <span class="token operator">&lt;&lt;</span> PAGE_SHIFT<span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">PAGE_MASK</span>	<span class="token expression"><span class="token punctuation">(</span><span class="token operator">~</span><span class="token punctuation">(</span>PAGE_SIZE<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="20200211082401273.png" alt="dizhi"><br><img src="2020021108252597.png" alt="1233"></p>
+<h3 id="页表项描述-Describing-a-Page-Table-Entry"><a href="#页表项描述-Describing-a-Page-Table-Entry" class="headerlink" title="页表项描述(Describing a Page Table Entry)"></a>页表项描述(Describing a Page Table Entry)</h3><p>如上面所描述，<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=struct&amp;spm=1001.2101.3001.7020">struct</a> pte_t,pmd_t,pgd_t分别描述PTE，PMD,PGD。尽管它们通常是一个非负整数，但是它们仍然被定义成结构体有以下两种原因：</p>
+<ol>
+<li>为了类型保护，因此避免它们被人不合时宜的误用</li>
+<li>为了支持x86的PAE功能，因为PAE有多处4个bit来描述大于4GB的memory</li>
+</ol>
+<p>从下面的定义来看，分别有两种定义：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">ifdef</span> <span class="token expression">CONFIG_X86_PAE</span></span>
+	<span class="token keyword">extern</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span> __supported_pte_mask<span class="token punctuation">;</span>
+	<span class="token keyword">extern</span> <span class="token keyword">int</span> nx_enabled<span class="token punctuation">;</span>
+	<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> pte_low<span class="token punctuation">,</span> pte_high<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pte_t</span><span class="token punctuation">;</span>
+	<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span> pmd<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pmd_t</span><span class="token punctuation">;</span>
+	<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span> pgd<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pgd_t</span><span class="token punctuation">;</span>
+	<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span> pgprot<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pgprot_t</span><span class="token punctuation">;</span>
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pte_val</span><span class="token expression"><span class="token punctuation">(</span>x<span class="token punctuation">)</span>	<span class="token punctuation">(</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">.</span>pte_low <span class="token operator">|</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token keyword">long</span><span class="token punctuation">)</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">.</span>pte_high <span class="token operator">&lt;&lt;</span> <span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">HPAGE_SHIFT</span>	<span class="token expression"><span class="token number">21</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">else</span></span>
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">nx_enabled</span> <span class="token expression"><span class="token number">0</span></span></span>
+	<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> pte_low<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pte_t</span><span class="token punctuation">;</span>
+	<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> pmd<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pmd_t</span><span class="token punctuation">;</span>
+	<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> pgd<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pgd_t</span><span class="token punctuation">;</span>
+	<span class="token keyword">typedef</span> <span class="token keyword">struct</span> <span class="token punctuation">&#123;</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> pgprot<span class="token punctuation">;</span> <span class="token punctuation">&#125;</span> <span class="token class-name">pgprot_t</span><span class="token punctuation">;</span>
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">boot_pte_t</span> <span class="token expression"><span class="token class-name">pte_t</span> </span><span class="token comment">/* or would you rather have a typedef */</span></span>
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pte_val</span><span class="token expression"><span class="token punctuation">(</span>x<span class="token punctuation">)</span>	<span class="token punctuation">(</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token punctuation">.</span>pte_low<span class="token punctuation">)</span></span></span>
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name">HPAGE_SHIFT</span>	<span class="token expression"><span class="token number">22</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">endif</span></span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>为了类型转换，分别定义了4对宏方便转换:</p>
+<pre class="line-numbers language-none"><code class="language-none">struct -&gt; uint:pte_val(), pmd_val(), pgd_val() ,pgprot_val()
+uint -&gt; struct:pte(), pmd(), pgd() , pgprot()<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="如何使用页表项-Using-Page-Table-Entries"><a href="#如何使用页表项-Using-Page-Table-Entries" class="headerlink" title="如何使用页表项(Using Page Table Entries)"></a>如何使用页表项(Using Page Table Entries)</h3><p>为了遍历页目录，下面三个宏被定义用来将一个线性地址快速分理出其内部组成部分。</p>
+<ul>
+<li>pgd_offset():输入线性地址和mm_struct,返回线性地址中对应的PGD项。</li>
+</ul>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pgd_offset</span><span class="token expression"><span class="token punctuation">(</span>mm<span class="token punctuation">,</span> address<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span>mm<span class="token punctuation">)</span><span class="token operator">-></span>pgd<span class="token operator">+</span><span class="token function">pgd_index</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pgd_index</span><span class="token expression"><span class="token punctuation">(</span>address<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span> <span class="token operator">>></span> PGDIR_SHIFT<span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token punctuation">(</span>PTRS_PER_PGD<span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token number">12</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>pmd_offset()：输入一个PGD项(找到页框地址)和一个线性地址（找到pmd的偏移），返回一个对应的PMD</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pmd_offset</span><span class="token expression"><span class="token punctuation">(</span>dir<span class="token punctuation">,</span> address<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">pmd_t</span> <span class="token operator">*</span><span class="token punctuation">)</span> <span class="token function">pgd_page</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">(</span>dir<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token function">pmd_index</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pgd_page</span><span class="token expression"><span class="token punctuation">(</span>pgd<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token function">__va</span><span class="token punctuation">(</span><span class="token function">pgd_val</span><span class="token punctuation">(</span>pgd<span class="token punctuation">)</span> <span class="token operator">&amp;</span> PAGE_MASK<span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token number">12</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>pte_offset_kernel():输入一个PMD(找到页框地址)和一个线性地址(找到页内偏移)</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pte_offset_kernel</span><span class="token expression"><span class="token punctuation">(</span>pmd<span class="token punctuation">,</span> address<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token class-name">pte_t</span> <span class="token operator">*</span><span class="token punctuation">)</span> <span class="token function">pmd_page_kernel</span><span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">(</span>pmd<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token operator">+</span>  <span class="token function">pte_index</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pmd_page_kernel</span><span class="token expression"><span class="token punctuation">(</span>pmd<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span> <span class="token function">__va</span><span class="token punctuation">(</span><span class="token function">pmd_val</span><span class="token punctuation">(</span>pmd<span class="token punctuation">)</span> <span class="token operator">&amp;</span> PAGE_MASK<span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pte_index</span><span class="token expression"><span class="token punctuation">(</span>address<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span> <span class="token operator">>></span> PAGE_SHIFT<span class="token punctuation">)</span> <span class="token operator">&amp;</span> <span class="token punctuation">(</span>PTRS_PER_PTE <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token number">123</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第二轮的宏函数是用来检查页表项是否存在或者是否有人在使用：</p>
+<ul>
+<li>pte_none(), pmd_none() and pgd_none()：如果对应的项不存在，返回1</li>
+<li>pte_present(), pmd_present() and pgd_present()：如果对应项的PRESENT为被置位，返回1</li>
+<li>pte_clear(), pmd_clear() and pgd_clear()：将会清除对应的项</li>
+<li>pmd_bad() and pgd_bad() :用来检查页表项是否符合要求</li>
+</ul>
+<p>上述的几组宏的使用例程：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">        <span class="token class-name">pgd_t</span> <span class="token operator">*</span>pgd<span class="token punctuation">;</span>
+        <span class="token class-name">pmd_t</span> <span class="token operator">*</span>pmd<span class="token punctuation">;</span>
+        <span class="token class-name">pte_t</span> <span class="token operator">*</span>ptep<span class="token punctuation">,</span> pte<span class="token punctuation">;</span>
+        pgd <span class="token operator">=</span> <span class="token function">pgd_offset</span><span class="token punctuation">(</span>mm<span class="token punctuation">,</span> address<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">pgd_none</span><span class="token punctuation">(</span><span class="token operator">*</span>pgd<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">pgd_bad</span><span class="token punctuation">(</span><span class="token operator">*</span>pgd<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                 <span class="token keyword">goto</span> out<span class="token punctuation">;</span>
+        pmd <span class="token operator">=</span> <span class="token function">pmd_offset</span><span class="token punctuation">(</span>pgd<span class="token punctuation">,</span> address<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">pmd_none</span><span class="token punctuation">(</span><span class="token operator">*</span>pmd<span class="token punctuation">)</span> <span class="token operator">||</span> <span class="token function">pmd_bad</span><span class="token punctuation">(</span><span class="token operator">*</span>pmd<span class="token punctuation">)</span><span class="token punctuation">)</span>
+                 <span class="token keyword">goto</span> out<span class="token punctuation">;</span>
+         ptep <span class="token operator">=</span> <span class="token function">pte_offset</span><span class="token punctuation">(</span>pmd<span class="token punctuation">,</span> address<span class="token punctuation">)</span><span class="token punctuation">;</span>
+         <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>ptep<span class="token punctuation">)</span>
+                <span class="token keyword">goto</span> out<span class="token punctuation">;</span>
+         pte <span class="token operator">=</span> <span class="token operator">*</span>ptep<span class="token punctuation">;</span>
+<span class="token number">12345678910111213</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>第三轮的宏是用来检查页表项的权限和设置页表项的权限。这些权限决定了一个用户空间的进程在一个page上能干什么不能干什么。举例：内核页表项永远不能被用户进程读取。</p>
+<ul>
+<li>pte_read()：用来测试pte的读权限，pte_mkread() 设置读权限，pte_rdprotect()取消读权限</li>
+<li>pte_write()：用来测试pte的写权限，pte_mkwrite() 设置读权限，pte_wrprotect()取消读权限</li>
+<li>pte_dirty()：用来测试是否有被写过，pte_mkdirty()设置dirty位，pte_mkclean()清除dirty位</li>
+<li>pte_young()：用来测试是否是新页，pte_mkyoung()设置新页，pte_old()设置位旧页（检查access位）</li>
+</ul>
+<h3 id="转换和设置页表项（Translating-and-Setting-Page-Table-Entries）"><a href="#转换和设置页表项（Translating-and-Setting-Page-Table-Entries）" class="headerlink" title="转换和设置页表项（Translating and Setting Page Table Entries）"></a>转换和设置页表项（Translating and Setting Page Table Entries）</h3><ul>
+<li>mk_pte()：输入一个struct page和保护位组合形成pte_t。</li>
+</ul>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">page_to_pfn</span><span class="token expression"><span class="token punctuation">(</span>page<span class="token punctuation">)</span>	<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span> <span class="token operator">-</span> mem_map<span class="token punctuation">)</span><span class="token punctuation">)</span> </span><span class="token comment">//mem_map中的偏移就是PFN</span></span>
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">pfn_pte</span><span class="token expression"><span class="token punctuation">(</span>pfn<span class="token punctuation">,</span> prot<span class="token punctuation">)</span>	<span class="token function">__pte</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">(</span>pfn<span class="token punctuation">)</span> <span class="token operator">&lt;&lt;</span> PAGE_SHIFT<span class="token punctuation">)</span> <span class="token operator">|</span> <span class="token function">pgprot_val</span><span class="token punctuation">(</span>prot<span class="token punctuation">)</span><span class="token punctuation">)</span> </span><span class="token comment">//将PFN与权限bit为合并形成pte_t</span></span>
+	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">mk_pte</span><span class="token expression"><span class="token punctuation">(</span>page<span class="token punctuation">,</span> pgprot<span class="token punctuation">)</span>	<span class="token function">pfn_pte</span><span class="token punctuation">(</span><span class="token function">page_to_pfn</span><span class="token punctuation">(</span>page<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>pgprot<span class="token punctuation">)</span><span class="token punctuation">)</span></span></span>
+<span class="token number">123</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<ul>
+<li>set_pte()：输入一个PDM页框内的地址，然后将pte_t赋值在这个地址中。</li>
+</ul>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c">	<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">set_pte</span><span class="token expression"><span class="token punctuation">(</span>pteptr<span class="token punctuation">,</span> pteval<span class="token punctuation">)</span> <span class="token punctuation">(</span><span class="token operator">*</span><span class="token punctuation">(</span>pteptr<span class="token punctuation">)</span> <span class="token operator">=</span> pteval<span class="token punctuation">)</span></span></span>
+<span class="token number">1</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li>pte_page()：将pte_t转换为struct page</li>
+</ul>
+<h3 id="分配释放页表-Allocating-and-Freeing-Page-Tables"><a href="#分配释放页表-Allocating-and-Freeing-Page-Tables" class="headerlink" title="分配释放页表(Allocating and Freeing Page Tables)"></a>分配释放页表(Allocating and Freeing Page Tables)</h3><ul>
+<li>分配函数： pgd_alloc(), pmd_alloc() and pte_alloc()</li>
+<li>释放函数：pgd_free(), pmd_free() and pte_free()</li>
+</ul>
+<h3 id="内核页表-Kernel-Page-Tables"><a href="#内核页表-Kernel-Page-Tables" class="headerlink" title="内核页表(Kernel Page Tables)"></a>内核页表(Kernel Page Tables)</h3><p>当系统启动时，分页功能还没有启用因为页表不会自己初始化自己。因为每种架构中的具体实现各不相同本文只讨论x86的case。page table的初始化被分为两个阶段：</p>
+<ul>
+<li>bootstrap阶段创建前8MB的页表来开启分页单元。</li>
+<li>Finalising阶段初始化剩余的页表。</li>
+</ul>
+<h4 id="Bootstrapping阶段"><a href="#Bootstrapping阶段" class="headerlink" title="Bootstrapping阶段"></a>Bootstrapping阶段</h4><p>在文件arch/i386/kernel/head.S中的startup_32()汇编函数负责开启分页单元。一般内核的所有常规代码编译后的内核镜像vmlinuz的起始地址被设置位PAGE_OFFSET + 1MB。而内核实际加载地址是物理内存1MB的位置开始的。从0~1MB这段物理地址通常被某些设备用来个BIOS通信，所以被内核弃之不用。Bootstrapping阶段的代码从虚拟地址转换为物理地址的方法是vaddr - _PAGE_OFFSET,就是直接映射。Bootstrapping阶段要用此方法映射从1MB开始的前8MB物理地址（1MB ~ 9MB）到虚拟地址，直到分页单元被启用。<br>内核页表初始化从内核编译时静态定义的swapper_pg_dir数组开始，swapper_pg_dir的地址为0x00101000，再建立两页的页表项：pg0，pg1。将swapper_pg_dir中的第0项和第768项设置为pg0的物理地址，第1项和第769项设定为pg1页框的物理地址,swapper_pg_dir中的其他项都填0.这也就是说当分页功能开启的时候，内核无论是用物理地址还是虚拟地址都可以将这两页表映射到正确的page中。其余的页表由paging_init()函数来进行初始化。<br>一旦临时内核页表映射完成，就会通过设置cr0寄存器的一个bit位来开启分页单元。</p>
+<h4 id="Finalising阶段"><a href="#Finalising阶段" class="headerlink" title="Finalising阶段"></a>Finalising阶段</h4><p>在此阶段会执行paging_init()函数来执行，其调用流程如下：<br><img src="watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODUzNzczMA==,size_16,color_FFFFFF,t_70-1709599117169-3.png" alt="初四花"></p>
+<ul>
+<li>pagetable_init() 会初始化内核<strong>线性映射区间</strong>的虚拟地址到物理地址转换所需的页表。此时只创建pmd和pte，并未将每个页框创建相应的struct page，其具体初始化的虚拟地址段如下图所示：<br><img src="202002111342131.png" alt="12233"><br>让后再调用page_table_range_init()初始化固定映射区域的内核页表：<br><img src="20200211134926180.png" alt="fix"><br>一旦pagetable_init()返回，内核空间的所有页表都初始化完成，因此swapper_pg_dir会被加载到cr3寄存器，以此这些页表就可被分页单元使用了。</li>
+<li>kmap_init()：将rang_init对应的PTEs加上保护位PAGE_KERNEL</li>
+<li>zone_sizes_init():初始化各个zone，其中最重要的是为每个页框分配struct page，形成mem_map数组。</li>
+</ul>
+<h3 id="Mapping-addresses-to-a-struct-page"><a href="#Mapping-addresses-to-a-struct-page" class="headerlink" title="Mapping addresses to a struct page"></a>Mapping addresses to a struct page</h3><h4 id="Mapping-Physical-to-Virtual-Kernel-Addresses"><a href="#Mapping-Physical-to-Virtual-Kernel-Addresses" class="headerlink" title="Mapping Physical to Virtual Kernel Addresses"></a>Mapping Physical to Virtual Kernel Addresses</h4><p>从Linux的线性映射我们可以知道物理地址0对应虚拟地址PAGE_OFFSET(3GB)，因此任何线性映射区的虚拟地址转换成物理地址的方法就非常简单了，直接将虚拟地址减去PAGE_OFFSET即可。下面来看看内核的实现：</p>
+<ul>
+<li><p>虚拟地址 —&gt; 物理地址</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"> <span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">__pa</span><span class="token expression"><span class="token punctuation">(</span>x<span class="token punctuation">)</span>   <span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token operator">-</span>PAGE_OFFSET<span class="token punctuation">)</span> </span><span class="token comment">//将虚拟地址转换为物理地址</span></span>
+ <span class="token keyword">static</span> <span class="token keyword">inline</span> <span class="token keyword">unsigned</span> <span class="token keyword">long</span> <span class="token function">virt_to_phys</span><span class="token punctuation">(</span><span class="token keyword">volatile</span> <span class="token keyword">void</span> <span class="token operator">*</span> address<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+         <span class="token keyword">return</span> <span class="token function">__pa</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+<li><p>物理地址 —&gt; 虚拟地址</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">__va</span><span class="token expression"><span class="token punctuation">(</span>x<span class="token punctuation">)</span>			<span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">void</span> <span class="token operator">*</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span><span class="token punctuation">)</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span><span class="token operator">+</span>PAGE_OFFSET<span class="token punctuation">)</span><span class="token punctuation">)</span> </span><span class="token comment">//将物理地址转换为虚拟地址</span></span>
+<span class="token keyword">static</span> <span class="token keyword">inline</span> <span class="token keyword">void</span> <span class="token operator">*</span> <span class="token function">phys_to_virt</span><span class="token punctuation">(</span><span class="token keyword">unsigned</span> <span class="token keyword">long</span> address<span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+	<span class="token keyword">return</span> <span class="token function">__va</span><span class="token punctuation">(</span>address<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</li>
+</ul>
+<h4 id="Mapping-struct-pages-to-Physical-Addresses"><a href="#Mapping-struct-pages-to-Physical-Addresses" class="headerlink" title="Mapping struct pages to Physical Addresses"></a>Mapping struct pages to Physical Addresses</h4><p>从上面的章节我们可以知道kernel image的起始地址是物理地址1MB的地方，然后改物理地址转换成虚拟地址之后就是PAGE_OFFSET + 0x0010000,其后续的一个8MB的地址空间是留给内核的静态代码使用的区域。所以这是不是就预示着第一个可用的虚拟地址就是0xC0800000呢？其实不是如此，Linux尽量将前16MB的虚拟地址留给ZONE_DMA，因此第一个可供内核动态分配可用的虚拟地址是0xC1000000。这也就是全局变量mem_map的地址。ZONE_DMA只有在很必要的情况下使用。<br>物理地址转换为struct page是通过将物理地址视为mem_map数组的index。将物理地址向右平移PAGE_SHIFT个bit将得到PFN，PFN也是mem_map的index。即 struct *page = mem_map[paddr &gt;&gt; PAGE_SHIFT]</p>
+<ul>
+<li><p>vaddr -&gt; struct page:</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">define</span> <span class="token macro-name function">virt_to_page</span><span class="token expression"><span class="token punctuation">(</span>kaddr<span class="token punctuation">)</span> <span class="token punctuation">(</span>mem_map <span class="token operator">+</span> <span class="token punctuation">(</span><span class="token function">__pa</span><span class="token punctuation">(</span>kaddr<span class="token punctuation">)</span> <span class="token operator">>></span> PAGE_SHIFT<span class="token punctuation">)</span><span class="token punctuation">)</span></span></span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</li>
+<li><p>struct page -&gt; paddr:<br>显而易见，通过page的地址就可以知道该page在mem_map中的index，其index就是PFN，然后将其后12位补0，就是物理地址。<br>至此来总结下Linux的地址模型：<br><img src="watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zODUzNzczMA==,size_16,color_FFFFFF,t_70-1709599117169-4.png" alt="moxing"></p>
+</li>
+</ul>
+<h3 id="Translation-Lookaside-Buffer-TLB"><a href="#Translation-Lookaside-Buffer-TLB" class="headerlink" title="Translation Lookaside Buffer (TLB)"></a>Translation Lookaside Buffer (TLB)</h3><p>在早期，当处理器需要将虚拟地址映射成物理地址时，它必须扫描所有页目录来搜索需要的PTE。为了避免这种可以想象的消耗，各种不同的硬件架构都给出了一小块内部缓存空间，即提供TLB来缓存虚拟地址到物理地址的转换表。<br>尽管不是所有架构都有提供TLB，但是Linux内核还是假设所有架构够提供，不能提供的在编译的时候关掉响应的config即可。Linux提供了一些刷新TLB的hook函数：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>void flush_tlb_all(void)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>刷新系统中每一个处理器的整个TLB，这时最昂贵的TLB刷新操作。当该操作完成之后，所有对page tables的修改都变得全局可见。例如当调用vfree()之后就需要刷新整个TLB</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>void flush_tlb_mm(struct mm_struct *mm)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>刷新userspace中和mm_struct相关的整个TLB。在某些架构下，如MIPS，该操作需要对应所有的处理器，但通常是局部的处理器。该操作仅仅是在当整个address space都有影响的case下才执行如：fork的时候复制了整个地址空间或者是删除了所有地址映射</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>void flush_tlb_range(struct mm_struct *mm, unsigned long start, unsigned long end)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>刷新mm上下文中指定范围内的用户空间的页表。当一个新的region被移动或者被改变时如调用mremap()时调用</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>void flush_tlb_page(struct vm_area_struct *vma, unsigned long addr)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>该API是用来刷新TLB中的单个page，当一个page产生page fault之后或者是page out之后调用</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>void flush_tlb_pgtables(struct mm_struct *mm, unsigned long start, unsigned long end)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>当page tables被释放或者被分裂时调用。有些平台只缓存最低level的page table，PTE，当pages被删除或者是被重新映射后，就需要刷新TLB</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>void update_mmu_cache(struct vm_area_struct *vma, unsigned long addr, pte_t pte)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>该API仅仅在page fault完成之后被调用</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="Level-1-CPU-Cache-Management"><a href="#Level-1-CPU-Cache-Management" class="headerlink" title="Level 1 CPU Cache Management"></a>Level 1 CPU Cache Management</h3><p>CPU caches，例如,TLB caches，主要是利用程序优先使用局部的数据。为了避免在使用数据时都要从主内存中取数据，CPU从而开始缓存一小部分数据在CPU cache中。通常来讲，有两种层级的cache，Level 1 和Level 2 CPU cache，L2 cache比L1 cache要慢很多。Linux通常只关心L1 cache。<br>CPU cache通常被组织成lines(行)。每个Line通常非常小，一般是32个字节，每个Line都需要与自己的边界对齐。换句话说，就是一个32字节的cache line将要求32字节对齐。在Linux中line大小有变量L1_CACHE_BYTES来描述，由各种架构自己定义具体的值。<br>地址如何被映射到cache line因架构而异。但是主要有三种方式：</p>
+<ul>
+<li>direct mapping：每个内存块只能映射到一个可能的cache line</li>
+<li>associative mapping：任意的内存块能映射到任何一个cache line</li>
+<li>set associative mapping：一种组合方法，任何内存狂只能映射到某个缓存行子集中的任意行。</li>
+</ul>
+<p>不管是什么映射方案，它们有一个共同点：地址相近并且和cache size对齐的地址尽量使用不同的缓存行。因此Linux使用最简单的策略来最大利用cache:</p>
+<ul>
+<li>结构中经常被访问的字段通常在结构开始的位置，从而增加仅用一个缓存行来处理普通字段的机会。</li>
+<li>一个结构中不相关的项应该至少有缓存大小的字节数的隔离从而避免在CPU之间的错误共享。</li>
+<li>通用缓存中的对象，如mm_struct 缓存，应该要与L1 CPU cache对齐从而避免错误共享。</li>
+</ul>
+<p>如果CPU要引用的一个地址不再CPU cache中，CPU就需要从主内存中取数据。然后CPU cache匹配失败的代价是非常昂贵的，因为从L1 cache中访问一个地址只需要10ns，而从主内存中访问一个地址要100 ~ 200ns。因此最基本的原则是尽可能多的命中缓存尽可能少的命失缓存。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">http://charliechen114514.github.io/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C/">C/C++</a><a class="post-meta__tags" href="/tags/Linux/">Linux</a><a class="post-meta__tags" href="/tags/Operating-System/">Operating System</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/01/29/Opencv490-MSVC-Mingw-WITHQT-OpencvContrib4-x%E7%BC%96%E8%AF%91%E6%95%99%E7%A8%8B/" title="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/01/17/MITS6081-Notes/" title="MITS6081 Notes"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-17</div><div class="title">MITS6081 Notes</div></div></a></div><div><a href="/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/" title="TCP&#x2F;IP 网络编程笔记——1，2，3"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-23</div><div class="title">TCP&#x2F;IP 网络编程笔记——1，2，3</div></div></a></div><div><a href="/2023/08/17/Unix-network-programming-Guidance/" title="Unix网络编程 - 1"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">Unix网络编程 - 1</div></div></a></div><div><a href="/2023/08/19/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E2%80%94%E2%80%94%E5%AF%BC%E8%AE%BA%E4%B8%8E%E4%B8%89%E7%A7%8D%E5%8D%8F%E8%AE%AE/" title="Unix网络编程——导论与三种协议"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-19</div><div class="title">Unix网络编程——导论与三种协议</div></div></a></div><div><a href="/2023/08/20/%E5%B5%8C%E5%85%A5%E5%BC%8FC%E4%BF%AE%E5%85%BB%E2%80%94%E2%80%94%E5%89%8D%E5%AF%BC/" title="嵌入式C修养——前导"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-20</div><div class="title">嵌入式C修养——前导</div></div></a></div><div><a href="/2024/01/15/xv6%E9%80%9F%E9%80%9A/" title="xv6速通"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-15</div><div class="title">xv6速通</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">52</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux%E5%86%85%E6%A0%B8%E9%98%85%E8%AF%BB"><span class="toc-number">1.</span> <span class="toc-text">Linux内核阅读</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%AA%E8%AE%BA"><span class="toc-number">1.1.</span> <span class="toc-text">绪论</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="toc-number">1.1.1.</span> <span class="toc-text">操作系统的基本概念</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A4%9A%E7%94%A8%E6%88%B7%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.1.2.</span> <span class="toc-text">多用户系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%94%A8%E6%88%B7%E5%92%8C%E7%BB%84"><span class="toc-number">1.1.3.</span> <span class="toc-text">用户和组</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Unix%E5%86%85%E6%A0%B8%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.4.</span> <span class="toc-text">Unix内核概述</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E7%9A%84%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.4.1.</span> <span class="toc-text">进程的实现</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%8F%AF%E9%87%8D%E5%85%A5%E7%9A%84%E5%86%85%E6%A0%B8"><span class="toc-number">1.1.4.2.</span> <span class="toc-text">可重入的内核</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BF%9B%E7%A8%8B%E5%9C%B0%E5%9D%80%E7%A9%BA%E9%97%B4%EF%BC%9A"><span class="toc-number">1.1.4.3.</span> <span class="toc-text">进程地址空间：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%90%8C%E6%AD%A5%E5%92%8C%E4%B8%B4%E7%95%8C%E5%8C%BA"><span class="toc-number">1.1.4.4.</span> <span class="toc-text">同步和临界区</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%A1%E5%8F%B7%E9%87%8FSemaphore"><span class="toc-number">1.1.4.5.</span> <span class="toc-text">信号量Semaphore</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%85%E5%AD%98%E5%AF%BB%E5%9D%80"><span class="toc-number">1.2.</span> <span class="toc-text">内存寻址</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AE%B5%E9%80%89%E6%8B%A9%E7%AC%A6%E5%92%8C%E6%AE%B5%E5%AF%84%E5%AD%98%E5%99%A8"><span class="toc-number">1.2.1.</span> <span class="toc-text">段选择符和段寄存器</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AE%B5%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="toc-number">1.2.2.</span> <span class="toc-text">段描述符</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#P%E4%BD%8D"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">P位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Base"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">Base</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Limit"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">Limit</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#G%E4%BD%8D"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">G位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#S%E4%BD%8D"><span class="toc-number">1.2.2.5.</span> <span class="toc-text">S位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#TYPE%E5%9F%9F"><span class="toc-number">1.2.2.6.</span> <span class="toc-text">TYPE域</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%93S%E4%BD%8D%E4%B8%BA1%E6%97%B6"><span class="toc-number">1.2.2.7.</span> <span class="toc-text">当S位为1时</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#C%E4%BD%8D"><span class="toc-number">1.2.2.7.1.</span> <span class="toc-text">C位</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#E%E4%BD%8D"><span class="toc-number">1.2.2.7.2.</span> <span class="toc-text">E位</span></a></li></ol></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BD%93S%E4%BD%8D%E4%B8%BA0%E6%97%B6"><span class="toc-number">1.2.2.8.</span> <span class="toc-text">当S位为0时</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DB%E4%BD%8D"><span class="toc-number">1.2.2.9.</span> <span class="toc-text">DB位</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#DPL"><span class="toc-number">1.2.2.10.</span> <span class="toc-text">DPL</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#AVL"><span class="toc-number">1.2.2.11.</span> <span class="toc-text">AVL</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E5%9C%B0%E5%9D%80%E5%A6%82%E4%BD%95%E8%BD%AC%E5%8C%96%E4%B8%BA%E7%BA%BF%E6%80%A7%E5%9C%B0%E5%9D%80"><span class="toc-number">1.2.3.</span> <span class="toc-text">逻辑地址如何转化为线性地址</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E4%B8%AD%E7%9A%84%E5%88%86%E6%AE%B5"><span class="toc-number">1.2.4.</span> <span class="toc-text">Linux中的分段</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux-GDT"><span class="toc-number">1.2.5.</span> <span class="toc-text">Linux GDT</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux-LDT"><span class="toc-number">1.2.6.</span> <span class="toc-text">Linux LDT</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E5%8D%95%E5%85%83%E4%B8%AD%E7%9A%84%E5%88%86%E9%A1%B5"><span class="toc-number">1.2.6.1.</span> <span class="toc-text">硬件单元中的分页</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B8%B8%E8%A7%84%E5%88%86%E9%A1%B5"><span class="toc-number">1.2.6.2.</span> <span class="toc-text">常规分页</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%A1%AC%E4%BB%B6%E9%AB%98%E9%80%9F%E7%BC%93%E5%AD%98"><span class="toc-number">1.2.6.3.</span> <span class="toc-text">硬件高速缓存</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Linux%E5%88%86%E9%A1%B5"><span class="toc-number">1.2.7.</span> <span class="toc-text">Linux分页</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%B5%E8%A1%A8%E9%A1%B9%E6%8F%8F%E8%BF%B0-Describing-a-Page-Table-Entry"><span class="toc-number">1.2.8.</span> <span class="toc-text">页表项描述(Describing a Page Table Entry)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E9%A1%B5%E8%A1%A8%E9%A1%B9-Using-Page-Table-Entries"><span class="toc-number">1.2.9.</span> <span class="toc-text">如何使用页表项(Using Page Table Entries)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BD%AC%E6%8D%A2%E5%92%8C%E8%AE%BE%E7%BD%AE%E9%A1%B5%E8%A1%A8%E9%A1%B9%EF%BC%88Translating-and-Setting-Page-Table-Entries%EF%BC%89"><span class="toc-number">1.2.10.</span> <span class="toc-text">转换和设置页表项（Translating and Setting Page Table Entries）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%86%E9%85%8D%E9%87%8A%E6%94%BE%E9%A1%B5%E8%A1%A8-Allocating-and-Freeing-Page-Tables"><span class="toc-number">1.2.11.</span> <span class="toc-text">分配释放页表(Allocating and Freeing Page Tables)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%86%85%E6%A0%B8%E9%A1%B5%E8%A1%A8-Kernel-Page-Tables"><span class="toc-number">1.2.12.</span> <span class="toc-text">内核页表(Kernel Page Tables)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Bootstrapping%E9%98%B6%E6%AE%B5"><span class="toc-number">1.2.12.1.</span> <span class="toc-text">Bootstrapping阶段</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Finalising%E9%98%B6%E6%AE%B5"><span class="toc-number">1.2.12.2.</span> <span class="toc-text">Finalising阶段</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Mapping-addresses-to-a-struct-page"><span class="toc-number">1.2.13.</span> <span class="toc-text">Mapping addresses to a struct page</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Mapping-Physical-to-Virtual-Kernel-Addresses"><span class="toc-number">1.2.13.1.</span> <span class="toc-text">Mapping Physical to Virtual Kernel Addresses</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Mapping-struct-pages-to-Physical-Addresses"><span class="toc-number">1.2.13.2.</span> <span class="toc-text">Mapping struct pages to Physical Addresses</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Translation-Lookaside-Buffer-TLB"><span class="toc-number">1.2.14.</span> <span class="toc-text">Translation Lookaside Buffer (TLB)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Level-1-CPU-Cache-Management"><span class="toc-number">1.2.15.</span> <span class="toc-text">Level 1 CPU Cache Management</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="Linux内核深度学习"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux内核深度学习"/></a><div class="content"><a class="title" href="/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="Linux内核深度学习">Linux内核深度学习</a><time datetime="2024-03-05T01:04:41.000Z" title="发表于 2024-03-05 09:04:41">2024-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/29/Opencv490-MSVC-Mingw-WITHQT-OpencvContrib4-x%E7%BC%96%E8%AF%91%E6%95%99%E7%A8%8B/" title="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程"/></a><div class="content"><a class="title" href="/2024/01/29/Opencv490-MSVC-Mingw-WITHQT-OpencvContrib4-x%E7%BC%96%E8%AF%91%E6%95%99%E7%A8%8B/" title="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程">Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程</a><time datetime="2024-01-29T10:03:05.000Z" title="发表于 2024-01-29 18:03:05">2024-01-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E5%BF%B5%E9%80%9F%E9%80%9A%EF%BC%88%E5%9F%BA%E4%BA%8E%E8%B0%A2%E5%B8%8C%E4%BB%81%E7%89%88%E6%9C%AC%EF%BC%89/" title="计算机网络概念速通（基于谢希仁版本）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="计算机网络概念速通（基于谢希仁版本）"/></a><div class="content"><a class="title" href="/2024/01/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E5%BF%B5%E9%80%9F%E9%80%9A%EF%BC%88%E5%9F%BA%E4%BA%8E%E8%B0%A2%E5%B8%8C%E4%BB%81%E7%89%88%E6%9C%AC%EF%BC%89/" title="计算机网络概念速通（基于谢希仁版本）">计算机网络概念速通（基于谢希仁版本）</a><time datetime="2024-01-24T03:45:11.000Z" title="发表于 2024-01-24 11:45:11">2024-01-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/22/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="重新学习Linux操作系统"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="重新学习Linux操作系统"/></a><div class="content"><a class="title" href="/2024/01/22/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="重新学习Linux操作系统">重新学习Linux操作系统</a><time datetime="2024-01-22T04:24:05.000Z" title="发表于 2024-01-22 12:24:05">2024-01-22</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/20/%E5%BA%93%E8%AE%BE%E8%AE%A1%EF%BC%9A%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Logger%E5%BA%93/" title="库设计：一个简单的Logger库"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="库设计：一个简单的Logger库"/></a><div class="content"><a class="title" href="/2024/01/20/%E5%BA%93%E8%AE%BE%E8%AE%A1%EF%BC%9A%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84Logger%E5%BA%93/" title="库设计：一个简单的Logger库">库设计：一个简单的Logger库</a><time datetime="2024-01-20T06:40:11.000Z" title="发表于 2024-01-20 14:40:11">2024-01-20</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
