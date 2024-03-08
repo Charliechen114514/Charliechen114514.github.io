@@ -1,0 +1,789 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>C++智能指针浅论 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="C++ 智能指针​    我们今天的主题是简单的智能指针。智能指针主要有三种：std::unique_ptr，std::shared_ptr，std::weak_ptr，第三种被广泛认为是解决一个我们将要谈到的“循环引用”的topic服务的，我们实际上主要把目光放在前两个。 std::unique_ptr入门_EXPORT_STD template &lt;class _Ty, class _Dx">
+<meta property="og:type" content="article">
+<meta property="og:title" content="C++智能指针浅论">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/03/08/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%B5%85%E8%AE%BA/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="C++ 智能指针​    我们今天的主题是简单的智能指针。智能指针主要有三种：std::unique_ptr，std::shared_ptr，std::weak_ptr，第三种被广泛认为是解决一个我们将要谈到的“循环引用”的topic服务的，我们实际上主要把目光放在前两个。 std::unique_ptr入门_EXPORT_STD template &lt;class _Ty, class _Dx">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-03-08T14:09:12.000Z">
+<meta property="article:modified_time" content="2024-03-08T14:10:59.841Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/03/08/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%B5%85%E8%AE%BA/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'C++智能指针浅论',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-08 22:10:59'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">C++智能指针浅论</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-03-08T14:09:12.000Z" title="发表于 2024-03-08 22:09:12">2024-03-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-08T14:10:59.841Z" title="更新于 2024-03-08 22:10:59">2024-03-08</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">6.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>29分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="C++智能指针浅论"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="C-智能指针"><a href="#C-智能指针" class="headerlink" title="C++ 智能指针"></a>C++ 智能指针</h1><p>​    我们今天的主题是简单的智能指针。智能指针主要有三种：<code>std::unique_ptr</code>，<code>std::shared_ptr</code>，<code>std::weak_ptr</code>，第三种被广泛认为是解决一个我们将要谈到的“循环引用”的topic服务的，我们实际上主要把目光放在前两个。</p>
+<h2 id="std-unique-ptr"><a href="#std-unique-ptr" class="headerlink" title="std::unique_ptr"></a><code>std::unique_ptr</code></h2><h3 id="入门"><a href="#入门" class="headerlink" title="入门"></a>入门</h3><pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">_EXPORT_STD template &lt;class _Ty, class _Dx &#x2F;* &#x3D; default_delete&lt;_Ty&gt; *&#x2F;&gt;
+class unique_ptr &#123; &#x2F;&#x2F; non-copyable pointer to an object
+public:
+    using pointer      &#x3D; typename _Get_deleter_pointer_type&lt;_Ty, remove_reference_t&lt;_Dx&gt;&gt;::type;
+    using element_type &#x3D; _Ty;
+    using deleter_type &#x3D; _Dx;
+
+    template &lt;class _Dx2 &#x3D; _Dx, _Unique_ptr_enable_default_t&lt;_Dx2&gt; &#x3D; 0&gt;
+    constexpr unique_ptr() noexcept : _Mypair(_Zero_then_variadic_args_t&#123;&#125;) &#123;&#125;
+
+    template &lt;class _Dx2 &#x3D; _Dx, _Unique_ptr_enable_default_t&lt;_Dx2&gt; &#x3D; 0&gt;
+    constexpr unique_ptr(nullptr_t) noexcept : _Mypair(_Zero_then_variadic_args_t&#123;&#125;) &#123;&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    如MSVC所见，这就是你锁定到的定义，但是有些复杂，我们回到cpp_reference来看看：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">template&lt;
+    class T,
+    class Deleter &#x3D; std::default_delete&lt;T&gt;
+&gt; class unique_ptr;
+template &lt;
+    class T,
+    class Deleter
+&gt; class unique_ptr&lt;T[], Deleter&gt;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    清晰了：实际上，这个unique_ptr就是一个负责托管资源的类。它需要一个实际的类和可能的删除器来实例化对象。举个例子：</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;memory&gt;
+#include &lt;vld.h&gt;	&#x2F;&#x2F; 自行寻找vld库
+#include &lt;iostream&gt;
+int main()
+&#123;
+	int* leak &#x3D; new int;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    在C++11之前，我们可能会写出这样的代码：你立马反应过来，有问题！内存泄漏了！</p>
+<p>​    为此，我引入vld检测小工具，马上就得到了证实：</p>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+WARNING: Visual Leak Detector detected memory leaks!
+---------- Block 1 at 0x0000000055796C60: 4 bytes ----------
+  Leak Hash: 0x67B77119, Count: 1, Total 4 bytes
+  Call Stack (TID 16744):
+  Data:
+    CD CD CD CD                                                  ........ ........<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    泄漏了一个int，符合我们的预期。现在，我们让他交给一个智能指针进行托管：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">int main()
+&#123;
+	int* leak &#x3D; new int;
+	std::unique_ptr&lt;int&gt; no_more_leak(leak);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    现在不会泄漏了！</p>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    由此可以看见，<code>std::unique_ptr</code>就是一个可以自动执行析构的内存管理类。换而言之，他会在这个变量应该结束声明周期的时候自动结束所托管资源的生命。</p>
+<p>​    我们还没有结束话题！仔细看看：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">template&lt;
+    class T,
+    class Deleter &#x3D; std::default_delete&lt;T&gt;
+&gt; class unique_ptr;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    我们还有一个Deleter没有谈到！这个Deleter就是我们用户自己定义的Deleter。毕竟，当我们的资源很简单但是需要在删除的时候做处理时，就没有必要单独封装了。举个例子</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include &lt;memory&gt;		&#x2F;&#x2F; std::unique_ptr
+#include &lt;vld.h&gt;
+#include &lt;iostream&gt;		&#x2F;&#x2F; std::cout
+#include &lt;functional&gt; 	&#x2F;&#x2F; std::function
+using MyIntDeleter &#x3D; std::function&lt;void(int*)&gt;;
+
+void deleter(int* be_del)
+&#123;
+	std::cout &lt;&lt; &quot;将要删除指针:&gt; &quot; &lt;&lt; be_del &lt;&lt; &quot;, 资源值是:&gt; &quot; &lt;&lt; *be_del &lt;&lt; &quot;\n&quot;;
+	delete be_del;
+&#125;
+
+int main()
+&#123;
+	
+	int* leak &#x3D; new int;
+	std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak(leak, deleter);
+	*no_more_leak &#x3D; 114514;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    看看效果：</p>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+将要删除指针:&gt; 0000029931EA1750, 资源值是:&gt; 114514
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>需要注意：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">int* leak &#x3D; new int;
+*leak &#x3D; 114514;
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak(leak, deleter);
+delete leak; &#x2F;&#x2F; is Legal ?<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>是不可行的，这里当我们托管了指针之后，就不要在使用原始指针去操作数据了！否则程序就会因为二次释放而崩溃！因此，一个合适的使用智能指针的方式是：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak(new int, deleter); &#x2F;&#x2F; 尽可能不给外界提供原始操作接口
+*no_more_leak &#x3D; ...;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+</blockquote>
+<p>​    这样行不行呢？</p>
+<pre class="line-numbers language-none"><code class="language-none">int* leak &#x3D; new int;
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak &#x3D; leak; &#x2F;&#x2F; Is Legal?
+*no_more_leak &#x3D; 114514;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    不行！<code>std::unique_ptr</code>是一个独占性的资源管理器！另一个说法是：<code>unique_ptr</code> 不共享它的指针。它无法复制到其他 <code>unique_ptr</code>，自然也就没办法无法通过值传递到函数，也无法用于需要副本的任何标准模板库 (STL) 算法。只能移动<code>unique_ptr</code> 。这意味着，内存资源所有权将转移到另一个 <code>unique_ptr</code> ，并且原始 <code>unique_ptr</code>  不再拥有此资源。一言以蔽之：对于一个实例，只允许有一个资源管理器在管理它！</p>
+<p>​    于是，在原始指针和智能指针之间，只存在直接的赋值：</p>
+<pre class="line-numbers language-none"><code class="language-none">std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak &#x3D; leak; &#x2F;&#x2F; Is illegal
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak &#x3D; std::move(leak); &#x2F;&#x2F; Is illegal
+
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak(leak); &#x2F;&#x2F; legal
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak(std::move(leak)); &#x2F;&#x2F; legal, and is more obvious for readers that the function calls the move_constructor of the sources<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    但是，我们可以在智能指针之间便捷的使用等号进行资源管理的传递！注意到：我们的资源托管是独占的，意味着直接使用operator=和复制构造是不可能的！（<code>=delete</code>）</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak(leak, deleter);
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak_other &#x3D; no_more_leak; &#x2F;&#x2F; Error
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak_other(no_more_leak); &#x2F;&#x2F; Error<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    怎么办？那就std::move手动告知我们是移动资源即可</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak_other(std::move(no_more_leak));
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak_other &#x3D; std::move(no_more_leak);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    现在，我们就可以将资源的管理权进行移动了！这样我们就实现了资源管理的传递性。</p>
+<pre class="line-numbers language-none"><code class="language-none">std::unique_ptr 实现了独享所有权的语义。一个非空的 std::unique_ptr 总是拥有它所指向的资源。转移一个 std::unique_ptr 将会把所有权也从源指针转移给目标指针（源指针被置空）。拷贝一个 std::unique_ptr 将不被允许，因为如果你拷贝一个 std::unique_ptr ,那么拷贝结束后，这两个 std::unique_ptr 都会指向相同的资源，它们都认为自己拥有这块资源（所以都会企图释放）。因此 std::unique_ptr 是一个仅能移动（move_only）的类型。当指针析构时，它所拥有的资源也被销毁。默认情况下，资源的析构是伴随着调用 std::unique_ptr 内部的原始指针的 delete 操作的。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="API"><a href="#API" class="headerlink" title="API"></a>API</h3><h4 id="构造"><a href="#构造" class="headerlink" title="构造"></a>构造</h4><p>​    我们如何产生一个unique_ptr实例呢？答案是：使用默认的构造：也就是当前的unique_ptr不托管任何对象</p>
+<pre class="line-numbers language-none"><code class="language-none">std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    这就是一个例子！当前的no_more_leak不会托管任何对象。或者是为他给予一个可以被移动的类型（就比如说一个int!他当然可以被移动！）</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">int* leak &#x3D; new int;
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak(leak, deleter);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    或者：使用std::move来移动另一个智能指针。</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak_other(std::move(no_more_leak));
+std::unique_ptr&lt;int, MyIntDeleter&gt; no_more_leak_other &#x3D; std::move(no_more_leak);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    在C++14中（据说是标准会那帮人忘记加了（大雾.png）），可以使用make_unique来返回一个独占的智能指针</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">_EXPORT_STD template &lt;class _Ty, class... _Types, enable_if_t&lt;!is_array_v&lt;_Ty&gt;, int&gt; &#x3D; 0&gt;
+_NODISCARD_SMART_PTR_ALLOC _CONSTEXPR23 unique_ptr&lt;_Ty&gt; make_unique(_Types&amp;&amp;... _Args) &#123; &#x2F;&#x2F; make a unique_ptr
+return unique_ptr&lt;_Ty&gt;(new _Ty(_STD forward&lt;_Types&gt;(_Args)...));
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    实际上是：</p>
+<pre class="line-numbers language-none"><code class="language-none">template&lt; class T, class... Args &gt;
+unique_ptr&lt;T&gt; make_unique( Args&amp;&amp;... args );<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    也就是说：我们可以在C++14及以上使用这个函数返回智能指针了。</p>
+<p>​    在另一方面，智能指针支持对一个原始数组的管理。这里我们不重复上面的陈述了，只需要这样使用就可以管理一个数组：</p>
+<pre class="line-numbers language-none"><code class="language-none">using MyIntDeleter &#x3D; std::function&lt;void(int[])&gt;;
+
+void deleter(int be_del[] )
+&#123;
+	std::cout &lt;&lt; &quot;将要删除指针:&gt; &quot; &lt;&lt; be_del &lt;&lt; &quot;\n&quot;;
+	delete[] be_del;
+&#125;
+
+int main()
+&#123;
+	std::unique_ptr&lt;int[], MyIntDeleter&gt; h(new int[10], deleter);
+	for (int i &#x3D; 0; i &lt; 10; i++)
+		h[i] &#x3D; i; &#x2F;&#x2F; Make Write
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="修改"><a href="#修改" class="headerlink" title="修改"></a>修改</h4><p>​    修改主要使用的是三个API：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 释放管理器对资源的管理
+pointer release() noexceptpointer release() noexcept 
+&#x2F;&#x2F; 替换被管理对象
+void reset( pointer ptr &#x3D; pointer() ) noexcept;
+template&lt; class U &gt;
+void reset( U ptr ) noexcept;
+void reset( std::nullptr_t &#x3D; nullptr ) noexcept;
+&#x2F;&#x2F; 交换 *this 和另一 unique_ptr 对象 other 的被管理对象和关联的删除器。
+void swap( unique_ptr&amp; other ) noexcept;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    先看第一个：释放管理。release也就是这个意思。<strong>注意：他不会删除被管理的资源，单纯只是解除了管理关系</strong>，如果不知道怎么删，那就<code>get_deleter()</code>删除。</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">using IntDeleter &#x3D; std::function&lt;void(int*)&gt;;
+
+void make_del(int* ptr) &#123;
+	std::cout &lt;&lt; &quot;Del Int&quot; &lt;&lt; ptr &lt;&lt; &quot; :&quot; &lt;&lt; *ptr;
+	delete ptr;
+&#125;
+
+int main()
+&#123;
+	std::unique_ptr&lt;int, IntDeleter&gt; intHandle(new int, make_del);
+	*intHandle &#x3D; 110;
+	intHandle.get_deleter()(intHandle.release()); &#x2F;&#x2F; 一个紧凑的写法
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    下一个就是reset了：reset自如其名：就是重置管理的资源。他比release做了一个进一步的工作：就是释放原先的资源，然后再去托管新的资源</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">using IntDeleter &#x3D; std::function&lt;void(int*)&gt;;
+
+void make_del(int* ptr) &#123;
+	std::cout &lt;&lt; &quot;Del Int&quot; &lt;&lt; ptr &lt;&lt; &quot; :&quot; &lt;&lt; *ptr &lt;&lt; &quot;\n&quot;;
+	delete ptr;
+&#125;
+
+int main()
+&#123;
+	std::unique_ptr&lt;int, IntDeleter&gt; intHandle(new int, make_del);
+	*intHandle &#x3D; 110;
+	intHandle.reset(new int);
+	*intHandle &#x3D; 220;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+Del Int000001C5F36A27B0 :110
+Del Int000001C5F36A2F30 :220
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    程序首先接受了初始的资源并使用，在reset的流程中删除了旧的资源，转向托管新的资源。</p>
+<p>​    最后一个是swap，说的是两个智能指针之间交换托管资源：</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">using IntDeleter &#x3D; std::function&lt;void(int*)&gt;;
+
+void make_del(int* ptr) &#123;
+	std::cout &lt;&lt; &quot;Del Int&quot; &lt;&lt; ptr &lt;&lt; &quot; :&quot; &lt;&lt; *ptr &lt;&lt; &quot;\n&quot;;
+	delete ptr;
+&#125;
+
+int main()
+&#123;
+	std::unique_ptr&lt;int, IntDeleter&gt; intHandle(new int, make_del);
+	std::unique_ptr&lt;int, IntDeleter&gt; intHandle2(new int, make_del);
+	*intHandle &#x3D; 110;
+	*intHandle2 &#x3D; 220;
+	std::cout &lt;&lt; &quot;IntHandle handles:&gt; &quot; &lt;&lt; intHandle.get() &lt;&lt; &quot;with value:&gt; &quot; &lt;&lt; *intHandle &lt;&lt; &quot;\n&quot;;
+	std::cout &lt;&lt; &quot;IntHandle2 handles:&gt; &quot; &lt;&lt; intHandle2.get() &lt;&lt; &quot;with value:&gt; &quot; &lt;&lt; *intHandle2 &lt;&lt; &quot;\n&quot;;
+	intHandle.swap(intHandle2);
+	std::cout &lt;&lt; &quot;IntHandle handles:&gt; &quot; &lt;&lt; intHandle.get() &lt;&lt; &quot;with value:&gt; &quot; &lt;&lt; *intHandle &lt;&lt; &quot;\n&quot;;
+	std::cout &lt;&lt; &quot;IntHandle2 handles:&gt; &quot; &lt;&lt; intHandle2.get() &lt;&lt; &quot;with value:&gt; &quot; &lt;&lt; *intHandle2 &lt;&lt; &quot;\n&quot;;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    很简单，他会交换两个智能指针所托管的资源。注意到资源地址没有改变，是在内存层面交换值而不是简单的交换地址。</p>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+IntHandle handles:&gt; 00000140C0A511F0with value:&gt; 110
+IntHandle2 handles:&gt; 00000140C0A50EF0with value:&gt; 220
+IntHandle handles:&gt; 00000140C0A50EF0with value:&gt; 220 &#x2F;&#x2F; 资源地址没变，但是值变了
+IntHandle2 handles:&gt; 00000140C0A511F0with value:&gt; 110
+Del Int00000140C0A511F0 :110
+Del Int00000140C0A50EF0 :220
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="资源观察器"><a href="#资源观察器" class="headerlink" title="资源观察器"></a>资源观察器</h4><p>​    这里，我们将会讨论的是智能指针这个管理器内部的参数是如何被获取的。有三个API：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">_NODISCARD _CONSTEXPR23 _Dx&amp; get_deleter() noexcept &#123;
+    return _Mypair._Get_first();
+&#125;
+
+_NODISCARD _CONSTEXPR23 const _Dx&amp; get_deleter() const noexcept &#123;
+    return _Mypair._Get_first();
+&#125;
+
+_NODISCARD _CONSTEXPR23 pointer get() const noexcept &#123;
+    return _Mypair._Myval2;
+&#125;
+
+_CONSTEXPR23 explicit operator bool() const noexcept &#123;
+    return static_cast&lt;bool&gt;(_Mypair._Myval2);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    MSVC的实现很简单，他就是使用一个Pair实现的智能指针：有趣的是，这个智能指针的内部资源就是智能指针本身在托管，很有趣的实现。</p>
+<pre class="line-numbers language-none"><code class="language-none">template &lt;class, class&gt;
+friend class unique_ptr;
+_Compressed_pair&lt;_Dx, pointer&gt; _Mypair;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    首先我们要说的是<code>get()</code>,返回指向被管理对象的指针，如果无被管理对象，则为 nullptr。另一个就是我上面他提到的<code>get_deleter</code>返回删除器。注意到，对于没有安装删除器（初始化的时候没有指定删除器）的智能指针返回空。</p>
+<pre class="line-numbers language-none"><code class="language-none">explicit operator bool() const noexcept;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    当然，他也可以返回bool：检查 *this 是否占有对象，即是否有 get() != nullptr。</p>
+<p>​    剩下的实在是很好解决了：那些重载运算符同你一般的使用指针是完全一致的。</p>
+<p>​    以上就是独占式的智能指针常见的API。</p>
+<h2 id="std-shared-ptr-和-std-weak-ptr"><a href="#std-shared-ptr-和-std-weak-ptr" class="headerlink" title="std::shared_ptr 和 std::weak_ptr"></a><code>std::shared_ptr</code> 和 <code>std::weak_ptr</code></h2><p>​    我们前一篇博客提到了<code>std::unique_ptr</code>，我们称呼他是一个独占性质的管理资源的资源管理器。现在，我们来看一下<code>std::shared_ptr</code>和为了解决<code>std::shared_ptr</code>存在的潜在缺陷（本质上是引用计数的缺陷）而派生的<code>std::weak_ptr</code></p>
+<p>​    这次为了更好的展示，我们使用一个demo资源类：</p>
+<pre class="line-numbers language-none"><code class="language-none">class Special
+&#123;
+public:
+	Special() &#123;
+		std::cout &lt;&lt; &quot;Create Class Instances Special!&quot; &lt;&lt; std::endl;
+	&#125;
+
+	~Special() &#123;
+		std::cout &lt;&lt; &quot;delete Class Instances Special!&quot; &lt;&lt; std::endl;
+	&#125;
+private:
+	int sources;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="std-shared-ptr-入门"><a href="#std-shared-ptr-入门" class="headerlink" title="std::shared_ptr 入门"></a><code>std::shared_ptr</code> 入门</h3><p>​    结合上一篇博客，我们知道，智能指针可以自动的在资源的声明周期结束之后进行析构。<code>std::shared_ptr</code>作为智能指针的一种，自然也是如此：</p>
+<pre class="line-numbers language-none"><code class="language-none">int main()
+&#123;
+	std::shared_ptr&lt;Special&gt; shared(new Special);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    没有任何意外：</p>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+Create Class Instances Special!
+delete Class Instances Special!
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    但是首先，我们看到的是：<code>shared_ptr</code>是可以shared它的资源的。代价就是<code>use_count++</code></p>
+<pre class="line-numbers language-none"><code class="language-none">int main()
+&#123;
+	std::shared_ptr&lt;Special&gt; shared(new Special);
+	std::shared_ptr&lt;Special&gt; other_shared(shared);
+	std::cout &lt;&lt; &quot;Current sources is handling for &quot; &lt;&lt; shared.use_count() &lt;&lt; &quot; times\n&quot;;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+Create Class Instances Special!
+delete Class Instances Special!
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    可以看到，使用这个指针来指向资源，不发生拷贝行为，相反，只是将它的use_count（引用计数，用来记载有多少个指针此时正在把控这个资源）增加，（这里不放源码了，这里的shared_ptr实现是继承了<code>_ptr_base</code>的，这里是更改了父类的计数）</p>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+Create Class Instances Special!
+Current sources is handling for 2 times
+delete Class Instances Special!
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    你可以看到，我们在第一行指定了一个资源管理器管理一个资源:<code>new Special</code>这样一个右值。在第二行又要求另一个资源管理器管理同一个资源（如你所见，就是调用拷贝函数）。我们的程序仍然正确的释放了资源，这是因为shared或者是other_shared被释放的时候，当use_count不是0的时候就减去一个use_count，减到0的时候就会自动释放</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void _Decref() noexcept &#123; &#x2F;&#x2F; decrement use count
+    if (_MT_DECR(_Uses) &#x3D;&#x3D; 0) &#123; 
+    &#x2F;&#x2F; #define _MT_DECR(x) _INTRIN_ACQ_REL(_InterlockedDecrement)(reinterpret_cast&lt;volatile long*&gt;(&amp;x)), 也就是原子的减，调用的是CPU命令当中集成的原子减指令，这是为了防止形成竞态
+        _Destroy(); &#x2F;&#x2F; 删除资源
+        _Decwref();
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    其他的部分让我们看看API就好了：</p>
+<h3 id="std-shared-ptr-39-s-API"><a href="#std-shared-ptr-39-s-API" class="headerlink" title="std::shared_ptr&#39;s API"></a><code>std::shared_ptr&#39;s API</code></h3><h4 id="构造-1"><a href="#构造-1" class="headerlink" title="构造"></a>构造</h4><p>​    当然可以生成默认的构造：此时此刻，我们的<code>std::shared_ptr</code>就是空的，不托管任何资源</p>
+<pre class="line-numbers language-none"><code class="language-none">std::shared_ptr&lt;Special&gt; shared;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    或者是托管一个裸指针：</p>
+<pre class="line-numbers language-none"><code class="language-none">std::shared_ptr&lt;Special&gt; shared(new Special);<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    或者是调用拷贝函数，</p>
+<pre class="line-numbers language-none"><code class="language-none">std::shared_ptr&lt;Special&gt; shared(new Special);
+std::shared_ptr&lt;Special&gt; other_shared(shared);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    亦或者是移动函数：</p>
+<pre class="line-numbers language-none"><code class="language-none">std::shared_ptr&lt;Special&gt; shared(new Special);
+std::shared_ptr&lt;Special&gt; other_shared(std::move(shared));
+std::cout &lt;&lt; &quot;Current sources is handling for &quot; &lt;&lt; shared.use_count() &lt;&lt; &quot; times by shared\n&quot;;
+std::cout &lt;&lt; &quot;Current sources is handling for &quot; &lt;&lt; other_shared.use_count() &lt;&lt; &quot; times by other_shared\n&quot;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    结合你对移动构造的认识，你马上就会意识到：调用移动函数本质上就是更换资源托管器。这也正是它的作用。</p>
+<p>​    我们得到<code>shared_ptr</code>的另一种更加可行的方式是：make_shared</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">std::make_shared&lt;Special&gt;(&#x2F;*nullptr or set nothing to get a default shared_ptr*&#x2F;);
+std::make_shared&lt;Special&gt;(new Special); &#x2F;&#x2F; wrapped a raw pointer
+std::make_shared&lt;Special&gt;(other_shared); &#x2F;&#x2F; copy a shared_ptr<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    通过这种方式也可以获得<code>shared_ptr</code></p>
+<blockquote>
+<p>这里插一句：使用这些智能指针访问就跟我们使用裸指针一样，使用<code>-&gt;</code>访问资源，<code>.</code>在这里则是表示对资源管理器自身进行操作。</p>
+</blockquote>
+<h4 id="修改器"><a href="#修改器" class="headerlink" title="修改器"></a>修改器</h4><p>​    就是这两个：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th><a target="_blank" rel="noopener" href="https://zh.cppreference.com/w/cpp/memory/shared_ptr/reset">reset</a></th>
+<th>替换所管理的对象 (公开成员函数)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://zh.cppreference.com/w/cpp/memory/shared_ptr/swap">swap</a></td>
+<td>交换所管理的对象 (公开成员函数)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>​    这里跟<code>unique_ptr</code>在功能上类似，这里如果只是希望查看这两个函数可以做什么的可以参考我的上一篇博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/136489270">C++ 智能指针-CSDN博客</a>。这里只是给出Demo。相信可以一目了然：</p>
+<blockquote>
+<p>reset空</p>
+</blockquote>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">void showUseCount_And_Reset()
+&#123;
+	&#x2F;&#x2F; 创建一个智能指针，让他托管
+	std::shared_ptr&lt;Special&gt; spPtr(new Special);
+	std::cout &lt;&lt; spPtr.use_count() &lt;&lt; std::endl;
+	spPtr-&gt;setSources(100);
+	spPtr.reset(); &#x2F;&#x2F; set as nullptr, in other words, sources are released
+	std::cout &lt;&lt; spPtr.use_count() &lt;&lt; std::endl;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+Create Class Instances Special!
+1
+delete Class Instances Special!
+The sources of 00000159ADF00A60&#39;s value is:&gt; 100
+0
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>reset另一个资源</p>
+</blockquote>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">void showUseCount_And_Reset()
+&#123;
+	&#x2F;&#x2F; 创建一个智能指针，让他托管
+	std::shared_ptr&lt;Special&gt; spPtr(new Special);
+	std::cout &lt;&lt; spPtr.use_count() &lt;&lt; std::endl;
+	spPtr-&gt;setSources(100); 
+	spPtr.reset(new Special);
+	spPtr-&gt;setSources(200);
+	std::cout &lt;&lt; spPtr.use_count() &lt;&lt; std::endl;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+Create Class Instances Special!
+1
+Create Class Instances Special!
+delete Class Instances Special!
+The sources of 000002403FB20AE0&#39;s value is:&gt; 100
+1
+delete Class Instances Special! &#x2F;&#x2F; reset here
+The sources of 000002403FB20DA0&#39;s value is:&gt; 200
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">void showUseCount_And_Reset()
+&#123;
+	std::shared_ptr&lt;Special&gt; sp(new Special);
+	sp-&gt;setSources(100);
+	&#x2F;&#x2F; 创建多个资源管理同时管理同一个资源：
+	std::shared_ptr&lt;Special&gt; sp2 &#x3D; sp;
+	std::shared_ptr&lt;Special&gt; sp3 &#x3D; sp;
+	std::cout &lt;&lt; sp.use_count() &lt;&lt; std::endl;
+	std::cout &lt;&lt; sp2.use_count() &lt;&lt; std::endl;
+	std::cout &lt;&lt; sp3.use_count() &lt;&lt; std::endl;
+
+	&#x2F;&#x2F; 资源发生变动
+	sp.reset(new Special);
+	sp-&gt;setSources(200);
+	std::cout &lt;&lt; &quot;sp2:&gt; &quot; &lt;&lt; sp2-&gt;getSources() &lt;&lt; std::endl;
+	std::cout &lt;&lt; &quot;sp3:&gt; &quot; &lt;&lt; sp3-&gt;getSources() &lt;&lt; std::endl; 
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+Create Class Instances Special!
+3
+3
+3
+Create Class Instances Special!
+sp2:&gt; 100
+sp3:&gt; 100
+delete Class Instances Special!
+The sources of 0000023F58B505E0&#39;s value is:&gt; 100
+delete Class Instances Special!
+The sources of 0000023F58B501E0&#39;s value is:&gt; 200
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    这个例子存在输出的竞态，实际上，仍然是释放了资源之后再去接受新的资源。其他的获取器API同<code>unique_ptr</code>差不多，这里不再赘述了</p>
+<h3 id="weak-ptr入门"><a href="#weak-ptr入门" class="headerlink" title="weak_ptr入门"></a><code>weak_ptr</code>入门</h3><p>​    引用计数存在天然的缺陷！</p>
+<p>​    我们知道：我们现在做出的假定是：资源管理器自己不会称为一个被管理的资源。什么意思呢？我们看看一个资源管理的逻辑图就知道了：</p>
+<p>​    这是<code>unique_ptr</code>的资源逻辑管理示意图：我们看到了资源和管理器是一一映射的</p>
+<pre class="line-numbers language-none"><code class="language-none">ManagerA &lt; - &gt; A
+ManagerB &lt; - &gt; B
+ManagerC &lt; - &gt; C<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    这是<code>shared_ptr</code>的资源逻辑管理示意图：我们看到了资源和管理器是多对一映射的。</p>
+<pre class="line-numbers language-none"><code class="language-none">ManagerA &lt; - &gt; A
+ManagerB &lt; - &gt; A
+ManagerC &lt; - &gt; A<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    换而言之，我们的资源逻辑图不会出现一个环状的结构。什么是一个环状的结构呢？我们来看一个例子：</p>
+<pre class="line-numbers language-none"><code class="language-none">ManagerA &lt; - &gt; ManagerB
+ManagerB &lt; - &gt; ManagerA<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    这个步骤单纯的依靠管理器本身初始化做不到，需要我们手动的构造以下场景：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">class Special_HolderII;
+
+class Special_HolderI
+&#123;
+public:
+	std::shared_ptr&lt;Special_HolderII&gt; sp;
+	~Special_HolderI() &#123;
+		std::cout &lt;&lt; &quot;Special Holder I is released&quot; &lt;&lt; std::endl;
+	&#125;
+&#125;;
+
+class Special_HolderII
+&#123;
+public:
+	std::shared_ptr&lt;Special_HolderI&gt; sp;
+	~Special_HolderII() &#123;
+		std::cout &lt;&lt; &quot;Special Holder II is released&quot; &lt;&lt; std::endl;
+	&#125;
+&#125;;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    你可以看到，我们的管理对象里包含了对方！这里就是导致潜在漏洞的点！我们初始化：</p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">std::shared_ptr&lt;Special_HolderI&gt;	sh1(new Special_HolderI);
+std::shared_ptr&lt;Special_HolderII&gt;	sh2(new Special_HolderII);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    上面的代码首先声明了两个独立的shared_ptr，分别托管了这样的资源示意图：</p>
+<p><img src="image-20240308211640326.png" alt="image-20240308211640326"></p>
+<p>​    两个圆圈就是两个shared_ptr，现在他们分别托管<code>Special_HolderI</code>和<code>Special_HolderII</code>，这两个资源管理器本身没有耦合！现在为止，我们在外部操作了两个智能指针托管资源让他们的引用计数为1</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">&#x2F;&#x2F; I
+std::cout &lt;&lt; &quot;sh1&#39;s use_count: &quot; &lt;&lt; sh1.use_count() &lt;&lt; std::endl;
+std::cout &lt;&lt; &quot;sh2&#39;s use_count: &quot; &lt;&lt; sh2.use_count() &lt;&lt; std::endl;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    现在，我们操作资源，让资源耦合资源管理器，以一种奇怪的方式再次增加：</p>
+<pre class="line-numbers language-none"><code class="language-none">sh1-&gt;sp &#x3D; sh2;
+sh2-&gt;sp &#x3D; sh1;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    这是在干什么？仔细思考走完上面这两步的后果：我们的sh1托管一个资源管理器（他是属于sh1的）被赋值以sh2他所托管的对象（第一句的作用），而sh2托管的<code>Special_HolderI</code>类型的对象是就是sh1（第二句的作用）</p>
+<p>​    同理：我们的sh2托管一个资源管理器（他是属于sh2的）被赋值以sh1他所托管的对象（第二句的作用），而sh1托管的<code>Special_HolderII</code>类型的对象是就是sh2（第一句的作用）</p>
+<p>​    等等，这是<strong>不同的智能指针</strong>托管同一个对象。所以，我们一经发现这是同一个对象，不会释放自己handle的资源而是简单的增加引用计数。</p>
+<p>​    现在构成了这样的一个图：</p>
+<p><img src="image-20240308211725378.png" alt="image-20240308211725378"></p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; II
+std::cout &lt;&lt; &quot;sh1&#39;s use_count: &quot; &lt;&lt; sh1.use_count() &lt;&lt; std::endl; &#x2F;&#x2F; 2
+std::cout &lt;&lt; &quot;sh2&#39;s use_count: &quot; &lt;&lt; sh2.use_count() &lt;&lt; std::endl; &#x2F;&#x2F; 2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    还不懂？？有点绕？我再重复一次！第一次我们的外部智能指针分别托管了对方类型的资源，让资源的引用数为1了。第二次我们操纵他们所托管的资源内部的智能指针托管<strong>外部指针托管的对象（包含了他们自身的资源）</strong>。这样，我们走一次逻辑链就会发现，第一次我们在<strong>资源管理器的层次（资源外部）</strong>上让A托管了B的资源，B托管了A的资源。第二次我们的赋值，则是在<strong>资源层次</strong>让资源内部的智能指针重复我们所作的事情。也就是在资源层次上让A托管了B的资源，B托管了A的资源。强行让编译器认为我们是在操作不同的指针指向同一个资源而不是实际上的同一个（同一个指针多次指向同一个资源当然不会增加引用计数）</p>
+<p>​    这也被叫做shared_ptr的死锁。当我们释放的时候，触发了sh1和sh2的析构，进而准备释放成员。</p>
+<p><img src="image-20240308214118466.png" alt="image-20240308214118466"></p>
+<p>​    现在Extern SH1和Extern SH2释放，引用计数被减1了，但是还有资源内部耦合没有被解除：<strong>对象是动态分配的，而对象本身又含有shared_ptr指针，释放对象需要shared_ptr的释放使引用计数减为零，而shared_ptr的释放又需要对象的释放，两者互相等待对方先释放，往往是两者都无法释放。</strong></p>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+sh1&#39;s use_count: 1
+sh2&#39;s use_count: 1
+sh1&#39;s use_count: 2
+sh2&#39;s use_count: 2
+WARNING: Visual Leak Detector detected memory leaks!
+---------- Block 2 at 0x0000000007774F60: 24 bytes ----------
+  Leak Hash: 0x386B91B3, Count: 1, Total 24 bytes
+  Call Stack (TID 28472):
+  Data:
+    70 DE F3 EF    F7 7F 00 00    01 00 00 00    01 00 00 00     p....... ........
+    90 B6 77 07    C1 01 00 00                                   ..w..... ........
+
+
+---------- Block 4 at 0x00000000077752C0: 24 bytes ----------
+  Leak Hash: 0x1142308C, Count: 1, Total 24 bytes
+  Call Stack (TID 28472):
+  Data:
+    A0 DE F3 EF    F7 7F 00 00    01 00 00 00    01 00 00 00     ........ ........
+    20 BD 77 07    C1 01 00 00                                   ..w..... ........
+
+
+---------- Block 1 at 0x000000000777B690: 16 bytes ----------
+  Leak Hash: 0x9A5D80CF, Count: 1, Total 16 bytes
+  Call Stack (TID 28472):
+  Data:
+    20 BD 77 07    C1 01 00 00    C0 52 77 07    C1 01 00 00     ..w..... .Rw.....
+
+
+---------- Block 3 at 0x000000000777BD20: 16 bytes ----------
+  Leak Hash: 0xE93075EF, Count: 1, Total 16 bytes
+  Call Stack (TID 28472):
+  Data:
+    90 B6 77 07    C1 01 00 00    60 4F 77 07    C1 01 00 00     ..w..... &#96;Ow.....
+
+
+Visual Leak Detector detected 4 memory leaks (288 bytes).
+Largest number used: 288 bytes.
+Total allocations: 288 bytes.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    这样就泄漏了。</p>
+<p>​    如何解决呢？答案是使用<code>weak_ptr</code></p>
+<p>​    根本原因在于：我们总是强耦合的管理资源，匆匆的宣布自己负责托管它。但是事实上过于急躁的宣布自己的所属权可能会导致死锁。</p>
+<p>​    我们试想：如果我们可以在我们真正需要访问并且资源的时候在增加引用计数，而只是声明我跟资源有关系的时候不增加引用计数，这样我们就回避了过早的增加计数导致死锁的问题了。</p>
+<p>​    weak_ptr正是这样的：</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">class Special_HolderII;
+
+class Special_HolderI
+&#123;
+public:
+	std::shared_ptr&lt;Special_HolderII&gt; sp;
+	~Special_HolderI() &#123;
+		std::cout &lt;&lt; &quot;Special Holder I is released&quot; &lt;&lt; std::endl;
+	&#125;
+&#125;;
+
+class Special_HolderII
+&#123;
+public:
+	std::weak_ptr&lt;Special_HolderI&gt; sp;
+	~Special_HolderII() &#123;
+		std::cout &lt;&lt; &quot;Special Holder II is released&quot; &lt;&lt; std::endl;
+	&#125;
+&#125;;
+
+
+int main()
+&#123;
+	std::shared_ptr&lt;Special_HolderI&gt;	sh1(new Special_HolderI);
+	std::shared_ptr&lt;Special_HolderII&gt;	sh2(new Special_HolderII);
+	&#x2F;&#x2F; I
+	std::cout &lt;&lt; &quot;sh1&#39;s use_count: &quot; &lt;&lt; sh1.use_count() &lt;&lt; std::endl;
+	std::cout &lt;&lt; &quot;sh2&#39;s use_count: &quot; &lt;&lt; sh2.use_count() &lt;&lt; std::endl;
+	sh1-&gt;sp &#x3D; sh2;
+	sh2-&gt;sp &#x3D; sh1; &#x2F;&#x2F; 这里只是声明我很资源有关系但是可能不打算使用，不增加计数
+	&#x2F;&#x2F; II
+	std::cout &lt;&lt; &quot;sh1&#39;s use_count: &quot; &lt;&lt; sh1.use_count() &lt;&lt; std::endl;
+	std::cout &lt;&lt; &quot;sh2&#39;s use_count: &quot; &lt;&lt; sh2.use_count() &lt;&lt; std::endl;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">Visual Leak Detector read settings from: D:\VLD\Visual Leak Detector\vld.ini
+Visual Leak Detector Version 2.5.1 installed.
+sh1&#39;s use_count: 1
+sh2&#39;s use_count: 1
+sh1&#39;s use_count: 1
+sh2&#39;s use_count: 2
+Special Holder I is released
+Special Holder II is released
+No memory leaks detected.
+Visual Leak Detector is now exiting.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    值得注意的是：weak_ptr因为只是声明有关系，没办法真正有权利访问资源，需要使用API进行转化。这里就开始介绍：</p>
+<h3 id="std-weak-ptr-39-s-API"><a href="#std-weak-ptr-39-s-API" class="headerlink" title="std::weak_ptr&#39;s API"></a><code>std::weak_ptr&#39;s API</code></h3><p>​    std::weak_ptr支持拷贝和移动，以及从一个强管理的shared_ptr中派生，但是不支持默认的构造。也就是说它完全是shared_ptr的附属物，依靠shared_ptr生存。</p>
+<p>​    使用<code>lock</code>来获取真正可以管理的实例对象：</p>
+<pre class="line-numbers language-none"><code class="language-none">创建共享被管理对象的所有权的新 std::shared_ptr 对象。若无被管理对象，即 *this 为空，则返回的 shared_ptr 也为空。相当于返回 expired() ? shared_ptr&lt;T&gt;() : shared_ptr&lt;T&gt;(*this)，原子地执行。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    使用<code>expire</code>来检查我们的<code>weak_ptr</code>是否合法！</p>
+<pre class="line-numbers language-none"><code class="language-none">等价于 use_count() &#x3D;&#x3D; 0。可能仍未对被管理对象调用析构函数，但此对象的析构已经临近（或可能已发生）。<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>使用weak_ptr的场景是：当<strong>两个对象相互使用一个shared_ptr成员变量指向对方，会造成循环引用，使引用计数失效，从而导致内存泄漏。</strong></p>
+<p>这是因为：weak_ptr 是一种不控制对象生命周期的智能指针, 它指向一个 shared_ptr 管理的对象. weak_ptr只是提供了对管理对象的一个访问手段。weak_ptr 设计的目的是为配合 shared_ptr 而引入的一种智能指针来协助 shared_ptr 工作, 它只可以从一个 shared_ptr 或另一个 weak_ptr 对象构造, 它的构造和析构不会引起引用记数的增加或减少。weak_ptr是用来解决shared_ptr相互引用时的死锁问题,如果说两个shared_ptr相互引用,那么这两个指针的引用计数永远不可能下降为0,资源永远不会释放。它是对对象的一种弱引用，不会增加对象的引用计数，</p>
+</blockquote>
+<p>参考网站：</p>
+<p><a target="_blank" rel="noopener" href="https://zh.cppreference.com/w/首页">cppreference.com</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/03/08/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%B5%85%E8%AE%BA/">http://charliechen114514.github.io/2024/03/08/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%B5%85%E8%AE%BA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C/">C/C++</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="Linux内核深度学习"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Linux内核深度学习</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/06/06/Algorithm-RecursionSpecial/" title="Algorithm_RecursionSpecial"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-06-06</div><div class="title">Algorithm_RecursionSpecial</div></div></a></div><div><a href="/2023/06/06/Algorithm-in-C-1/" title="Algorithm_in_C(1)"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-06-06</div><div class="title">Algorithm_in_C(1)</div></div></a></div><div><a href="/2024/01/09/2024%E5%AF%92%E5%81%87%E6%95%B4%E6%B4%BB-C-Cppb%E9%AB%98%E7%BA%A7%E7%BC%96%E8%AF%91%E6%8A%80%E6%9C%AF/" title="2024寒假整活_C_Cppb高级编译技术"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-09</div><div class="title">2024寒假整活_C_Cppb高级编译技术</div></div></a></div><div><a href="/2023/12/03/C-%E4%BD%BF%E7%94%A8%E6%A8%A1%E6%9D%BF%E6%93%8D%E4%BD%9C%E6%89%93%E5%8D%B0tuple/" title="C++使用模板操作打印tuple"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-03</div><div class="title">C++使用模板操作打印tuple</div></div></a></div><div><a href="/2023/12/28/AutoClassGenerator%E5%BC%80%E5%8F%91%E8%AE%B0%E5%BD%95/" title="AutoClassGenerator开发记录"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-28</div><div class="title">AutoClassGenerator开发记录</div></div></a></div><div><a href="/2024/01/16/Cpp%E5%BC%82%E5%B8%B8%E5%A4%84%E7%90%86%E4%B8%8E%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B%E7%AE%80%E5%8D%95%E7%AC%94%E8%AE%B0/" title="Cpp异常处理与并发编程简单笔记"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-16</div><div class="title">Cpp异常处理与并发编程简单笔记</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">53</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">25</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88"><span class="toc-number">1.</span> <span class="toc-text">C++ 智能指针</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#std-unique-ptr"><span class="toc-number">1.1.</span> <span class="toc-text">std::unique_ptr</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%A5%E9%97%A8"><span class="toc-number">1.1.1.</span> <span class="toc-text">入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#API"><span class="toc-number">1.1.2.</span> <span class="toc-text">API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E9%80%A0"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">构造</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">修改</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%84%E6%BA%90%E8%A7%82%E5%AF%9F%E5%99%A8"><span class="toc-number">1.1.2.3.</span> <span class="toc-text">资源观察器</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#std-shared-ptr-%E5%92%8C-std-weak-ptr"><span class="toc-number">1.2.</span> <span class="toc-text">std::shared_ptr 和 std::weak_ptr</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#std-shared-ptr-%E5%85%A5%E9%97%A8"><span class="toc-number">1.2.1.</span> <span class="toc-text">std::shared_ptr 入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#std-shared-ptr-39-s-API"><span class="toc-number">1.2.2.</span> <span class="toc-text">std::shared_ptr&#39;s API</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E9%80%A0-1"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">构造</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BF%AE%E6%94%B9%E5%99%A8"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">修改器</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#weak-ptr%E5%85%A5%E9%97%A8"><span class="toc-number">1.2.3.</span> <span class="toc-text">weak_ptr入门</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#std-weak-ptr-39-s-API"><span class="toc-number">1.2.4.</span> <span class="toc-text">std::weak_ptr&#39;s API</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/03/08/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%B5%85%E8%AE%BA/" title="C++智能指针浅论"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="C++智能指针浅论"/></a><div class="content"><a class="title" href="/2024/03/08/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%B5%85%E8%AE%BA/" title="C++智能指针浅论">C++智能指针浅论</a><time datetime="2024-03-08T14:09:12.000Z" title="发表于 2024-03-08 22:09:12">2024-03-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="Linux内核深度学习"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux内核深度学习"/></a><div class="content"><a class="title" href="/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="Linux内核深度学习">Linux内核深度学习</a><time datetime="2024-03-05T01:04:41.000Z" title="发表于 2024-03-05 09:04:41">2024-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/29/Opencv490-MSVC-Mingw-WITHQT-OpencvContrib4-x%E7%BC%96%E8%AF%91%E6%95%99%E7%A8%8B/" title="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程"/></a><div class="content"><a class="title" href="/2024/01/29/Opencv490-MSVC-Mingw-WITHQT-OpencvContrib4-x%E7%BC%96%E8%AF%91%E6%95%99%E7%A8%8B/" title="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程">Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程</a><time datetime="2024-01-29T10:03:05.000Z" title="发表于 2024-01-29 18:03:05">2024-01-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E5%BF%B5%E9%80%9F%E9%80%9A%EF%BC%88%E5%9F%BA%E4%BA%8E%E8%B0%A2%E5%B8%8C%E4%BB%81%E7%89%88%E6%9C%AC%EF%BC%89/" title="计算机网络概念速通（基于谢希仁版本）"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="计算机网络概念速通（基于谢希仁版本）"/></a><div class="content"><a class="title" href="/2024/01/24/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E6%A6%82%E5%BF%B5%E9%80%9F%E9%80%9A%EF%BC%88%E5%9F%BA%E4%BA%8E%E8%B0%A2%E5%B8%8C%E4%BB%81%E7%89%88%E6%9C%AC%EF%BC%89/" title="计算机网络概念速通（基于谢希仁版本）">计算机网络概念速通（基于谢希仁版本）</a><time datetime="2024-01-24T03:45:11.000Z" title="发表于 2024-01-24 11:45:11">2024-01-24</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/22/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="重新学习Linux操作系统"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="重新学习Linux操作系统"/></a><div class="content"><a class="title" href="/2024/01/22/%E9%87%8D%E6%96%B0%E5%AD%A6%E4%B9%A0Linux%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="重新学习Linux操作系统">重新学习Linux操作系统</a><time datetime="2024-01-22T04:24:05.000Z" title="发表于 2024-01-22 12:24:05">2024-01-22</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
