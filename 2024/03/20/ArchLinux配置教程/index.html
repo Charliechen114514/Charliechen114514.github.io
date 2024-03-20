@@ -1,0 +1,632 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>虚拟机Arch Linux With KDE6(x11)安装小记 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="虚拟机Arch Linux With KDE6(x11)安装小记写在前言​    此篇博客记载了笔者安装ArchLinux的基础步骤和安装教程，供各位看官参考和评判。 ​    环境：Windows11下的VMWare虚拟机安装2024年3月初发行的Linux 6.8.1Kernel，安装的固件类型是UEFI安装而不是BIOS安装 ​    配置导向：  分区简单：UEFI分区（300M） + S">
+<meta property="og:type" content="article">
+<meta property="og:title" content="虚拟机Arch Linux With KDE6(x11)安装小记">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/03/20/ArchLinux%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="虚拟机Arch Linux With KDE6(x11)安装小记写在前言​    此篇博客记载了笔者安装ArchLinux的基础步骤和安装教程，供各位看官参考和评判。 ​    环境：Windows11下的VMWare虚拟机安装2024年3月初发行的Linux 6.8.1Kernel，安装的固件类型是UEFI安装而不是BIOS安装 ​    配置导向：  分区简单：UEFI分区（300M） + S">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-03-20T05:09:52.000Z">
+<meta property="article:modified_time" content="2024-03-20T05:10:55.027Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/03/20/ArchLinux%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '虚拟机Arch Linux With KDE6(x11)安装小记',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-03-20 13:10:55'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">26</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">虚拟机Arch Linux With KDE6(x11)安装小记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-03-20T05:09:52.000Z" title="发表于 2024-03-20 13:09:52">2024-03-20</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-03-20T05:10:55.027Z" title="更新于 2024-03-20 13:10:55">2024-03-20</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>17分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="虚拟机Arch Linux With KDE6(x11)安装小记"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="虚拟机Arch-Linux-With-KDE6-x11-安装小记"><a href="#虚拟机Arch-Linux-With-KDE6-x11-安装小记" class="headerlink" title="虚拟机Arch Linux With KDE6(x11)安装小记"></a>虚拟机Arch Linux With KDE6(x11)安装小记</h1><h2 id="写在前言"><a href="#写在前言" class="headerlink" title="写在前言"></a>写在前言</h2><p>​    此篇博客记载了笔者安装ArchLinux的基础步骤和安装教程，供各位看官参考和评判。</p>
+<p>​    环境：Windows11下的VMWare虚拟机安装2024年3月初发行的Linux 6.8.1Kernel，安装的固件类型是<strong>UEFI安装</strong>而不是BIOS安装</p>
+<p>​    配置导向：</p>
+<blockquote>
+<p>分区简单：UEFI分区（300M） + Swap(4G) + FileSystem(Btrfs)(75.6G)</p>
+</blockquote>
+<h2 id="Base"><a href="#Base" class="headerlink" title="Base"></a>Base</h2><h3 id="I-开始"><a href="#I-开始" class="headerlink" title="I. 开始"></a>I. 开始</h3><p>​    在安装结束VMWare虚拟机之后，诸位如果想要下载Arch Linux ISO，可以前往：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://archlinux.org/download/"><code>Arch Linux - Downloads</code></a></p>
+<p>下的中国源：</p>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://mirrors.aliyun.com/archlinux/iso/2024.03.01/"><code>aliyun.com</code></a></li>
+<li>…</li>
+</ul>
+<p>进行下载</p>
+</blockquote>
+<p>​    下载结束之后，记住自己存放的ISO的位置，随后打开VMWare WorkStation，走过一次典型的虚拟机安装教程。这里给出笔者的配置：</p>
+<p><img src="image-20240319194216766.png" alt="image-20240319194216766"></p>
+<p>​    值得注意的是，请务必保证自己的内存不要小于1GB，否则Arch Linux Installer将会无法装进内存导致无法安装！</p>
+<p>​    <strong>请设置我们的开机方式为UEFI而不是BIOS!当然想要查询BIOS方式也有专门的博客进行介绍</strong></p>
+<p>​    我们的第一步就是禁用refleactor服务（它会自己更新 <code>mirrorlist</code>（软件包管理器 <code>pacman</code> 的软件源）），因为一些原因，他可能会误删我们手动配置好的国内源！（但是笔者的三次安装中两次我没有禁，事实上没有什么太大的影响，不过，如果发现下载速度过慢了还是禁掉！然后手动配置国内源）</p>
+<pre class="line-numbers language-none"><code class="language-none">systemctl stop reflector.service<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    Systemd是一个系统管理守护进程、工具和库的集合，可以简单的认为：他就是我们系统守护进程的管理器。</p>
+<p><img src="bg2016030703.png" alt="img"></p>
+<pre class="line-numbers language-none"><code class="language-none"># 立即启动一个服务
+$ sudo systemctl start apache.service
+# 立即停止一个服务
+$ sudo systemctl stop apache.service
+# 设置服务开机自启动
+$ sudo systemctl enable some.service
+# 重启一个服务
+$ sudo systemctl restart apache.service
+# 杀死一个服务的所有子进程
+$ sudo systemctl kill apache.service
+# 重新加载一个服务的配置文件
+$ sudo systemctl reload apache.service
+# 重载所有修改过的配置文件
+$ sudo systemctl daemon-reload
+# 显示某个 Unit 的所有底层参数
+$ systemctl show httpd.service
+# 显示某个 Unit 的指定属性的值
+$ systemctl show -p CPUShares httpd.service
+# 设置某个 Unit 的指定属性
+$ sudo systemctl set-property httpd.service CPUShares&#x3D;500<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    如你所见，这些指令在我们的配置路途上将会常常遇到。我们这里就是设置reflector服务程序暂停。</p>
+<p>​    良好的习惯是：看我们的服务有没有真正暂停，确保我们这一步正确</p>
+<pre class="line-numbers language-none"><code class="language-none">systemctl status reflector.service<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    预期的讲：status应该是failed的！</p>
+<h3 id="II-网络"><a href="#II-网络" class="headerlink" title="II. 网络"></a>II. 网络</h3><p>​    下一步，我们再三的确认我们的启动方式是UEFI方式，很简单：</p>
+<pre class="line-numbers language-none"><code class="language-none">ls &#x2F;sys&#x2F;firmware&#x2F;efi&#x2F;efivars<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    在这里，如果你的shell可以自动补全上述的路径，实际上就是说明我们的确是UEFI方式启动。输出一下</p>
+<p><img src="image-20240319122704119.png" alt="image-20240319122704119"></p>
+<p>​    下一步，就是连接网络，对于虚拟机，我们无需关心，只需要确认我们的桥接或者是NAT方式的连接使得虚拟机可以利用主机的网络配置向外交互就行：</p>
+<pre class="line-numbers language-none"><code class="language-none">ping baidu.com # PING一下看看<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    <img src="image-20240319123856904.png" alt="image-20240319123856904"></p>
+<p>​    ping不同，可以首先尝试重启虚拟机，或者检查一下在主机上的VMWare网络服务是否开启，没有开启开一下（这里不再赘述如何打开服务了，抛hostname无法解析可能是DNS配置出现问题）</p>
+<h3 id="III-开启NTP时钟校验"><a href="#III-开启NTP时钟校验" class="headerlink" title="III.开启NTP时钟校验"></a>III.开启NTP时钟校验</h3><p>​    大部分软件可能对事件敏感，这里启动一下ntp时钟校验</p>
+<pre class="line-numbers language-none"><code class="language-none">timedatectl set-ntp true<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>timedatectl也是systemd的一个子集指令集</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">timedatectl status <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>tty可以显示emoji</p>
+<pre class="line-numbers language-none"><code class="language-none">noto-fonts-emoji<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240319124014490.png" alt="image-20240319124014490"></p>
+<h3 id="IV-设置国内源"><a href="#IV-设置国内源" class="headerlink" title="IV. 设置国内源"></a>IV. 设置国内源</h3><p>​    使用 <code>vim</code> 编辑器修改 <code>/etc/pacman.d/mirrorlist</code> 文件。将 <code>pacman</code> 软件仓库源更换为国内软件仓库镜像源：</p>
+<pre class="line-numbers language-none"><code class="language-none">vim &#x2F;etc&#x2F;pacman.d&#x2F;mirrorlist<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    一些常见的国内源</p>
+<pre class="line-numbers language-none"><code class="language-none">Server &#x3D; https:&#x2F;&#x2F;mirrors.ustc.edu.cn&#x2F;archlinux&#x2F;$repo&#x2F;os&#x2F;$arch # 中国科学技术大学开源镜像站
+Server &#x3D; https:&#x2F;&#x2F;mirrors.tuna.tsinghua.edu.cn&#x2F;archlinux&#x2F;$repo&#x2F;os&#x2F;$arch # 清华大学开源软件镜像站<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><img src="image-20240319124141856.png" alt="image-20240319124141856"></p>
+<blockquote>
+<p>使用Vim：摁一下 <code>i</code> 进入输入模式，输入结束之后ESC键摁一下回到命令行模式，输入 <code>:wq</code> 表示<code>write and quit</code></p>
+</blockquote>
+<h3 id="V-配置分区与文件系统"><a href="#V-配置分区与文件系统" class="headerlink" title="V. 配置分区与文件系统"></a>V. 配置分区与文件系统</h3><p>​    下一步就是查看一下文件块的信息如何了：</p>
+<p><img src="image-20240319124204765.png" alt="image-20240319124204765"></p>
+<p>​    可以看到我们的sda0就是我们的目标硬盘，对他分区！</p>
+<pre class="line-numbers language-none"><code class="language-none">cfdisk &#x2F;dev&#x2F;sda<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    对了，一些博主喜欢使用fdisk干分区，我的评价是：喜欢命令行就那样做，担心出错就这个。</p>
+<blockquote>
+</blockquote>
+<p>​    选择gpt分区后，开始分区。</p>
+<blockquote>
+<p>选择Free Space之后，光标会提示你输入大小：只需要数字 + 单位即可，然后分完之后光标切到type处选择对应的type就行</p>
+</blockquote>
+<p>具体如何分，笔者的配置是如下的：</p>
+<blockquote>
+<p>sda1 : EFI System    300M</p>
+<p>sda2：Linux Swap    4G</p>
+<p>sda3：Linux filesystem 75.7G</p>
+</blockquote>
+<p><img src="image-20240319124300888.png" alt="image-20240319124300888"></p>
+<p>​    分完长上面那样，然后光标选中write后提示你输入yes表示确认，随后quit处出cfdisk</p>
+<p>​    我们使用fdisk确认我们的分区：</p>
+<p><img src="image-20240319124423859.png" alt="image-20240319124423859"></p>
+<p>​    很好！</p>
+<p>​    下一步就是格式化各个文件块：</p>
+<blockquote>
+<p>使用FAT32格式格式化EFI引导</p>
+<pre class="line-numbers language-none"><code class="language-none">mkfs.fat -F32 &#x2F;dev&#x2F;sda1<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>使用swap格式格式化swap分区</p>
+<pre class="line-numbers language-none"><code class="language-none">mkswap &#x2F;dev&#x2F;sda2<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>我们这次选用的是较新的btrfs文件系统格式化剩下的硬盘</p>
+<pre class="line-numbers language-none"><code class="language-none">mkfs.btrfs -L ArchLinux &#x2F;dev&#x2F;sda3<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ul>
+<li><code>-L</code> 选项后指定该分区的 <code>LABLE</code>，这里以 <code>ArchLinux</code> 为例，也可以自定义，但不能使用特殊字符以及空格，且最好有意义</li>
+</ul>
+</blockquote>
+<p><img src="image-20240319124557960.png" alt="image-20240319124557960"></p>
+<pre class="line-numbers language-none"><code class="language-none">btrfs的特性：
+首先是扩展性 (scalability) 相关的特性，btrfs 最重要的设计目标是应对大型机器对文件系统的扩展性要求。 Extent，B-Tree 和动态 inode 创建等特性保证了 btrfs 在大型机器上仍有卓越的表现，其整体性能而不会随着系统容量的增加而降低。
+
+其次是数据一致性 (data integrity) 相关的特性。系统面临不可预料的硬件故障，Btrfs 采用 COW 事务技术来保证文件系统的一致性。 btrfs 还支持 checksum，避免了 silent corrupt 的出现。而传统文件系统则无法做到这一点。
+
+第三是和多设备管理相关的特性。 Btrfs 支持创建快照 (snapshot)，和克隆 (clone) 。 btrfs 还能够方便的管理多个物理设备，使得传统的卷管理软件变得多余。
+
+最后是其他难以归类的特性。这些特性都是比较先进的技术，能够显著提高文件系统的时间 &#x2F; 空间性能，包括延迟分配，小文件的存储优化，目录索引等。<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>一些ref:</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/61407714">Linux 文件系统的未来 btrfs - 知乎 (zhihu.com)</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/taoxicun/article/details/122878090">Btrfs 与 Ext4 - 功能、优势和劣势_btrfs和ext4-CSDN博客</a></p>
+</blockquote>
+<p>​    下一步就是创建子卷：创建之前，我们需要挂载一下分区：</p>
+<pre class="line-numbers language-none"><code class="language-none">mount -t btrfs -o compress&#x3D;zstd &#x2F;dev&#x2F;sda3 &#x2F;mnt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240319124700796.png" alt="image-20240319124700796"></p>
+<blockquote>
+<p>mount作为挂载指令：你可以认为挂载是将设备等视作文件往里刻录东西之前的准备操作，就像你插入优盘Windows来对他进行操作的预备工作那样理解</p>
+</blockquote>
+<p>​    我们使用的是btrfs来操作，所以后面的参数就是指定我们如何压缩存储到磁盘上面的：</p>
+<blockquote>
+<ul>
+<li>zstd</li>
+<li>lzo</li>
+<li>zlib</li>
+</ul>
+</blockquote>
+<p>​    这些算法是可以被选择的，你可以查看后选择你希望的算法进行压缩</p>
+<pre class="line-numbers language-none"><code class="language-none">btrfs subvolume create &#x2F;mnt&#x2F;@ # 创建 &#x2F; 目录子卷
+btrfs subvolume create &#x2F;mnt&#x2F;@home # 创建 &#x2F;home 目录子卷
+btrfs subvolume list -p &#x2F;mnt<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20240319124804747.png" alt="image-20240319124804747"></p>
+<p>​    在挂载时，挂载是有顺序的，需要从根目录开始挂载。使用如下命令挂载子卷：</p>
+<pre class="line-numbers language-none"><code class="language-none">mount -t btrfs -o subvol&#x3D;&#x2F;@,compress&#x3D;zstd &#x2F;dev&#x2F;sda3 &#x2F;mnt # 挂载 &#x2F; 目录
+mkdir &#x2F;mnt&#x2F;home # 创建 &#x2F;home 目录
+mount -t btrfs -o subvol&#x3D;&#x2F;@home,compress&#x3D;zstd &#x2F;dev&#x2F;sda3 &#x2F;mnt&#x2F;home # 挂载 &#x2F;home 目录
+mkdir -p &#x2F;mnt&#x2F;boot&#x2F;efi # 创建 &#x2F;boot&#x2F;efi 目录
+mount &#x2F;dev&#x2F;sda1 &#x2F;mnt&#x2F;boot&#x2F;efi # 挂载 &#x2F;boot&#x2F;efi 目录
+swapon &#x2F;dev&#x2F;sda2 # 挂载交换分区
+df -h # 查看挂载情况
+free -h # 查看交换是否开启<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p><img src="image-20240319125104714.png" alt="image-20240319125104714"></p>
+<p><img src="image-20240319125121138.png" alt="image-20240319125121138">    </p>
+<h3 id="VI-安装系统"><a href="#VI-安装系统" class="headerlink" title="VI. 安装系统"></a>VI. 安装系统</h3><p>​    开始安装系统！</p>
+<pre class="line-numbers language-none"><code class="language-none">pacstrap &#x2F;mnt base base-devel linux linux-firmware btrfs-progs
+# 如果使用btrfs文件系统，额外安装一个btrfs-progs包<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<ul>
+<li><code>base-devel</code> —— <code>base-devel</code> 在 <code>AUR</code> 包的安装过程中是必须用到的</li>
+<li><code>linux</code> —— 内核软件包，这里建议先不要替换为其它内核</li>
+</ul>
+<p><img src="image-20240319125232674.png" alt="image-20240319125232674"></p>
+<p>​    以及请务必安装下面的东西，这是为了稍后操作方便</p>
+<pre class="line-numbers language-none"><code class="language-none">pacstrap &#x2F;mnt networkmanager vim sudo <span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    至于：</p>
+<pre class="line-numbers language-none"><code class="language-none">pacstrap &#x2F;mnt zsh zsh-completions<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    中是喜欢bash还是zsh还是fish啥的，看自己需求来。个人当时这里看到missing class的zsh很帅就安装了zsh(划去</p>
+<h3 id="VII-生成-fstab-文件"><a href="#VII-生成-fstab-文件" class="headerlink" title="VII.生成 fstab 文件"></a>VII.生成 fstab 文件</h3><p>​    <code>fstab</code> 用来定义磁盘分区。它是 Linux 系统中重要的文件之一。使用 <code>genfstab</code> 自动根据当前挂载情况生成并写入 <code>fstab</code> 文件：</p>
+<pre class="line-numbers language-none"><code class="language-none">genfstab -U &#x2F;mnt &gt; &#x2F;mnt&#x2F;etc&#x2F;fstab<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    复查一下 <code>/mnt/etc/fstab</code> 确保没有错误：</p>
+<pre class="line-numbers language-none"><code class="language-none">cat &#x2F;mnt&#x2F;etc&#x2F;fstab<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240319125705793.png" alt="image-20240319125705793"></p>
+<h3 id="VIII-切换root与配置新root"><a href="#VIII-切换root与配置新root" class="headerlink" title="VIII. 切换root与配置新root"></a>VIII. 切换root与配置新root</h3><p>​    很快了！</p>
+<pre class="line-numbers language-none"><code class="language-none">arch-chroot &#x2F;mnt<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240319125729743.png" alt="image-20240319125729743"></p>
+<p>​    首先在 <code>/etc/hostname</code> 设置主机名：</p>
+<pre class="line-numbers language-none"><code class="language-none">vim &#x2F;etc&#x2F;hostname<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>这个看自己喜欢啥名字都行！这是我的：</p>
+<pre class="line-numbers language-none"><code class="language-none">ArchLinux<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</blockquote>
+<ol>
+<li>接下来在 <code>/etc/hosts</code> 设置与其匹配的条目：</li>
+</ol>
+<pre class="line-numbers language-none"><code class="language-none">vim &#x2F;etc&#x2F;hosts<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>加入如下内容：</p>
+<p><img src="image-20240319125917955.png" alt="image-20240319125917955"></p>
+<pre class="line-numbers language-none"><code class="language-none">127.0.0.1   localhost
+::1         localhost
+127.0.1.1   ArchLinux.localdomain ArchLinux<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>某些情况下如不设置主机名，在 KDE 下可能会存在网络情况变更时无法启动 GUI 应用的问题，在终端中出现形如 <code>No protocol specified qt.qpa.xcb: could not connect to display</code> 的错误。这种情况极为少见。</p>
+</blockquote>
+<p>​    设置时区，在 <code>/etc/localtime</code> 下用 <code>/usr</code> 中合适的时区创建符号链接：</p>
+<pre class="line-numbers language-none"><code class="language-none">ln -sf &#x2F;usr&#x2F;share&#x2F;zoneinfo&#x2F;Asia&#x2F;Shanghai &#x2F;etc&#x2F;localtime<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    以及同步一下硬件时钟</p>
+<pre class="line-numbers language-none"><code class="language-none">hwclock --systohc<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240319130026863.png" alt="image-20240319130026863"></p>
+<h3 id="IX-设置-locale"><a href="#IX-设置-locale" class="headerlink" title="IX. 设置 locale"></a>IX. 设置 locale</h3><p>​    <code>Locale</code> 决定了软件使用的语言、书写习惯和字符集。编辑 <code>/etc/locale.gen</code>，去掉 <code>en_US.UTF-8 UTF-8</code> 以及 <code>zh_CN.UTF-8 UTF-8</code> 行前的注释符号（<code>#</code>）：</p>
+<pre class="line-numbers language-none"><code class="language-none">vim &#x2F;etc&#x2F;locale.gen<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>在命令行模式下输入/ + 查询前缀可以快速定位！摁Enter表示接受查询让光标不再跟着走！</p>
+</blockquote>
+<p>​    然后生成locale文件：</p>
+<pre class="line-numbers language-none"><code class="language-none">locale-gen<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240319130143841.png" alt="image-20240319130143841"></p>
+<p>​    为防止奇怪的乱码出现：</p>
+<pre class="line-numbers language-none"><code class="language-none">echo &#39;LANG&#x3D;en_US.UTF-8&#39;  &gt; &#x2F;etc&#x2F;locale.conf<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="X-为-root-用户设置密码"><a href="#X-为-root-用户设置密码" class="headerlink" title="X.为 root 用户设置密码"></a>X.为 root 用户设置密码</h3><pre class="line-numbers language-none"><code class="language-none">passwd root<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h3 id="XI-安装微码与引导（容易出错）"><a href="#XI-安装微码与引导（容易出错）" class="headerlink" title="XI.安装微码与引导（容易出错）"></a>XI.<strong>安装微码与引导（容易出错）</strong></h3><p>​    安装对应芯片制造商的微码（自行查询自己的cpu是base what的）</p>
+<pre class="line-numbers language-none"><code class="language-none">pacman -S intel-ucode # Intel
+pacman -S amd-ucode # AMD<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    安装引导包</p>
+<pre class="line-numbers language-none"><code class="language-none">pacman -S grub efibootmgr<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><code>-S</code> 选项后指定要通过 <code>pacman</code> 包管理器安装的包：</p>
+<ul>
+<li><code>grub</code> —— 启动引导器</li>
+<li><code>efibootmgr</code> —— <code>efibootmgr</code> 被 <code>grub</code> 脚本用来将启动项写入 NVRAM</li>
+</ul>
+<p>​    安装 <code>GRUB</code> 到 <code>EFI</code> 分区：</p>
+<pre class="line-numbers language-none"><code class="language-none">grub-install --target&#x3D;x86_64-efi --efi-directory&#x3D;&#x2F;boot&#x2F;efi --bootloader-id&#x3D;ARCH<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<ul>
+<li><code>--efi-directory=/boot</code>/efi —— <strong>将 <code>grubx64.efi</code> 安装到之前的指定位置（EFI 分区）</strong></li>
+<li><code>--bootloader-id=ARCH</code> —— 取名为 <code>ARCH</code></li>
+</ul>
+<p><img src="image-20240319130516016.png" alt="image-20240319130516016"></p>
+<p>​    如果出来似乎不是efi分区的错误，要么看自己的efi挂载在哪里了，要么看看自己有没有分efi出来（乐）</p>
+<p>​    最后生成 <code>GRUB</code> 所需的配置文件：</p>
+<pre class="line-numbers language-none"><code class="language-none">grub-mkconfig -o &#x2F;boot&#x2F;grub&#x2F;grub.cfg<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240319192613536.png" alt="image-20240319192613536"></p>
+<p>​    完事：</p>
+<pre class="line-numbers language-none"><code class="language-none">exit # 退回安装环境
+umount -R &#x2F;mnt # 卸载新分区
+reboot # 重启<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    重启后使用 root 账户登录系统：</p>
+<p><img src="image-20240319192703265.png" alt="image-20240319192703265"></p>
+<p><img src="image-20240319192725987.png" alt="image-20240319192725987"></p>
+<p>​    设置开机自启并立即启动 networkmanager 服务，即可连接网络：</p>
+<pre class="line-numbers language-none"><code class="language-none">systemctl enable --now NetworkManager # 设置开机自启并立即启动 NetworkManager 服务<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    ping一下网络？</p>
+<p><img src="image-20240319192803637.png" alt="image-20240319192803637"></p>
+<h3 id="Fin-整个花活"><a href="#Fin-整个花活" class="headerlink" title="Fin.整个花活"></a>Fin.整个花活</h3><pre class="line-numbers language-none"><code class="language-none">pacman -S neofetch<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240319192825175.png" alt="image-20240319192825175"></p>
+<p>​    完事咯！</p>
+<h2 id="KDE6-安装配置"><a href="#KDE6-安装配置" class="headerlink" title="KDE6 安装配置"></a>KDE6 安装配置</h2><p>​    哈？不稀罕命令行？来整KDE6!</p>
+<p><img src="image-20240319192953511.png" alt="image-20240319192953511"></p>
+<p>​    先更新一下包管理！</p>
+<p>​    注意，我们的KDE进入需要一个User用户，在Linux下添加一个用户的方式是：</p>
+<pre class="line-numbers language-none"><code class="language-none">useradd -m edit_UserName<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    比如说：</p>
+<p><img src="image-20240319193142194.png" alt="image-20240319193142194"></p>
+<p>​    下面为他设置密码：</p>
+<pre class="line-numbers language-none"><code class="language-none">passwd edit_UserName<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    给我们新建的用户一个可以使用sudo的机会</p>
+<pre class="line-numbers language-none"><code class="language-none">vim &#x2F;etc&#x2F;sudoers<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    在这个配置文件中写入：用户名称 <code>ALL=(ALL)ALL</code></p>
+<p><img src="image-20240319193241453.png" alt="image-20240319193241453"></p>
+<p>​    下面就是安装大的：</p>
+<pre class="line-numbers language-none"><code class="language-none">pacman -S xorg plasma kde-applications<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240319193401104.png" alt="image-20240319193401104"></p>
+<blockquote>
+<p>PS:一些老教程要求你也安装plasma-wayland-session，但是现在已经转正进入plasma了，不要安装了：</p>
+<p>参考博客<code>:&gt;</code></p>
+<p><a target="_blank" rel="noopener" href="https://bbs.archlinux.org/viewtopic.php?pid=2156234">install archlinux kde error target not found plasma-wayland-session / Arch Linux Guided Installer / Arch Linux Forums</a></p>
+</blockquote>
+<p>​    好了喝口茶吧，得个几分钟。</p>
+<pre class="line-numbers language-none"><code class="language-none">systemctl enable sddm.service # 启用显示管理器
+systemctl status NetworkManager.service # 检查网络管理器服务，确认他已经开启开机自启动<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    重启：</p>
+<pre class="line-numbers language-none"><code class="language-none">reboot<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    好了！使用你刚刚创建的用户登录它！结束KDE的基础配置！</p>
+<h2 id="KDE进阶配置"><a href="#KDE进阶配置" class="headerlink" title="KDE进阶配置"></a>KDE进阶配置</h2><p>​    到这里，如果你还想继续配置可以继续跟随我的步伐：</p>
+<h3 id="I-设置屏幕分辨率"><a href="#I-设置屏幕分辨率" class="headerlink" title="I. 设置屏幕分辨率"></a>I. 设置屏幕分辨率</h3><p>打开<code>System Setting（桌面底下从左向右数第二个） -&gt; Display and Monitor -&gt; Display Configuration</code></p>
+<h3 id="II-archlinuxcn源"><a href="#II-archlinuxcn源" class="headerlink" title="II. archlinuxcn源"></a>II. archlinuxcn源</h3><p>​    该仓库是由archlinux中文社区驱动的一个非官方的软件仓库。编辑<code>/etc/pacman.conf：</code></p>
+<pre class="line-numbers language-text" data-language="text"><code class="language-text">sudo vim /etc/pacman.conf
+-------------------------------------------
+# 在最后添加
+[archlinuxcn]
+Server = https://mirrors.ustc.edu.cn/archlinuxcn/$arch<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    <img src="image-20240319195728856.png" alt="image-20240319195728856"></p>
+<p>​    顺嘴一提：如果你只是一个普通用户，不需要强验证ringKey的话，考虑将SigLevel设置为Never（虚拟机不怕（乐））</p>
+<p><img src="image-20240319195626822.png" alt="image-20240319195626822"></p>
+<p>​    否则等会下包的时候会频繁的要求你添加信任的开发者。</p>
+<h3 id="III-安装中文字体-fcitx5输入法"><a href="#III-安装中文字体-fcitx5输入法" class="headerlink" title="III. 安装中文字体 + fcitx5输入法"></a>III. 安装中文字体 + fcitx5输入法</h3><p>​    下一步就是安装中文字体和fcitx5输入法了。请注意的是，这里有两套诸位可以选择的配置：</p>
+<blockquote>
+<p>fcitx + sogoupinyin</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">yay -S fcitx fcitx-im fcitx-configtool fcitx-sogoupinyin<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>fcitx5（笔者的配置是这个）</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">yay -S fcitx5-im fcitx5-chinese-addons<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    注意到fcitx5-im里就包含了：</p>
+<blockquote>
+<ul>
+<li>fcitx5</li>
+<li>fcitx5-configtool</li>
+<li>fcitx5-gtk</li>
+<li>fcitx5-qt</li>
+</ul>
+</blockquote>
+<p>​    然后，我们还要让fcitx在xwindows加载的时候就启用，所以，一个快捷的方式就是直接在用户目录下写一个.xprofile文件：</p>
+<pre class="line-numbers language-none"><code class="language-none">vim ~&#x2F;.xprofile<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    写下这些东西：</p>
+<pre class="line-numbers language-none"><code class="language-none">GTK_IM_MODULE&#x3D;fcitx5
+QT_IM_MODULE&#x3D;fcitx5
+XMODIFIERS&#x3D;&quot;@im&#x3D;fcitx5&quot;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    关于xprofile文件的性质：可以参考archWiki:<a target="_blank" rel="noopener" href="https://wiki.archlinux.org/title/Xprofile">xprofile - ArchWiki (archlinux.org)</a></p>
+<p>​    这里检查的方式就是直接<code>reboot</code>让环境重新加载读取配置文件</p>
+<p>​    这里，可能还会发现存在一些乱码（比如说region and language设置切换语言的时候简体中文的简这个字是方框），我们需要下载开源的好用字体：</p>
+<blockquote>
+<p>下载一个中文字体：</p>
+<ul>
+<li><code>wqy-microhei</code>(笔者选择了这个)</li>
+<li><code>wqy-microhei-lite</code></li>
+<li><code>wqy-bitmapfont</code></li>
+<li><code>wqy-zenhei</code></li>
+<li><code>ttf-arphic-ukai</code></li>
+<li><code>ttf-arphic-uming</code></li>
+<li><code>adobe-source-han-sans-cn-fonts</code></li>
+<li><code>adobe-source-han-serif-cn-fonts</code></li>
+<li><code>noto-fonts-cjk</code></li>
+</ul>
+</blockquote>
+<p>​    下载一个nerd-fonts字体：</p>
+<p><img src="image-20240320121517131.png" alt="image-20240320121517131"></p>
+<p>​    笔者这里选择的是40（jb家的hhh）</p>
+<p>​    下载的方式就是</p>
+<pre class="line-numbers language-none"><code class="language-none">yay -S wqy-microhei<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<pre class="line-numbers language-none"><code class="language-none">yay -S nerd-fonts #然后询问下载哪个的时候选择40（内存土豪全下我没意见）<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    nerd-fonts会在后面我们配置<code>fish + oh-my-posh</code>的时候会用到。</p>
+<h3 id="IV-firefox-配置代理"><a href="#IV-firefox-配置代理" class="headerlink" title="IV. firefox + 配置代理"></a>IV. firefox + 配置代理</h3><p>​    我们来配置代理：当然，笔者出于简单的考虑选择的是<code>clash-verge</code></p>
+<pre class="line-numbers language-none"><code class="language-none">yay -S clash-verge firefox # firefox是浏览器，我喜欢这个（<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    下好了之后启动它直接GUI操作：</p>
+<blockquote>
+<p>这里塞订阅</p>
+</blockquote>
+<p><img src="image-20240320121944803.png" alt="image-20240320121944803"></p>
+<blockquote>
+<p>在这里启动</p>
+</blockquote>
+<p><img src="image-20240320122008635.png" alt="image-20240320122008635"></p>
+<p>​    选择打开系统代理之后，就可以直接google了（在刚刚下载好的浏览器里直接正常操作）：</p>
+<p><img src="image-20240320122142376.png" alt="image-20240320122142376"></p>
+<p>​    但是我们的代理没法在终端使用，这个问题我们放在下一个section讲：</p>
+<h3 id="V-fish-oh-my-posh"><a href="#V-fish-oh-my-posh" class="headerlink" title="V. fish + oh-my-posh"></a>V. <code>fish + oh-my-posh</code></h3><p>​    来了来了，我们首先先下载fish</p>
+<pre class="line-numbers language-none"><code class="language-none">yay -S fish unzip wget # unzip是后面我们为oh-my-posh服务的，wget是后面我们下载zip包服务的<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    下一步，就是更改我们的Konsole启动的默认配置（笔者这里的shell已经是fish了）</p>
+<p><img src="image-20240320122501233.png" alt="image-20240320122501233"></p>
+<p>​    在设置那里选择配置Konsole,切换到配置方案页面。咱们新建一个配置方案：</p>
+<p><img src="image-20240320122615093.png" alt="image-20240320122615093"></p>
+<p>​    在外观上，设置字体（选择你自己下的Nerd Font即可）：</p>
+<p><img src="image-20240320123941804.png" alt="image-20240320123941804"></p>
+<p>​    现在新建一个标签页：很好，就长这样</p>
+<p><img src="image-20240319220024290.png" alt="image-20240319220024290"></p>
+<p>​    下一步就是拉取oh-my-posh</p>
+<pre class="line-numbers language-none"><code class="language-none">curl -s https:&#x2F;&#x2F;ohmyposh.dev&#x2F;install.sh | sudo bash -s<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    接着我们下载主题：</p>
+<pre class="line-numbers language-none"><code class="language-none"># 创建主题存放文件夹，读者可以根据需要自定义存放位置，
+# 如果自定义修改位置，那么后续的命令也需要做出相应更改
+mkdir ~&#x2F;.poshthemes
+# 获取主题zip文件并存放至对应主题文件夹（如果使用该命令下载zip较慢，
+# 可以通过复制该URL使用“github文件加速下载下载”文件
+wget https:&#x2F;&#x2F;github.com&#x2F;JanDeDobbeleer&#x2F;oh-my-posh&#x2F;releases&#x2F;latest&#x2F;download&#x2F;themes.zip -O ~&#x2F;.poshthemes&#x2F;themes.zip
+# 解压主题压缩包文件
+unzip ~&#x2F;.poshthemes&#x2F;themes.zip -d ~&#x2F;.poshthemes
+# 将所有主题文件设置可读权限
+chmod u+rw ~&#x2F;.poshthemes&#x2F;*.omp.*
+# 删除主题压缩包
+rm ~&#x2F;.poshthemes&#x2F;themes.zip<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token comment"># 注意“~/.poshthemes/jandedobbeleer.omp.json”，根据实际安装情况选择读者自己设置的 oh-my-posh 主题位置而定，在此仅作为参考。</span>
+<span class="token comment"># 下面是一个例子</span>
+oh-my-posh init fish <span class="token parameter variable">--config</span> ~/.poshthemes/jandedobbeleer.omp.json <span class="token operator">|</span> <span class="token builtin class-name">source</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>注意</p>
+<p>主题可以在<a target="_blank" rel="noopener" href="https://ohmyposh.dev/docs/themes">官网</a>查看，当读者看到适合自己的主题时，可以暂时通过命令“oh-my-posh init fish —config ~/.poshthemes/看到的主题名.omp.json | source”查看使用效果，如果合适则直接将该命令添加到fish的配置文件中即可。</p>
+</blockquote>
+<p>​    笔者这里选择的是blueish主题</p>
+<pre class="line-numbers language-none"><code class="language-none">oh-my-posh init fish --config ~&#x2F;.poshthemes&#x2F;blueish.omp.json | source<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    然后把上面的命令写入：</p>
+<pre class="line-numbers language-none"><code class="language-none">~&#x2F;.config&#x2F;fish&#x2F;config.fish<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240320123810913.png" alt="image-20240320123810913"></p>
+<p>​    然后开一个终端就行，如果没问题，就会是这样的</p>
+<p><img src="image-20240320123910399.png" alt="image-20240320123910399"></p>
+<h3 id="VI-配置终端代理"><a href="#VI-配置终端代理" class="headerlink" title="VI. 配置终端代理"></a>VI. 配置终端代理</h3><p>​    这一步请确保IV步骤已经完成！</p>
+<p>​    实质上就是向终端启动文件写入两个alias就行：</p>
+<p><img src="image-20240319221426461.png" alt="image-20240319221426461"></p>
+<p>​    注意后面的http_proxy和https_proxy的端口号请看自己的代理软件的端口号。</p>
+<p>​    在我们没有开启代理之前，我们测试一下：</p>
+<pre class="line-numbers language-none"><code class="language-none">curl google.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240320124330709.png" alt="image-20240320124330709"></p>
+<p>​    现在打开代理，确保自己的alias已经配置好并被终端读取</p>
+<p><img src="image-20240320124414719.png" alt="image-20240320124414719"></p>
+<p>​    完事！</p>
+<h3 id="VII-配置lunar-vim"><a href="#VII-配置lunar-vim" class="headerlink" title="VII. 配置lunar vim"></a>VII. 配置lunar vim</h3><p>​    首先先下载neovim</p>
+<pre class="line-numbers language-none"><code class="language-none">yay -S neovim<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    <img src="image-20240320130206684.png" alt="image-20240320130206684"></p>
+<p>​    之后下载脚本开始配置</p>
+<pre class="line-numbers language-none"><code class="language-none">curl https:&#x2F;&#x2F;raw.githubusercontent.com&#x2F;LunarVim&#x2F;LunarVim&#x2F;release-1.3&#x2F;neovim-0.9&#x2F;utils&#x2F;installer&#x2F;install.sh &gt; install.sh
+chmod 777 .&#x2F;install.sh &amp;&amp; .&#x2F;install.sh<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    配置结束，按照脚本的提示，我们为了不污染环境，在config.fish文件下再alias一个指令</p>
+<p><img src="image-20240320130635235.png" alt="image-20240320130635235"></p>
+<pre class="line-numbers language-none"><code class="language-none">alias lvim&#x3D;&#x2F;path&#x2F;to&#x2F;your&#x2F;vim&#x2F;according&#x2F;2&#x2F;your&#x2F;shellscript<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    新开一个</p>
+<pre class="line-numbers language-none"><code class="language-none">lvim<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240320130750175.png" alt="image-20240320130750175"></p>
+<h2 id="WHOLE-REFERENCE"><a href="#WHOLE-REFERENCE" class="headerlink" title="WHOLE_REFERENCE"></a>WHOLE_REFERENCE</h2><blockquote>
+<p><strong>Base:</strong><a target="_blank" rel="noopener" href="https://arch.icekylin.online/guide/rookie/basic-install.html">archlinux 基础安装 | archlinux 简明指南 (icekylin.online)</a></p>
+<p><strong>KDE_Base</strong><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/144122288">如何在 Arch Linux 上正确安装和设置 KDE Plasma？ | Linux 中国 - 知乎 (zhihu.com)</a></p>
+<p><strong>输入法：</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/klelee/p/archlinux-fcitx5.html">Archlinux安装和配置fcitx5 - 可乐klelee - 博客园 (cnblogs.com)</a></li>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/558354279">Arch Linux + KDE 配置&amp;美化（持续更新~） - 知乎 (zhihu.com)</a></li>
+</ol>
+<p><strong>字体</strong></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/qingtian805/article/details/123187337">Arch（KDE Plasma）中文化_arch 中文字体-CSDN博客</a></p>
+<p><strong>Fish Shell + Oh My Posh</strong></p>
+<ol>
+<li><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/59439573">如何在 Linux 中安装、配置和使用 Fish Shell？ - 知乎 (zhihu.com)</a></li>
+<li><a target="_blank" rel="noopener" href="https://fishshell.com/">fish shell</a></li>
+<li><a target="_blank" rel="noopener" href="https://ohmyposh.dev/">Home | Oh My Posh</a></li>
+<li><a target="_blank" rel="noopener" href="https://www.cnblogs.com/aaroncoding/p/17118251.html">Linux终端下使用Fish shell并美化 - 木木亚伦 - 博客园 (cnblogs.com)</a></li>
+</ol>
+<p><strong>lunar vim</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.lunarvim.org/docs/installation">Installation | LunarVim</a></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/03/20/ArchLinux%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/">http://charliechen114514.github.io/2024/03/20/ArchLinux%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/03/16/C-%E5%90%8E%E7%AB%AF%E5%85%A5%E9%97%A8-1-cpp%E5%9F%BA%E7%A1%80/" title="C++后端入门 1-cpp基础"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">C++后端入门 1-cpp基础</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/04/16/LearnLinuxBasicNote/" title="LearnLinuxBasicNote"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-16</div><div class="title">LearnLinuxBasicNote</div></div></a></div><div><a href="/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/" title="TCP&#x2F;IP 网络编程笔记——1，2，3"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-23</div><div class="title">TCP&#x2F;IP 网络编程笔记——1，2，3</div></div></a></div><div><a href="/2023/08/17/Unix-network-programming-Guidance/" title="Unix网络编程 - 1"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">Unix网络编程 - 1</div></div></a></div><div><a href="/2023/08/19/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E2%80%94%E2%80%94%E5%AF%BC%E8%AE%BA%E4%B8%8E%E4%B8%89%E7%A7%8D%E5%8D%8F%E8%AE%AE/" title="Unix网络编程——导论与三种协议"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-19</div><div class="title">Unix网络编程——导论与三种协议</div></div></a></div><div><a href="/2023/08/20/%E5%B5%8C%E5%85%A5%E5%BC%8FC%E4%BF%AE%E5%85%BB%E2%80%94%E2%80%94%E5%89%8D%E5%AF%BC/" title="嵌入式C修养——前导"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-20</div><div class="title">嵌入式C修养——前导</div></div></a></div><div><a href="/2024/01/19/Linux%E6%BC%AB%E6%B8%B8%E5%90%88%E9%9B%86/" title="Linux漫游合集"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-19</div><div class="title">Linux漫游合集</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">26</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%99%9A%E6%8B%9F%E6%9C%BAArch-Linux-With-KDE6-x11-%E5%AE%89%E8%A3%85%E5%B0%8F%E8%AE%B0"><span class="toc-number">1.</span> <span class="toc-text">虚拟机Arch Linux With KDE6(x11)安装小记</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">写在前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Base"><span class="toc-number">1.2.</span> <span class="toc-text">Base</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#I-%E5%BC%80%E5%A7%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">I. 开始</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#II-%E7%BD%91%E7%BB%9C"><span class="toc-number">1.2.2.</span> <span class="toc-text">II. 网络</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#III-%E5%BC%80%E5%90%AFNTP%E6%97%B6%E9%92%9F%E6%A0%A1%E9%AA%8C"><span class="toc-number">1.2.3.</span> <span class="toc-text">III.开启NTP时钟校验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IV-%E8%AE%BE%E7%BD%AE%E5%9B%BD%E5%86%85%E6%BA%90"><span class="toc-number">1.2.4.</span> <span class="toc-text">IV. 设置国内源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#V-%E9%85%8D%E7%BD%AE%E5%88%86%E5%8C%BA%E4%B8%8E%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.2.5.</span> <span class="toc-text">V. 配置分区与文件系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VI-%E5%AE%89%E8%A3%85%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.2.6.</span> <span class="toc-text">VI. 安装系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VII-%E7%94%9F%E6%88%90-fstab-%E6%96%87%E4%BB%B6"><span class="toc-number">1.2.7.</span> <span class="toc-text">VII.生成 fstab 文件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VIII-%E5%88%87%E6%8D%A2root%E4%B8%8E%E9%85%8D%E7%BD%AE%E6%96%B0root"><span class="toc-number">1.2.8.</span> <span class="toc-text">VIII. 切换root与配置新root</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IX-%E8%AE%BE%E7%BD%AE-locale"><span class="toc-number">1.2.9.</span> <span class="toc-text">IX. 设置 locale</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#X-%E4%B8%BA-root-%E7%94%A8%E6%88%B7%E8%AE%BE%E7%BD%AE%E5%AF%86%E7%A0%81"><span class="toc-number">1.2.10.</span> <span class="toc-text">X.为 root 用户设置密码</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#XI-%E5%AE%89%E8%A3%85%E5%BE%AE%E7%A0%81%E4%B8%8E%E5%BC%95%E5%AF%BC%EF%BC%88%E5%AE%B9%E6%98%93%E5%87%BA%E9%94%99%EF%BC%89"><span class="toc-number">1.2.11.</span> <span class="toc-text">XI.安装微码与引导（容易出错）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Fin-%E6%95%B4%E4%B8%AA%E8%8A%B1%E6%B4%BB"><span class="toc-number">1.2.12.</span> <span class="toc-text">Fin.整个花活</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KDE6-%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AE"><span class="toc-number">1.3.</span> <span class="toc-text">KDE6 安装配置</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#KDE%E8%BF%9B%E9%98%B6%E9%85%8D%E7%BD%AE"><span class="toc-number">1.4.</span> <span class="toc-text">KDE进阶配置</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#I-%E8%AE%BE%E7%BD%AE%E5%B1%8F%E5%B9%95%E5%88%86%E8%BE%A8%E7%8E%87"><span class="toc-number">1.4.1.</span> <span class="toc-text">I. 设置屏幕分辨率</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#II-archlinuxcn%E6%BA%90"><span class="toc-number">1.4.2.</span> <span class="toc-text">II. archlinuxcn源</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#III-%E5%AE%89%E8%A3%85%E4%B8%AD%E6%96%87%E5%AD%97%E4%BD%93-fcitx5%E8%BE%93%E5%85%A5%E6%B3%95"><span class="toc-number">1.4.3.</span> <span class="toc-text">III. 安装中文字体 + fcitx5输入法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#IV-firefox-%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="toc-number">1.4.4.</span> <span class="toc-text">IV. firefox + 配置代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#V-fish-oh-my-posh"><span class="toc-number">1.4.5.</span> <span class="toc-text">V. fish + oh-my-posh</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VI-%E9%85%8D%E7%BD%AE%E7%BB%88%E7%AB%AF%E4%BB%A3%E7%90%86"><span class="toc-number">1.4.6.</span> <span class="toc-text">VI. 配置终端代理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#VII-%E9%85%8D%E7%BD%AElunar-vim"><span class="toc-number">1.4.7.</span> <span class="toc-text">VII. 配置lunar vim</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#WHOLE-REFERENCE"><span class="toc-number">1.5.</span> <span class="toc-text">WHOLE_REFERENCE</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/03/20/ArchLinux%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/" title="虚拟机Arch Linux With KDE6(x11)安装小记"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="虚拟机Arch Linux With KDE6(x11)安装小记"/></a><div class="content"><a class="title" href="/2024/03/20/ArchLinux%E9%85%8D%E7%BD%AE%E6%95%99%E7%A8%8B/" title="虚拟机Arch Linux With KDE6(x11)安装小记">虚拟机Arch Linux With KDE6(x11)安装小记</a><time datetime="2024-03-20T05:09:52.000Z" title="发表于 2024-03-20 13:09:52">2024-03-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/16/C-%E5%90%8E%E7%AB%AF%E5%85%A5%E9%97%A8-1-cpp%E5%9F%BA%E7%A1%80/" title="C++后端入门 1-cpp基础"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="C++后端入门 1-cpp基础"/></a><div class="content"><a class="title" href="/2024/03/16/C-%E5%90%8E%E7%AB%AF%E5%85%A5%E9%97%A8-1-cpp%E5%9F%BA%E7%A1%80/" title="C++后端入门 1-cpp基础">C++后端入门 1-cpp基础</a><time datetime="2024-03-15T23:36:49.000Z" title="发表于 2024-03-16 07:36:49">2024-03-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/08/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%B5%85%E8%AE%BA/" title="C++智能指针浅论"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="C++智能指针浅论"/></a><div class="content"><a class="title" href="/2024/03/08/C-%E6%99%BA%E8%83%BD%E6%8C%87%E9%92%88%E6%B5%85%E8%AE%BA/" title="C++智能指针浅论">C++智能指针浅论</a><time datetime="2024-03-08T14:09:12.000Z" title="发表于 2024-03-08 22:09:12">2024-03-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="Linux内核深度学习"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux内核深度学习"/></a><div class="content"><a class="title" href="/2024/03/05/Linux%E5%86%85%E6%A0%B8%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/" title="Linux内核深度学习">Linux内核深度学习</a><time datetime="2024-03-05T01:04:41.000Z" title="发表于 2024-03-05 09:04:41">2024-03-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/01/29/Opencv490-MSVC-Mingw-WITHQT-OpencvContrib4-x%E7%BC%96%E8%AF%91%E6%95%99%E7%A8%8B/" title="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程"/></a><div class="content"><a class="title" href="/2024/01/29/Opencv490-MSVC-Mingw-WITHQT-OpencvContrib4-x%E7%BC%96%E8%AF%91%E6%95%99%E7%A8%8B/" title="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程">Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程</a><time datetime="2024-01-29T10:03:05.000Z" title="发表于 2024-01-29 18:03:05">2024-01-29</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
