@@ -1,0 +1,936 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上前言​    本教程是一个截止至2024年7月11日最新的，旨在编译可以运行在x86_64结构上的，其操作系统是Windows11的机器上的，谷歌著名的光学识别库Tessereact OCR。本篇教程将会编译产生：  使用msys环境下的，使用mingw64编译器编译的Tesser">
+<meta property="og:type" content="article">
+<meta property="og:title" content="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上前言​    本教程是一个截止至2024年7月11日最新的，旨在编译可以运行在x86_64结构上的，其操作系统是Windows11的机器上的，谷歌著名的光学识别库Tessereact OCR。本篇教程将会编译产生：  使用msys环境下的，使用mingw64编译器编译的Tesser">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-07-27T09:13:46.000Z">
+<meta property="article:modified_time" content="2024-07-27T09:14:20.448Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="Compile">
+<meta property="article:tag" content="Tesseract_OCR">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-27 17:14:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-27T09:13:46.000Z" title="发表于 2024-07-27 17:13:46">2024-07-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-27T09:14:20.448Z" title="更新于 2024-07-27 17:14:20">2024-07-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">7.7k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>32分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="如何在Windows上编译可用的Tesseract-OCR-in-C-并部署在Visual-Studio与Qt6上"><a href="#如何在Windows上编译可用的Tesseract-OCR-in-C-并部署在Visual-Studio与Qt6上" class="headerlink" title="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上"></a>如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>​    本教程是一个截止至2024年7月11日最新的，旨在编译可以运行在x86_64结构上的，其操作系统是Windows11的机器上的，谷歌著名的光学识别库Tessereact OCR。本篇教程将会编译产生：</p>
+<ul>
+<li>使用msys环境下的，使用mingw64编译器编译的Tessereact OCR动态库</li>
+<li>使用基于vcpkg的，于msvc19编译器编译的Tessereact OCR动态库</li>
+</ul>
+<p>​    文章的最后将会放上Github仓库与自己写的极简的包装器（问就是手动释放折磨人，智能指针万岁！）</p>
+<h3 id="阅前提示"><a href="#阅前提示" class="headerlink" title="阅前提示"></a>阅前提示</h3><p>​    出于一些大家都知道的原因，使用一台没有VPN代理软件的机器编译来自国外的优秀软件是一件相当折磨人的事情，所以如果您想要按照本篇教程进行编译，请先：</p>
+<blockquote>
+<ol>
+<li>机器上有足够的内存，硬存条件</li>
+<li>有一个可用的代理软件，或者，您的网络可以流畅的使用git下载软件，或者是在vcpkg运行时补齐相关的依赖</li>
+</ol>
+</blockquote>
+<h2 id="导言"><a href="#导言" class="headerlink" title="导言"></a>导言</h2><blockquote>
+<p>Tesseract 项目地址：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tesseract">tesseract-ocr/tesseract: Tesseract Open Source OCR Engine (main repository) (github.com)</a>，我们的项目地址，等会从这里开始折磨</p>
+<p>Tesseract用户侧与开发侧手册：<a target="_blank" rel="noopener" href="https://tesseract-ocr.github.io/tessdoc/Home.html">Tesseract User Manual | tessdoc (tesseract-ocr.github.io)</a>，我们的开发手册，开发的时候别听某些瞎写的博客乱逼逼，有的时候以这个为准</p>
+</blockquote>
+<p>​    下文是对简介的翻译：</p>
+<p>​    Tesseract 是一个开源文本识别 (OCR) 引擎，遵循 Apache 2.0 许可。（人话：记得你自己用完了发布项目的时候带上这个许可） 主要版本 5 是当前稳定版本，于 2021 年 11 月 30 日发布 5.0.0 版。 GitHub 提供较新的次要版本和错误修复版本。 GitHub 上的主分支提供最新源代码。未解决的问题可以在问题跟踪器和计划文档中找到。 Tesseract 可以直接通过命令行使用，或者（对于程序员）通过使用 API 从图像中提取打印文本。它支持多种语言。Tesseract 没有内置 GUI，但第三方页面提供了几种。Tesseract 的外部工具、包装器和培训项目列在 AddOns 下。 </p>
+<p>​    <strong>Tesseract 可以在您自己的项目中使用，但需遵守 Apache 许可 2.0 的条款。它具有功能齐全的 API，可以针对包括 Android 和 iPhone 在内的各种目标进行编译。</strong>请参阅 3rdParty 和 AddOns 页面，了解已完成的操作示例。</p>
+<p>​    下面进入正题：开始编译！</p>
+<h2 id="使用基于vcpkg的，于msvc19编译器编译的Tessereact-OCR动态库"><a href="#使用基于vcpkg的，于msvc19编译器编译的Tessereact-OCR动态库" class="headerlink" title="使用基于vcpkg的，于msvc19编译器编译的Tessereact OCR动态库"></a>使用基于vcpkg的，于msvc19编译器编译的Tessereact OCR动态库</h2><h3 id="使用vcpkg辅助我们的编译"><a href="#使用vcpkg辅助我们的编译" class="headerlink" title="使用vcpkg辅助我们的编译"></a>使用vcpkg辅助我们的编译</h3><p>​    我看很多博客并没有使用包管理器辅助我们构建软件的意识，这里我们将会使用vcpkg包管理器来辅助我们的编译，帮助我们在编译时补全相关的依赖。</p>
+<blockquote>
+<p>什么是vcpkg，就看看巨硬的文档吧！ <a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/vcpkg/get_started/overview">vcpkg 概述 | Microsoft Learn</a></p>
+<p>安装时可以参考的流程：<a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/vcpkg/get_started/get-started-vs?pivots=shell-cmd">在 Visual Studio 中使用 CMake 安装和管理包 | Microsoft Learn</a></p>
+</blockquote>
+<h3 id="正文"><a href="#正文" class="headerlink" title="正文"></a>正文</h3><p>​    下面，我们开始使用git安排vcpkg：</p>
+<p>​    找一个硬存空间较大的地方，比如说我的D盘：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell">➜  <span class="token function">dir</span>		<span class="token comment"># 我在D盘下</span>
+	目录: D:\
+➜  <span class="token variable">$Env</span>:http_proxy=<span class="token string">"http://127.0.0.1:7890"</span><span class="token punctuation">;</span><span class="token variable">$Env</span>:https_proxy=<span class="token string">"http://127.0.0.1:7890"</span> <span class="token comment"># 设置自己的代理</span>
+➜  git clone https:<span class="token operator">/</span><span class="token operator">/</span>github<span class="token punctuation">.</span>com/microsoft/vcpkg<span class="token punctuation">.</span>git
+Cloning into <span class="token string">'vcpkg'</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+remote: Enumerating objects: 240417<span class="token punctuation">,</span> done<span class="token punctuation">.</span>
+remote: Counting objects: 100% <span class="token punctuation">(</span>23483/23483<span class="token punctuation">)</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span>
+remote: Compressing objects: 100% <span class="token punctuation">(</span>944/944<span class="token punctuation">)</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span>
+remote: Total 240417 <span class="token punctuation">(</span>delta 23000<span class="token punctuation">)</span><span class="token punctuation">,</span> reused 22547 <span class="token punctuation">(</span>delta 22539<span class="token punctuation">)</span><span class="token punctuation">,</span> pack-reused 216934
+Receiving objects: 100% <span class="token punctuation">(</span>240417/240417<span class="token punctuation">)</span><span class="token punctuation">,</span> 71<span class="token punctuation">.</span>03 MiB <span class="token punctuation">|</span> 2<span class="token punctuation">.</span>00 MiB/s<span class="token punctuation">,</span> done<span class="token punctuation">.</span>
+Resolving deltas: 100% <span class="token punctuation">(</span>160646/160646<span class="token punctuation">)</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span>
+Updating files: 100% <span class="token punctuation">(</span>11502/11502<span class="token punctuation">)</span><span class="token punctuation">,</span> done<span class="token punctuation">.</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>如果自己不会设代理。。。哈？去网上查查，懒得查来我这篇看：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/135922310">OpenCV4.9.0 + 扩展 + WITH_QT（Qt6）模块编译教程（Windows）_opencv4.9 qt-CSDN博客</a></p>
+</blockquote>
+<p>​    下一步，进入目录初始化他：</p>
+<pre class="line-numbers language-none"><code class="language-none">➜  cd vcpkg
+➜  bootstrap-vcpkg.bat
+Downloading https:&#x2F;&#x2F;github.com&#x2F;microsoft&#x2F;vcpkg-tool&#x2F;releases&#x2F;download&#x2F;2024-06-10&#x2F;vcpkg.exe -&gt; D:\vcpkg\vcpkg.exe (using proxy: http:&#x2F;&#x2F;127.0.0.1:7890)... done.
+Validating signature... done.
+
+vcpkg package management program version 2024-06-10-02590c430e4ed9215d27870138c2e579cc338772
+
+See LICENSE.txt for license information.
+Telemetry
+---------
+vcpkg collects usage data in order to help us improve your experience.
+The data collected by Microsoft is anonymous.
+You can opt-out of telemetry by re-running the bootstrap-vcpkg script with -disableMetrics,
+passing --disable-metrics to vcpkg on the command line,
+or by setting the VCPKG_DISABLE_METRICS environment variable.
+
+Read more about vcpkg telemetry at docs&#x2F;about&#x2F;privacy.md<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    现在可以用vcpkg来下载包了，注意使用他下载的时候挂代理，不然的话就会很慢。</p>
+<blockquote>
+<p>I. 只是想用一用，不想持久化的使用它管理（我）</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">cd vcpkg
+vcpkg install tesseract<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<blockquote>
+<p>II. 想要到处使用：</p>
+<p>很简单！自己把自己的vcpkg目录添加进入环境变量就行了</p>
+<p>btw:现在的Windows不需要重启就可以读取环境变量，因为所有的主程序都会在载入内存的时候发起请求载入环境变量的动作，所以正确的做法是重启软件而不是重启操作系统！</p>
+<pre class="line-numbers language-none"><code class="language-none">vcpkg install tesseract<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+</blockquote>
+<p>​    嗯，第一次下载需要进行漫长的编译，我是经历了几个小时的折磨。</p>
+<p>​    我们的所需品在：</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell"><span class="token comment"># vcpkg/installed/x64-windows/*</span>
+➜  tree <span class="token punctuation">.</span>
+Folder PATH listing <span class="token keyword">for</span> volume <span class="token keyword">Data</span>
+Volume serial number is 2A4D-419B
+D:\VCPKG\INSTALLED\X64-WINDOWS
+├───bin
+├───debug
+│   ├───bin
+│   └───lib
+│       └───pkgconfig
+├───include
+│   ├───curl
+│   ├───leptonica
+│   ├───libpng16
+│   ├───libxml
+│   ├───libxml2
+│   │   └───libxml
+│   ├───lzma
+│   ├───openjpeg-2<span class="token punctuation">.</span>5
+│   ├───openssl
+│   ├───tesseract
+│   │   ├───api
+│   │   ├───arch
+│   │   ├───ccmain
+│   │   ├───ccstruct
+│   │   ├───ccutil
+│   │   ├───classify
+│   │   ├───cutil
+│   │   ├───dict
+│   │   ├───lstm
+│   │   ├───textord
+│   │   ├───viewer
+│   │   └───wordrec
+│   └───webp
+│       └───sharpyuv
+├───lib
+│   └───pkgconfig
+├───share
+│   ├───bzip2
+│   ├───curl
+│   ├───doc
+│   │   └───xz
+│   │       └───examples
+│   ├───gif
+│   ├───giflib
+│   ├───iconv
+│   ├───jpeg
+│   ├───leptonica
+│   ├───libarchive
+│   ├───libiconv
+│   ├───libjpeg-turbo
+│   ├───liblzma
+│   ├───libpng
+│   ├───libwebp
+│   ├───libxml2
+│   ├───lz4
+│   ├───openjpeg
+│   ├───openssl
+│   ├───png
+│   ├───tessdata
+│   │   ├───configs
+│   │   └───tessconfigs
+│   ├───tesseract
+│   ├───tiff
+│   ├───vcpkg-cmake
+│   ├───vcpkg-cmake-config
+│   ├───vcpkg-cmake-<span class="token function">get-vars</span>
+│   │   └───cmake_get_vars
+│   ├───WebP
+│   ├───zlib
+│   └───zstd
+└───tools
+    ├───bzip2
+    ├───curl
+    │   ├───bin
+    │   └───debug
+    │       └───bin
+    ├───libiconv
+    │   ├───bin
+    │   └───debug
+    │       └───bin
+    └───tesseract<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>有朋友可能会出现vcpkg下包的Error: <a target="_blank" rel="noopener" href="https://blog.csdn.net/weixin_74027669/article/details/139796202">2024最新版Vcpkg安装第三方库报错error: building XXXX failed with: BUILD_FAILED_vcpkg 卡在— building x64-linux-dbg-CSDN博客</a>\</p>
+<p>这个CSDN博客解决了我的问题：记得保持vcpkg本地和上游的同步！<code>(git pull; vcpkg update)</code></p>
+</blockquote>
+<p>​    至此完成了编译。</p>
+<h2 id="使用msys2环境下的，使用mingw64编译器编译的Tessereact-OCR动态库"><a href="#使用msys2环境下的，使用mingw64编译器编译的Tessereact-OCR动态库" class="headerlink" title="使用msys2环境下的，使用mingw64编译器编译的Tessereact OCR动态库"></a>使用msys2环境下的，使用mingw64编译器编译的Tessereact OCR动态库</h2><p>​    这个可就折磨人了，无论是官方还是民间给的可参考文献寥寥无几，只好自己摸索。但是没关系，既然这篇文章出现在这里，说明基本上的共同问题已经解决了，文章的大幅度也是描述这个的。</p>
+<h3 id="什么是msys2"><a href="#什么是msys2" class="headerlink" title="什么是msys2"></a>什么是msys2</h3><blockquote>
+<p>msys的官方简介：<a target="_blank" rel="noopener" href="https://www.msys2.org/">MSYS2</a></p>
+</blockquote>
+<p>​    MSYS2 是一组工具和库，为您提供了一个易于使用的环境，用于构建、安装和运行原生 Windows 软件。 它由一个名为 mintty 的命令行终端、bash、git 和 subversion 等版本控制系统、tar 和 awk 等工具甚至 autotools 等构建系统组成，所有这些都基于 Cygwin 的修改版本。尽管其中一些核心部分基于 Cygwin，但 MSYS2 的主要重点是为原生 Windows 软件提供构建环境，并将 Cygwin 使用部分保持在最低限度。MSYS2 为 GCC、mingw-w64、CPython、CMake、Meson、OpenSSL、FFmpeg、Rust、Ruby 等提供最新的原生版本。 </p>
+<p>​    为了提供软件包的轻松安装和保持更新的方法，<strong>它提供了一个名为 Pacman 的软件包管理系统，Arch Linux 用户应该很熟悉它</strong>（还真是，来自Arch Linux 用户的肯定）。它带来了许多强大的功能，例如依赖性解析和简单的完整系统升级，以及直接且可复制的软件包构建。我们的软件包存储库包含 3200 多个可立即安装的预构建软件包。</p>
+<p>​    <strong>说了这么多，其实就是提供一个 Mingw 编译器都认的环境，不会出现跨编译器的包的链接导致大串的未定义符号问题，其次，提供一个补全依赖的包管理器辅助我们进行包管理</strong>，我们下面开始安装</p>
+<blockquote>
+<p>5月7日的release：<a target="_blank" rel="noopener" href="https://github.com/msys2/msys2-installer/releases/download/2024-05-07/msys2-x86_64-20240507.exe">https://github.com/msys2/msys2-installer/releases/download/2024-05-07/msys2-x86_64-20240507.exe</a></p>
+<p>最新的release去<a target="_blank" rel="noopener" href="https://www.msys2.org/">MSYS2</a>上下载</p>
+</blockquote>
+<p>​    值得注意的是，安装中会卡在50%好一会儿，安装包此时正在注册可用的数据库，因此需要花费一些时间，不是安装出现的错误，只是安装所必需要的时间罢了。</p>
+<p><img src="image-20240711090429141.png" alt="image-20240711090429141"></p>
+<p><img src="image-20240711090515022.png" alt="image-20240711090515022"></p>
+<h3 id="安装前，我们也许。。。"><a href="#安装前，我们也许。。。" class="headerlink" title="安装前，我们也许。。。"></a>安装前，我们也许。。。</h3><h4 id="Option-更改用户名"><a href="#Option-更改用户名" class="headerlink" title="[Option]更改用户名"></a>[Option]更改用户名</h4><p>​    至少，我的电脑的用户名是中文的，Msys会继承这一名称，他所惯用的字符集是utf8的，意味着会出现很不友好的字符乱码的行为，所以，改个用户名</p>
+<p>​    在Windows搜索菜单找到Msys2,运行他</p>
+<p><img src="image-20240711090853227.png" alt="image-20240711090853227"></p>
+<p>​    在控制台下：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ &#x2F;usr&#x2F;bin&#x2F;mkpasswd.exe &gt; &#x2F;etc&#x2F;passwd<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    然后去自己的安装位置下，找到etc目录，用记事本编辑<code>/etc/passwd</code>，如果发现自己的最后一行出现了中文（那是你的用户名），改成英文，比如说我：</p>
+<pre class="line-numbers language-none"><code class="language-none">Charliechen:*:197609:197121:U-Charliechen\Charliechen,S-1-5-21-611203946-4106071162-1991142053-1001:&#x2F;home&#x2F;Charliechen:&#x2F;usr&#x2F;bin&#x2F;bash<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    再次运行，同时看看自己的home目录下有没有多出自己刚编辑的用户名文件夹。</p>
+<h4 id="Option-添加一下Path（更改了用户名的需要做）"><a href="#Option-添加一下Path（更改了用户名的需要做）" class="headerlink" title="[Option]添加一下Path（更改了用户名的需要做）"></a>[Option]添加一下Path（更改了用户名的需要做）</h4><blockquote>
+<p>我们的msys随的是bash的规范，也就是说，我们的msys软件首先是读取的是用户的配置，在下面这个地方，我们可以预先写上我们想要在msys2加载的时候运行的shell指令</p>
+<p><img src="image-20240711092554407.png" alt="image-20240711092554407"></p>
+<p>这里标上Option是因为我自己后续安装包的时候发现它并没有识别到在mingw64文件夹下的包，我必须自己手动加入，如果后续下载包发现不添加这里的PATH也能正确的识别到自己下载的依赖软件的话，这一步可以不做！</p>
+<p>在.bashrc文件下：添加</p>
+</blockquote>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash"><span class="token builtin class-name">export</span> <span class="token assign-left variable"><span class="token environment constant">PATH</span></span><span class="token operator">=</span><span class="token environment constant">$PATH</span>:/d/msys64/mingw64/bin:/d/msys64/mingw64/etc:/d/msys64/mingw64/include:/d/msys64/mingw64/lib:/d/msys64/mingw64/share <span class="token comment"># 添加目标编译器的路径,如果使用clang 64位编译器的话就添加clang64的，其他雷同</span><span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h4 id="Option-配置默认的代理（对自己网速没有任何信心的，请）"><a href="#Option-配置默认的代理（对自己网速没有任何信心的，请）" class="headerlink" title="[Option]配置默认的代理（对自己网速没有任何信心的，请）"></a>[Option]配置默认的代理（对自己网速没有任何信心的，请）</h4><p>​    还是一样，不过我们添加代理需要遵循的是bash的语法：</p>
+<blockquote>
+<p>在.bashrc文件下：添加</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">export http_proxy&#x3D;127.0.0.1:7890
+export https_proxy&#x3D;127.0.0.1:7890<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<h3 id="正文1-：-使用全新的编译器编译Tesseract-OCR-C"><a href="#正文1-：-使用全新的编译器编译Tesseract-OCR-C" class="headerlink" title="正文1 ： 使用全新的编译器编译Tesseract OCR C++"></a>正文1 ： 使用全新的编译器编译Tesseract OCR C++</h3><h4 id="配齐基本工具链和依赖"><a href="#配齐基本工具链和依赖" class="headerlink" title="配齐基本工具链和依赖"></a>配齐基本工具链和依赖</h4><p>​    下面需要做的是根据自己的编译器来选择自己的依赖开发组件。在使用基于vcpkg的，于msvc19编译器编译的Tessereact OCR动态库的过程中，我们已经预见了可能使用到的依赖，这里，我们列出可能需要的依赖：</p>
+<blockquote>
+<p>我们假定我们在x86_64平台上的mingw编译器为代表列出可能需要下载的依赖。</p>
+<p>base-devel msys2-devel mingw-w64-x86_64-toolchain: 基本的编译套装，值得注意的是：这里编译出的库最好是给由编译同一编译器编译出的软件使用！（为正文2埋下伏笔）</p>
+<p>git: 你猜猜我们怎么下代码（不是）</p>
+<p>mingw-w64-x86_64-asciidoc mingw-w64-x86_64-cairo mingw-w64-x86_64-curl mingw-w64-x86_64-icu mingw-w64-x86_64-leptonica mingw-w64-x86_64-libarchive mingw-w64-x86_64-pango mingw-w64-x86_64-zlib ：Tessereact 编译+运行时依赖</p>
+<p>mingw-w64-x86_64-autotools ，mingw-w64-x86_64-cmake</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">pacman -S base-devel msys2-devel mingw-w64-x86_64-toolchain git mingw-w64-x86_64-asciidoc mingw-w64-x86_64-cairo mingw-w64-x86_64-curl mingw-w64-x86_64-icu mingw-w64-x86_64-leptonica mingw-w64-x86_64-libarchive mingw-w64-x86_64-pango mingw-w64-x86_64-zlib mingw-w64-x86_64-autotools mingw-w64-x86_64-cmake<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<blockquote>
+<p>有人可能需要使用clang来编译，或者是urct等，可以自行pacman -Ss 查找包名，例子：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ pacman -Ss cmake
+clangarm64&#x2F;mingw-w64-clang-aarch64-ccmake 3.29.2-2
+ A cross-platform open-source make system (mingw-w64) (curses GUI)
+clangarm64&#x2F;mingw-w64-clang-aarch64-cmake 3.29.2-2
+ A cross-platform open-source make system (mingw-w64)
+clangarm64&#x2F;mingw-w64-clang-aarch64-cmake-cmcldeps 3.29.2-2
+ CMake wrapper for cl to extract dependencies (mingw-w64)
+...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>根据自己的目标编译器下包！mingw编译器的就需要选择前缀是mingw-w64-x86_64-， clang编译器的：mingw-w64-clang-x86_64-… 看看自己的pacman -Ss输出就好！（<strong>注意编译套装和依赖要一平齐</strong>）</p>
+</blockquote>
+<p>​    上面的这些依赖大约1.5G，泡杯茶休息一下吧！</p>
+<p>​    下载完毕后，测试一下：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ cmake -version
+cmake version 3.29.2
+CMake suite maintained and supported by Kitware (kitware.com&#x2F;cmake).<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    如果这里告诉你Unknown Command，就回到《安装前，我们也许。。。》的章节部分的《添加Path》部分，把这个事情做完重启msys就好了。</p>
+<h4 id="下载源码"><a href="#下载源码" class="headerlink" title="下载源码"></a>下载源码</h4><p>​    跟随我的步伐~</p>
+<pre class="line-numbers language-none"><code class="language-none">Charliechen@Charliechen MINGW64 ~
+$ echo $https_proxy	# 查看自己的代理（我网菜）
+127.0.0.1:7890
+
+Charliechen@Charliechen MINGW64 ~
+$ git clone https:&#x2F;&#x2F;github.com&#x2F;tesseract-ocr&#x2F;tesseract tesseract
+Cloning into &#39;tesseract&#39;...
+remote: Enumerating objects: 47934, done.
+remote: Counting objects: 100% (412&#x2F;412), done.
+remote: Compressing objects: 100% (252&#x2F;252), done.
+remote: Total 47934 (delta 199), reused 253 (delta 153), pack-reused 47522
+Receiving objects: 100% (47934&#x2F;47934), 52.30 MiB | 4.29 MiB&#x2F;s, done.
+Resolving deltas: 100% (37371&#x2F;37371), done.
+Updating files: 100% (729&#x2F;729), done.
+
+Charliechen@Charliechen MINGW64 ~
+$ cd tesseract&#x2F;
+
+Charliechen@Charliechen MINGW64 ~&#x2F;tesseract
+$ ls
+AUTHORS          INSTALL.GIT.md  autogen.sh          java      tesseract.pc.cmake
+CITATIONS.bib    LICENSE         cmake               m4        tesseract.pc.in
+CMakeLists.txt   Makefile.am     configure.ac        snap      test
+CONTRIBUTING.md  README.md       doc                 src       unittest
+ChangeLog        VERSION         docker-compose.yml  sw.cpp
+INSTALL          appveyor.yml    include     <span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    我们下面开始构建源码。</p>
+<h4 id="构建源码"><a href="#构建源码" class="headerlink" title="构建源码"></a>构建源码</h4><p>​    使用CMake的经典步骤！</p>
+<pre class="line-numbers language-bash" data-language="bash"><code class="language-bash">Charliechen@Charliechen MINGW64 ~/tesseract
+$ <span class="token builtin class-name">pwd</span>
+/home/Charliechen/tesseract
+
+Charliechen@Charliechen MINGW64 ~/tesseract
+$ <span class="token function">mkdir</span> build <span class="token operator">&amp;&amp;</span> <span class="token builtin class-name">cd</span> build
+
+Charliechen@Charliechen MINGW64 ~/tesseract/build
+$ <span class="token builtin class-name">pwd</span>
+/home/Charliechen/tesseract/build<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    我们使用的是默认的默认的编译器，而且，默认的CMakeLists是指定使用SW包管理管理依赖，事实证明，这个玩意我开代理都救不了的狗屎东西，所以，我们需要设置cmake的参数为：</p>
+<blockquote>
+<p>-DSW_BUILD=0 表示不用sw构建程序，Sw即Software Network也是一个开源安装器</p>
+<p>-DCMAKE_INSTALL_PREFIX=/usr/local 表示将程序安装到/usr/local</p>
+<p>其他的参数按照自己的需求加</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">Charliechen@Charliechen MINGW64 ~&#x2F;tesseract&#x2F;build
+$ pwd
+&#x2F;home&#x2F;Charliechen&#x2F;tesseract&#x2F;build
+
+Charliechen@Charliechen MINGW64 ~&#x2F;tesseract&#x2F;build
+$ cmake .. -G&quot;MinGW Makefiles&quot; -DSW_BUILD&#x3D;0 -DCMAKE_INSTALL_PREFIX&#x3D;&#x2F;usr&#x2F;local
+-- Setting policy CMP0091 to NEW
+-- The C compiler identification is GNU 13.2.0
+-- The CXX compiler identification is GNU 13.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: D:&#x2F;msys64&#x2F;mingw64&#x2F;bin&#x2F;cc.exe - skipped
+-- Detecting C compile features
+...
+-- Configuring done (23.6s)
+-- Generating done (0.7s)
+-- Build files have been written to: D:&#x2F;msys64&#x2F;home&#x2F;Charliechen&#x2F;tesseract&#x2F;build<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    仔细看看控制台，有没有fatal error，如果我们上面的事情都做好了，一般不会出现问题，出现问题自行Github Issue之。少依赖了自行配置之！</p>
+<p>​    完成后，马力全开</p>
+<blockquote>
+<p><code>--build .</code>: 在当前目录下展开构建</p>
+<p><code>-j$(nproc)</code>：以最大可支持的线程数进行编译。</p>
+<p><code>--config Release</code>：配置为发布版本（无调试信息）。</p>
+<p><code>--target install</code>:对生成的目标进行install操作（等价于make install在这里）</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">$ cmake --build . -j$(nproc)  --config Release --target install<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    好消息是：不用泡茶，构建相当迅速。整个流程甚至连一个Warning都没有。当然，仅限全新的默认工具链！（写完这句话编译完了）</p>
+<pre class="line-numbers language-none"><code class="language-none">...
+-- Installing: D:&#x2F;msys64&#x2F;usr&#x2F;local&#x2F;bin&#x2F;unicharset_extractor.exe
+-- Installing: D:&#x2F;msys64&#x2F;usr&#x2F;local&#x2F;bin&#x2F;text2image.exe<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    现在我们看看</p>
+<pre class="line-numbers language-powershell" data-language="powershell"><code class="language-powershell">➜  tree <span class="token punctuation">.</span>
+Folder PATH listing <span class="token keyword">for</span> volume <span class="token keyword">Data</span>
+Volume serial number is 2A4D-419B
+D:\MSYS64\USR\LOCAL	<span class="token comment"># /usr/local/ 在Window上的等价映射</span>
+├───bin
+├───etc
+├───include
+│   └───tesseract
+├───lib
+│   ├───cmake
+│   │   └───tesseract
+│   └───pkgconfig		<span class="token comment"># 有pkgconfig，可以CMake下用PKG_CONGIG来找包引入了</span>
+└───share
+    └───tessdata
+        ├───configs
+        └───tessconfigs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    我们可以玩玩这个库了！按照一般的测试流程就行！这里不加以演示了。</p>
+<h3 id="正文2：以Qt为例，部署到目标项目里集成使用"><a href="#正文2：以Qt为例，部署到目标项目里集成使用" class="headerlink" title="正文2：以Qt为例，部署到目标项目里集成使用"></a>正文2：以Qt为例，部署到目标项目里集成使用</h3><p>​    到这里，我们实际上可以使用Tesseract了，但是我自己在移植到其他平台上进行开发的时候发现了由于编译器的微妙差别和库依赖的问题，实际上仍然困难重重。。。代表性的有：</p>
+<pre class="line-numbers language-none"><code class="language-none">undefined reference to &#96;std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;::_M_replace_cold(char*, unsigned long long, char const*, unsigned long long, unsigned long long)&#39;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    这是因为我目标开发平台上使用的主编译器和构建的库使用的编译器不一致导致的…所以，我们就需要回过头来，重新部署配置。</p>
+<p>​    现在为了方便演示，我们使用cmake-gui来完成操作。</p>
+<blockquote>
+<p>我自己清空了build文件夹下的东西！</p>
+<pre class="line-numbers language-none"><code class="language-none">Charliechen@Charliechen MINGW64 ~&#x2F;tesseract&#x2F;build
+$ pwd
+&#x2F;home&#x2F;Charliechen&#x2F;tesseract&#x2F;build
+
+Charliechen@Charliechen MINGW64 ~&#x2F;tesseract&#x2F;build
+$ ls<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>直接阅过正文1的朋友，在开始之前仍然是在做经典的CMake构建步骤</p>
+<pre class="line-numbers language-none"><code class="language-none">Charliechen@Charliechen MINGW64 ~&#x2F;tesseract
+$ pwd
+&#x2F;home&#x2F;Charliechen&#x2F;tesseract
+
+Charliechen@Charliechen MINGW64 ~&#x2F;tesseract
+$ mkdir build &amp;&amp; cd build
+
+Charliechen@Charliechen MINGW64 ~&#x2F;tesseract&#x2F;build
+$ pwd
+&#x2F;home&#x2F;Charliechen&#x2F;tesseract&#x2F;build<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</blockquote>
+<p>​    我们为了方便指定编译器和设置参数，还是使用cmake-gui干活方便</p>
+<pre class="line-numbers language-none"><code class="language-none">Charliechen@Charliechen MINGW64 ~&#x2F;tesseract&#x2F;build
+$ pacman -Ss cmake-gui
+...
+mingw64&#x2F;mingw-w64-x86_64-cmake-gui 3.29.2-2
+    A cross-platform open-source make system (mingw-w64) (Qt GUI)
+...
+
+Charliechen@Charliechen MINGW64 ~&#x2F;tesseract&#x2F;build
+$ pacman -S mingw-w64-x86_64-cmake-gui
+...
+
+Charliechen@Charliechen MINGW64 ~&#x2F;tesseract&#x2F;build
+$ cmake-gui
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>如果这里告诉你cmake-gui是Unknown Command，就回到《安装前，我们也许。。。》的章节部分的《添加Path》部分，把这个事情做完重启msys就好了。</p>
+</blockquote>
+<p>​    这是弹出的界面：</p>
+<p><img src="image-20240711104109623.png" alt="image-20240711104109623"></p>
+<p>​    在这里我们指定自己使用的本地编译器：</p>
+<p><img src="image-20240711104146832.png" alt="image-20240711104146832"></p>
+<p>​    记得勾选好后，准备执行第一次配置。</p>
+<p>​    第一次配置会报错：</p>
+<pre class="line-numbers language-none"><code class="language-none">Could not find a package configuration file provided by &quot;SW&quot; with any of
+the following names:
+
+  SWConfig.cmake
+  sw-config.cmake
+
+Add the installation prefix of &quot;SW&quot; to CMAKE_PREFIX_PATH or set &quot;SW_DIR&quot; to
+a directory containing one of the above files.  If &quot;SW&quot; provides a separate
+development package or SDK, be sure it has been installed.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    很正常，我们都没有SW包管理器，有的话自行按照上面说的自己指定就好，不然，就跟着我把这个选项去掉：</p>
+<p>​    这里的<code>SW_BUILD</code>给点掉，让它不参与构建！</p>
+<p><img src="image-20240711104403132.png" alt="image-20240711104403132"></p>
+<p>​    再配置一次，现在不会报错了。</p>
+<p>​    我们下面配置一下下载的位置，不然的话会下载到默认的位置</p>
+<p><img src="image-20240711104545400.png" alt="image-20240711104545400"></p>
+<p>​    改到自己的目标位置上</p>
+<p><img src="image-20240711104612739.png" alt="image-20240711104612739"></p>
+<blockquote>
+<p>点击右侧的小…来选定位置！</p>
+</blockquote>
+<p>​    如果您有其他需求，继续进行配置就好。记得再配置一次。比如说我这里的项目要求C++17，那就再CXX_FLAGS那里添加<code>-std=c++17</code>，依次类推</p>
+<p><img src="image-20240711104732230.png" alt="image-20240711104732230"></p>
+<p>​    现在我们确信上方没有发红的项，控制台上也没有报错的信息，表明所有的依赖都被正确定位且组合！</p>
+<p>​    点击Generate生成Mingw Makefile就好。</p>
+<p>​    下一步就是关掉界面，执行构建：</p>
+<pre class="line-numbers language-none"><code class="language-none">Charliechen@Charliechen MINGW64 ~&#x2F;tesseract&#x2F;build
+$ cmake --build . -j$(nproc) --target install
+...<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>​    由于这里不再使用默认的配置，故爆警告甚至是错误（我没有遇到，可能情况并不算特殊）随自己的平台的编译器而定！</p>
+<p>​    下载完了看看：</p>
+<pre class="line-numbers language-none"><code class="language-none">➜  tree .
+Folder PATH listing for volume Data
+Volume serial number is 2A4D-419B
+D:\MINGW_TESSERACT_INSTALL	# 按照自己的配置，如期出现在了 D:&#x2F;mingw_tesseract_install 上了
+├───bin
+├───include
+│   └───tesseract
+├───lib
+│   ├───cmake
+│   │   └───tesseract
+│   └───pkgconfig
+└───share
+    └───tessdata
+        ├───configs
+        └───tessconfigs<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h4 id="添加识别依赖"><a href="#添加识别依赖" class="headerlink" title="添加识别依赖"></a>添加识别依赖</h4><p>​    开一个Console过程就直接干！</p>
+<blockquote>
+<p>回顾：我们的vcpkg - MSVC Tesseract下载到了 <code>vcpkg/installed/x64-windows/*</code> 下面，对此，我自己的路径是：</p>
+<pre class="line-numbers language-none"><code class="language-none"># 下载路径前缀 Prefix: D:\vcpkg\installed\x64-windows\
+# 头文件包含路径 Include Path: D:\vcpkg\installed\x64-windows\include
+# 用于动态库运行加载信息的静态信息库 Static Library Path: D:\vcpkg\installed\x64-windows\lib
+# 动态运行依赖库 Dynamic Runtime Required Bins: 
+# debug模式
+D:\vcpkg\installed\x64-windows\debug\bin
+# release模式
+D:\vcpkg\installed\x64-windows\bin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</blockquote>
+<p>以我的路径为例子，我们要做的就是在</p>
+<blockquote>
+<p>属性 - VC++ - 包含路径中加入D:\vcpkg\installed\x64-windows\include</p>
+<p>属性 - VC++ - 库路径加入D:\vcpkg\installed\x64-windows\lib</p>
+<p>属性 - 链接器 - 附加依赖项添加leptonica-1.84.1d.lib和tesseract54d.lib</p>
+<p>D:\vcpkg\installed\x64-windows\debug\lib\leptonica-1.84.1d.lib<br>D:\vcpkg\installed\x64-windows\debug\lib\tesseract54d.lib</p>
+<p>在调试 - 工作目录下设置为：</p>
+<p>Debug模式下：D:\vcpkg\installed\x64-windows\debug\bin，</p>
+<p>Release模式下：D:\vcpkg\installed\x64-windows\bin</p>
+<p>看官自行对照路径加入</p>
+</blockquote>
+<h4 id="下载数据集与设置TESSDATA-PREFIX"><a href="#下载数据集与设置TESSDATA-PREFIX" class="headerlink" title="下载数据集与设置TESSDATA_PREFIX"></a>下载数据集与设置TESSDATA_PREFIX</h4><p>​    我们要先下载数据集，不然我们的Tesseract没法运行起来！</p>
+<blockquote>
+<p>TessData数据集在：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tessdata">tesseract-ocr/tessdata: Trained models with fast variant of the “best” LSTM models + legacy models (github.com)</a>，使用vcpkg下包的朋友，把他放到<code>vcpkg\installed\x64-windows\share\tessdata</code>下，这个文件夹放置的是Tesseract用到的数据和配置。</p>
+<p>一些常见语言的数据集：</p>
+<p>中文数据集：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tessdata/blob/main/chi_sim.traineddata">tessdata/chi_sim.traineddata at main · tesseract-ocr/tessdata (github.com)</a></p>
+<p>英文数据集：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tessdata/blob/main/eng.traineddata">tessdata/eng.traineddata at main · tesseract-ocr/tessdata (github.com)</a></p>
+</blockquote>
+<p>​    还没有完事，我们还需要设置TESSDATA_PREFIX环境变量的值，否则我们的程序不知道如何去哪里寻找配置！</p>
+<p>​    有两个方法：</p>
+<p>​    方法I：在环境变量中加入的TESSDATA_PREFIX值，指向的是tessdata文件夹，使用vcpkg下载的朋友可以在<code>vcpkg\installed\x64-windows\share\tessdata</code>下找到，将这个文件夹的路径先添加到环境变量当中，确认后可以尝试控制台输出一下，比如说我自己的是</p>
+<pre class="line-numbers language-none"><code class="language-none">➜  $Env:TESSDATA_PREFIX
+D:\vcpkg\installed\x64-windows\share\tessdata<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>​    方法II：如果您是库开发者，可能并不希望用户感知道自己使用的OCR库的存在，需要在程序运行时动态的设定这个值。所以你可以使用非标准库的<code>_put_env_s</code>或者是根据所使用到的操作系统调用对应的API，这里不加以演示了！</p>
+<h3 id="测试1：-在Visual-Studio上测试vcpkg产出的Tesseract-OCR"><a href="#测试1：-在Visual-Studio上测试vcpkg产出的Tesseract-OCR" class="headerlink" title="测试1： 在Visual Studio上测试vcpkg产出的Tesseract OCR"></a>测试1： 在Visual Studio上测试vcpkg产出的Tesseract OCR</h3><p>​    我们测试官方自己家的小例子：</p>
+<pre class="line-numbers language-c" data-language="c"><code class="language-c"><span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;tesseract/baseapi.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;leptonica/allheaders.h></span></span>
+<span class="token macro property"><span class="token directive-hash">#</span><span class="token directive keyword">include</span> <span class="token string">&lt;fstream></span></span>
+
+<span class="token comment">// 看官自行在github仓库上下好phototest.tif</span>
+<span class="token keyword">static</span> constexpr <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> PATH <span class="token operator">=</span> <span class="token string">"D:\\My coding repositary\\windows\\libTesseract\\phototest.tif"</span><span class="token punctuation">;</span>
+<span class="token comment">// 输出到的文件位置：</span>
+<span class="token keyword">static</span> constexpr <span class="token keyword">const</span> <span class="token keyword">char</span><span class="token operator">*</span> writeTo <span class="token operator">=</span> <span class="token string">"D:\\My coding repositary\\windows\\libTesseract\\result.txt"</span><span class="token punctuation">;</span>
+
+
+<span class="token keyword">int</span> <span class="token function">main</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<span class="token punctuation">&#123;</span>
+    <span class="token keyword">char</span><span class="token operator">*</span> outText<span class="token punctuation">;</span>
+
+    tesseract<span class="token operator">::</span>TessBaseAPI<span class="token operator">*</span> api <span class="token operator">=</span> new tesseract<span class="token operator">::</span><span class="token function">TessBaseAPI</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// Initialize tesseract-ocr with English, without specifying tessdata path</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>api<span class="token operator">-></span><span class="token function">Init</span><span class="token punctuation">(</span><span class="token constant">NULL</span><span class="token punctuation">,</span> <span class="token string">"eng"</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">fprintf</span><span class="token punctuation">(</span><span class="token constant">stderr</span><span class="token punctuation">,</span> <span class="token string">"Could not initialize tesseract.\n"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token function">exit</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+
+    <span class="token comment">// Open input image with leptonica library</span>
+    Pix<span class="token operator">*</span> image <span class="token operator">=</span> <span class="token function">pixRead</span><span class="token punctuation">(</span>PATH<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    api<span class="token operator">-></span><span class="token function">SetImage</span><span class="token punctuation">(</span>image<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token comment">// Get OCR result</span>
+    outText <span class="token operator">=</span> api<span class="token operator">-></span><span class="token function">GetUTF8Text</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    std<span class="token operator">::</span>fstream <span class="token function">to</span><span class="token punctuation">(</span>writeTo<span class="token punctuation">,</span> std<span class="token operator">::</span>ios_base<span class="token operator">::</span>out<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>to<span class="token punctuation">.</span><span class="token function">is_open</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">&#123;</span>
+        to <span class="token operator">&lt;&lt;</span> outText<span class="token punctuation">;</span>
+        to<span class="token punctuation">.</span><span class="token function">close</span><span class="token punctuation">(</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token keyword">else</span> <span class="token punctuation">&#123;</span>
+        <span class="token function">printf</span><span class="token punctuation">(</span><span class="token string">"Error in writing files:> %s"</span><span class="token punctuation">,</span> writeTo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">&#125;</span>
+    <span class="token comment">// Destroy used object and release memory</span>
+    api<span class="token operator">-></span><span class="token function">End</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    delete api<span class="token punctuation">;</span>
+    delete<span class="token punctuation">[</span><span class="token punctuation">]</span> outText<span class="token punctuation">;</span>
+    <span class="token function">pixDestroy</span><span class="token punctuation">(</span><span class="token operator">&amp;</span>image<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+    <span class="token keyword">return</span> <span class="token number">0</span><span class="token punctuation">;</span>
+<span class="token punctuation">&#125;</span><span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    程序的执行结果令人满意：</p>
+<pre class="line-numbers language-none"><code class="language-none">D:\My coding repositary\windows\libTesseract\x64\Debug\libTesseract.exe (进程 31484)已退出，代码为 0。
+按任意键关闭此窗口. . .<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p><img src="image-20240711114954828.png" alt="image-20240711114954828"></p>
+<p>可能出现的错误：</p>
+<ol>
+<li><p>```<br>Error opening data file ./chi_sim.traineddata<br>Please make sure the TESSDATA_PREFIX environment variable is set to your “tessdata” directory.<br>Failed loading language ‘eng’<br>Tesseract couldn’t load any languages!<br>Could not initialize tesseract.</p>
+<pre class="line-numbers language-none"><code class="language-none">
+   这个错误的原因非常简单，并没有设定相关的环境变量的值导致库并不知道去哪里读取训练数据。所以解决方案是：前往上一个小节的《设置TESSDATA》部分仔细阅读，根据自己的开发身份确定！
+
+2. &#96;&#96;&#96;
+   Error opening data file D:\vcpkg\installed\x64-windows\share\tessdata&#x2F;chi_sim.traineddata
+   Please make sure the TESSDATA_PREFIX environment variable is set to your &quot;tessdata&quot; directory.
+   Failed loading language &#39;chi_sim&#39;
+   Tesseract couldn&#39;t load any languages!
+   Could not initialize tesseract.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这个错误的原因也很简单，说明缺失相关的训练数据，需要我们去Github上下载对应的训练数据，并放到自己设定的TESSDATA_PREFIX文件夹下方！</p>
+</li>
+</ol>
+<blockquote>
+<p>TessData数据集在：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tessdata">tesseract-ocr/tessdata: Trained models with fast variant of the “best” LSTM models + legacy models (github.com)</a>，使用vcpkg下包的朋友，把他放到<code>vcpkg\installed\x64-windows\share\tessdata</code>下，这个文件夹放置的是Tesseract用到的数据和配置。</p>
+<p>一些常见语言的数据集：</p>
+<p>中文数据集：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tessdata/blob/main/chi_sim.traineddata">tessdata/chi_sim.traineddata at main · tesseract-ocr/tessdata (github.com)</a></p>
+<p>英文数据集：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tessdata/blob/main/eng.traineddata">tessdata/eng.traineddata at main · tesseract-ocr/tessdata (github.com)</a></p>
+</blockquote>
+<h3 id="测试2：在-Qt-上使用Tesseract-OCR-C"><a href="#测试2：在-Qt-上使用Tesseract-OCR-C" class="headerlink" title="测试2：在 Qt 上使用Tesseract OCR C++"></a>测试2：在 Qt 上使用Tesseract OCR C++</h3><h4 id="测试程序："><a href="#测试程序：" class="headerlink" title="测试程序："></a>测试程序：</h4><pre class="line-numbers language-none"><code class="language-none">#include &lt;tesseract&#x2F;baseapi.h&gt;
+#include &lt;leptonica&#x2F;allheaders.h&gt;
+#include &lt;fstream&gt;
+
+&#x2F;&#x2F; 看官自行在github仓库上下好phototest.tif
+static constexpr const char* PATH &#x3D; &quot;D:\\My coding repositary\\windows\\libTesseract\\phototest.tif&quot;;
+&#x2F;&#x2F; 输出到的文件位置：
+static constexpr const char* writeTo &#x3D; &quot;D:\\My coding repositary\\windows\\libTesseract\\result.txt&quot;;
+
+
+int main()
+&#123;
+    char* outText;
+
+    tesseract::TessBaseAPI* api &#x3D; new tesseract::TessBaseAPI();
+    &#x2F;&#x2F; Initialize tesseract-ocr with English, without specifying tessdata path
+    if (api-&gt;Init(NULL, &quot;eng&quot;)) &#123;
+        fprintf(stderr, &quot;Could not initialize tesseract.\n&quot;);
+        exit(1);
+    &#125;
+
+    &#x2F;&#x2F; Open input image with leptonica library
+    Pix* image &#x3D; pixRead(PATH);
+    api-&gt;SetImage(image);
+    &#x2F;&#x2F; Get OCR result
+    outText &#x3D; api-&gt;GetUTF8Text();
+    std::fstream to(writeTo, std::ios_base::out);
+    if(to.is_open())
+    &#123;
+        to &lt;&lt; outText;
+        to.close(
+    &#125;
+    else &#123;
+        printf(&quot;Error in writing files:&gt; %s&quot;, writeTo);
+    &#125;
+    &#x2F;&#x2F; Destroy used object and release memory
+    api-&gt;End();
+    delete api;
+    delete[] outText;
+    pixDestroy(&amp;image);
+
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="MSVC-Special"><a href="#MSVC-Special" class="headerlink" title="MSVC Special"></a>MSVC Special</h4><p>​    我们创建一个Demo实例，非Qt程序可以去掉QApplication依赖和QT += core的配置（QMake）。下面，我们将所需要的依赖拷贝到目标目录下：将vcpkg下的lib, bin, include目录拷贝到自己的项目文件夹下。</p>
+<p><img src="image-20240711121340555.png" alt="image-20240711121340555"></p>
+<p>​    对于Qt，类似的添加头文件，静态库：</p>
+<pre class="line-numbers language-none"><code class="language-none">CONFIG +&#x3D; c++17 cmdline
+
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+#DEFINES +&#x3D; QT_DISABLE_DEPRECATED_BEFORE&#x3D;0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+SOURCES +&#x3D; \
+        main.cpp
+
+# Default rules for deployment.
+qnx: target.path &#x3D; &#x2F;tmp&#x2F;$$&#123;TARGET&#125;&#x2F;bin
+else: unix:!android: target.path &#x3D; &#x2F;opt&#x2F;$$&#123;TARGET&#125;&#x2F;bin
+!isEmpty(target.path): INSTALLS +&#x3D; target
+
+win32:CONFIG(release, debug|release): LIBS +&#x3D; -L$$PWD&#x2F;lib&#x2F; -ltesseract54 -lleptonica-1.84.1
+else:win32:CONFIG(debug, debug|release): LIBS +&#x3D; -L$$PWD&#x2F;lib&#x2F; -ltesseract54d -lleptonica-1.84.1d
+else:unix: LIBS +&#x3D; -L$$PWD&#x2F;lib&#x2F; -ltesseract54
+
+INCLUDEPATH +&#x3D; $$PWD&#x2F;include
+DEPENDPATH +&#x3D; $$PWD&#x2F;include<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    将bin文件下的dll文件全部拷贝到exe同级目录下方</p>
+<p><img src="image-20240711121957196.png" alt="image-20240711121957196"></p>
+<pre class="line-numbers language-C++" data-language="C++"><code class="language-C++">#include &lt;tesseract&#x2F;baseapi.h&gt;
+#include &lt;leptonica&#x2F;allheaders.h&gt;
+#include &lt;fstream&gt;
+static constexpr const char* PATH &#x3D; &quot;D:\\My coding repositary\\windows\\libTesseract\\phototest.tif.&quot;;
+static constexpr const char* writeTo &#x3D; &quot;.&#x2F;result.txt&quot;;
+
+
+int main()
+&#123;
+    char* outText;
+
+    tesseract::TessBaseAPI* api &#x3D; new tesseract::TessBaseAPI();
+    &#x2F;&#x2F; Initialize tesseract-ocr with English, without specifying tessdata path
+    if (api-&gt;Init(NULL, &quot;eng&quot;)) &#123;
+        fprintf(stderr, &quot;Could not initialize tesseract.\n&quot;);
+        exit(1);
+    &#125;
+
+    &#x2F;&#x2F; Open input image with leptonica library
+    Pix* image &#x3D; pixRead(PATH);
+    api-&gt;SetImage(image);
+    &#x2F;&#x2F; Get OCR result
+    outText &#x3D; api-&gt;GetUTF8Text();
+    std::fstream to(writeTo, std::ios_base::out);
+    if(to.is_open())
+    &#123;
+        to &lt;&lt; outText;
+        to.close();
+    &#125;
+    else &#123;
+        printf(&quot;Error in writing files:&gt; %s&quot;, writeTo);
+    &#125;
+    &#x2F;&#x2F; Destroy used object and release memory
+    api-&gt;End();
+    delete api;
+    delete[] outText;
+    pixDestroy(&amp;image);
+
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    现在运行即可得到结果，这里不再赘述。</p>
+<blockquote>
+<p>可能出现的错误：</p>
+<ol>
+<li><p>```<br>Error opening data file ./chi_sim.traineddata<br>Please make sure the TESSDATA_PREFIX environment variable is set to your “tessdata” directory.<br>Failed loading language ‘eng’<br>Tesseract couldn’t load any languages!<br>Could not initialize tesseract.</p>
+<pre class="line-numbers language-none"><code class="language-none">
+   这个错误的原因非常简单，并没有设定相关的环境变量的值导致库并不知道去哪里读取训练数据。所以解决方案是：前往上一个小节的《设置TESSDATA》部分仔细阅读，根据自己的开发身份确定！
+
+2. &#96;&#96;&#96;
+   Error opening data file D:\vcpkg\installed\x64-windows\share\tessdata&#x2F;chi_sim.traineddata
+   Please make sure the TESSDATA_PREFIX environment variable is set to your &quot;tessdata&quot; directory.
+   Failed loading language &#39;chi_sim&#39;
+   Tesseract couldn&#39;t load any languages!
+   Could not initialize tesseract.<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这个错误的原因也很简单，说明缺失相关的训练数据，需要我们去Github上下载对应的训练数据，并放到自己设定的TESSDATA_PREFIX文件夹下方！</p>
+</li>
+</ol>
+<blockquote>
+<p>TessData数据集在：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tessdata">tesseract-ocr/tessdata: Trained models with fast variant of the “best” LSTM models + legacy models (github.com)</a>，使用vcpkg下包的朋友，把他放到<code>vcpkg\installed\x64-windows\share\tessdata</code>下，这个文件夹放置的是Tesseract用到的数据和配置。</p>
+<p>一些常见语言的数据集：</p>
+<p>中文数据集：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tessdata/blob/main/chi_sim.traineddata">tessdata/chi_sim.traineddata at main · tesseract-ocr/tessdata (github.com)</a></p>
+<p>英文数据集：<a target="_blank" rel="noopener" href="https://github.com/tesseract-ocr/tessdata/blob/main/eng.traineddata">tessdata/eng.traineddata at main · tesseract-ocr/tessdata (github.com)</a></p>
+</blockquote>
+<ol>
+<li><p>QProcess::Crashed，也就是说控制台输出</p>
+<pre class="line-numbers language-none"><code class="language-none">qtc.process_stub: Inferior error:  QProcess::Crashed &quot;Process crashed&quot;
+
+Process exited with code: -1073741515<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span></span></code></pre>
+<p>这是缺乏了动态库，按照笔者所述的，要么指定动态库路径，要么自己放到跟exe文件同级目录下方。</p>
+</li>
+</ol>
+</blockquote>
+<h4 id="Mingw-版本"><a href="#Mingw-版本" class="headerlink" title="Mingw 版本"></a>Mingw 版本</h4><p>​    这个最难办，我们使用的Msys编译的库都是只打包到msys环境下才可用，导出到外部需要我们自己手动完成依赖配置。笔者搞了一个下午，查阅无数的.pc依赖文件和解决符号问题才将依赖配好，这里给出需要的东西：</p>
+<blockquote>
+<p>回顾我们的构建：我们把东西装在了<code>D:\mingw_tesseract_install</code>下，找到也是你自己的位置！</p>
+<p>Include文件夹：<code>D:\mingw_tesseract_install</code>，我们发现只有tesseract的，我们需要另找Leptonica的：他在<code>msys64/mingw/include/leptonica</code>，把这个文件夹拷贝到include目录下，构成以下的视图：</p>
+<pre class="line-numbers language-none"><code class="language-none">➜  tree .
+Folder PATH listing for volume Data
+Volume serial number is 2A4D-419B
+D:\QT PROJECTS\TESS_MINGW\INCLUDE
+├───leptonica # Leptonica
+└───tesseract # Tesseract<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>Lib文件夹：这个也需要自己组装，笔者组装的结果如下：</p>
+<p>.a文件：libtesseract54.a（自行在<code>D:\mingw_tesseract_install\lib\</code>）下找到并放到这里</p>
+<p>.dll文件：在<code>msys64/mingw/include/bin</code>下依次搜索然后拷贝扔到lib文件夹下。</p>
+<pre class="line-numbers language-none"><code class="language-none">-a---           2024&#x2F;4&#x2F;29    13:52         769154 libarchive-13.dll
+-a---           2022&#x2F;2&#x2F;18    23:03          34372 libb2-1.dll
+-a---            2023&#x2F;9&#x2F;6    15:40         143397 libbrotlicommon.dll
+-a---            2023&#x2F;9&#x2F;6    15:40          60412 libbrotlidec.dll
+-a---           2023&#x2F;9&#x2F;27    14:57         100964 libbz2-1.dll
+-a---           2024&#x2F;4&#x2F;30     1:58        5094016 libcrypto-3-x64.dll
+-a---           2024&#x2F;3&#x2F;28     2:39         861289 libcurl-4.dll
+-a---           2024&#x2F;3&#x2F;27    23:05          91035 libdeflate.dll
+-a---           2024&#x2F;3&#x2F;14     5:04         188909 libexpat-1.dll
+-a---           2024&#x2F;2&#x2F;21    17:04          41367 libgif-7.dll
+-a---            2024&#x2F;2&#x2F;2    20:48        1118202 libiconv-2.dll
+-a---            2024&#x2F;2&#x2F;2    16:48         242965 libidn2-0.dll
+-a---           2024&#x2F;2&#x2F;23    15:41         188681 libintl-8.dll
+-a---           2023&#x2F;8&#x2F;18    17:47          62083 libjbig-0.dll
+-a---           2024&#x2F;1&#x2F;26    19:30         928587 libjpeg-8.dll
+-a---            2024&#x2F;1&#x2F;5     5:05        2721006 libleptonica-6.dll
+-a---           2022&#x2F;7&#x2F;29    16:34         761261 libLerc.dll
+-a---           2022&#x2F;8&#x2F;16    14:20         147105 liblz4.dll
+-a---           2024&#x2F;3&#x2F;30     4:01         184667 liblzma-5.dll
+-a---            2024&#x2F;4&#x2F;5     5:52         216502 libnghttp2-14.dll
+-a---           2024&#x2F;2&#x2F;29    14:07         462194 libopenjp2-7.dll
+-a---           2024&#x2F;2&#x2F;24     4:20         247380 libpng16-16.dll
+-a---            2024&#x2F;2&#x2F;2    21:09         103768 libpsl-5.dll
+-a---           2024&#x2F;4&#x2F;16    23:04          57852 libsharpyuv-0.dll
+-a---           2023&#x2F;9&#x2F;10    23:04         295582 libssh2-1.dll
+-a---           2024&#x2F;4&#x2F;30     1:58        1009819 libssl-3-x64.dll
+-a---           2023&#x2F;9&#x2F;13    20:24         576887 libtiff-6.dll
+-a---           2024&#x2F;3&#x2F;29    23:03        1999287 libunistring-5.dll
+-a---           2024&#x2F;4&#x2F;16    23:04         743580 libwebp-7.dll
+-a---           2024&#x2F;4&#x2F;16    23:04          78730 libwebpmux-3.dll
+-a---            2024&#x2F;4&#x2F;3     3:59        1179848 libzstd.dll
+-a---           2024&#x2F;1&#x2F;23    15:49         120814 zlib1.dll<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</blockquote>
+<p>​    这要求我们的.pro文件不太好看：</p>
+<pre class="line-numbers language-none"><code class="language-none">TEMPLATE &#x3D; app
+CONFIG +&#x3D; console c++17
+CONFIG -&#x3D; app_bundle
+CONFIG -&#x3D; qt
+
+SOURCES +&#x3D; \
+        main.cpp
+
+win32:CONFIG(release, debug|release): LIBS +&#x3D; -L$$PWD&#x2F;lib&#x2F; *.dll -L$$PWD&#x2F;lib&#x2F; -ltesseract54 -lws2_32
+else:win32:CONFIG(debug, debug|release): LIBS +&#x3D; $$PWD&#x2F;lib&#x2F;*.dll -L$$PWD&#x2F;lib&#x2F; -ltesseract54 -lws2_32
+else:unix: LIBS +&#x3D; -L$$PWD&#x2F;lib&#x2F; -ltesseract54 -lleptonica
+
+INCLUDEPATH +&#x3D; $$PWD&#x2F;include
+DEPENDPATH +&#x3D; $$PWD&#x2F;include<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    编译通过，由于我们的程序是直接连接构建的，故可用直接运行：</p>
+<pre class="line-numbers language-none"><code class="language-none">Process exited with code: 0<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><img src="image-20240711132145641.png" alt="image-20240711132145641"></p>
+<p>​    这里可能出现的错误跟上面阐述的一致，故这里不再重述</p>
+<h2 id="最后…"><a href="#最后…" class="headerlink" title="最后…"></a>最后…</h2><p>​    到这里，放Github地址：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514/TesseractBuild">Charliechen114514/TesseractBuild: A build in Windows11 x86_64 arch for Tesseract54 (github.com)</a>: 可直接使用的release版本</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514/TesseractWrapper">Charliechen114514/TesseractWrapper (github.com) </a>一个简单的包装器</p>
+<p>考虑给个star?（划</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/">http://charliechen114514.github.io/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Compile/">Compile</a><a class="post-meta__tags" href="/tags/Tesseract-OCR/">Tesseract_OCR</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/07/27/STM32%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%AE%B0%E5%BD%95%E2%80%94%E2%80%94%E5%85%B3%E4%BA%8EPlatformIO-VSCode-CubeMX%E7%9A%84%E9%9B%86%E6%88%90%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" title="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A"><span class="toc-number">1.</span> <span class="toc-text">如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%98%85%E5%89%8D%E6%8F%90%E7%A4%BA"><span class="toc-number">1.1.1.</span> <span class="toc-text">阅前提示</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%BC%E8%A8%80"><span class="toc-number">1.2.</span> <span class="toc-text">导言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8%E5%9F%BA%E4%BA%8Evcpkg%E7%9A%84%EF%BC%8C%E4%BA%8Emsvc19%E7%BC%96%E8%AF%91%E5%99%A8%E7%BC%96%E8%AF%91%E7%9A%84Tessereact-OCR%E5%8A%A8%E6%80%81%E5%BA%93"><span class="toc-number">1.3.</span> <span class="toc-text">使用基于vcpkg的，于msvc19编译器编译的Tessereact OCR动态库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8vcpkg%E8%BE%85%E5%8A%A9%E6%88%91%E4%BB%AC%E7%9A%84%E7%BC%96%E8%AF%91"><span class="toc-number">1.3.1.</span> <span class="toc-text">使用vcpkg辅助我们的编译</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E6%96%87"><span class="toc-number">1.3.2.</span> <span class="toc-text">正文</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8msys2%E7%8E%AF%E5%A2%83%E4%B8%8B%E7%9A%84%EF%BC%8C%E4%BD%BF%E7%94%A8mingw64%E7%BC%96%E8%AF%91%E5%99%A8%E7%BC%96%E8%AF%91%E7%9A%84Tessereact-OCR%E5%8A%A8%E6%80%81%E5%BA%93"><span class="toc-number">1.4.</span> <span class="toc-text">使用msys2环境下的，使用mingw64编译器编译的Tessereact OCR动态库</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFmsys2"><span class="toc-number">1.4.1.</span> <span class="toc-text">什么是msys2</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%89%8D%EF%BC%8C%E6%88%91%E4%BB%AC%E4%B9%9F%E8%AE%B8%E3%80%82%E3%80%82%E3%80%82"><span class="toc-number">1.4.2.</span> <span class="toc-text">安装前，我们也许。。。</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Option-%E6%9B%B4%E6%94%B9%E7%94%A8%E6%88%B7%E5%90%8D"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">[Option]更改用户名</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Option-%E6%B7%BB%E5%8A%A0%E4%B8%80%E4%B8%8BPath%EF%BC%88%E6%9B%B4%E6%94%B9%E4%BA%86%E7%94%A8%E6%88%B7%E5%90%8D%E7%9A%84%E9%9C%80%E8%A6%81%E5%81%9A%EF%BC%89"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">[Option]添加一下Path（更改了用户名的需要做）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Option-%E9%85%8D%E7%BD%AE%E9%BB%98%E8%AE%A4%E7%9A%84%E4%BB%A3%E7%90%86%EF%BC%88%E5%AF%B9%E8%87%AA%E5%B7%B1%E7%BD%91%E9%80%9F%E6%B2%A1%E6%9C%89%E4%BB%BB%E4%BD%95%E4%BF%A1%E5%BF%83%E7%9A%84%EF%BC%8C%E8%AF%B7%EF%BC%89"><span class="toc-number">1.4.2.3.</span> <span class="toc-text">[Option]配置默认的代理（对自己网速没有任何信心的，请）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E6%96%871-%EF%BC%9A-%E4%BD%BF%E7%94%A8%E5%85%A8%E6%96%B0%E7%9A%84%E7%BC%96%E8%AF%91%E5%99%A8%E7%BC%96%E8%AF%91Tesseract-OCR-C"><span class="toc-number">1.4.3.</span> <span class="toc-text">正文1 ： 使用全新的编译器编译Tesseract OCR C++</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%85%8D%E9%BD%90%E5%9F%BA%E6%9C%AC%E5%B7%A5%E5%85%B7%E9%93%BE%E5%92%8C%E4%BE%9D%E8%B5%96"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">配齐基本工具链和依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E6%BA%90%E7%A0%81"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">下载源码</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%9E%84%E5%BB%BA%E6%BA%90%E7%A0%81"><span class="toc-number">1.4.3.3.</span> <span class="toc-text">构建源码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AD%A3%E6%96%872%EF%BC%9A%E4%BB%A5Qt%E4%B8%BA%E4%BE%8B%EF%BC%8C%E9%83%A8%E7%BD%B2%E5%88%B0%E7%9B%AE%E6%A0%87%E9%A1%B9%E7%9B%AE%E9%87%8C%E9%9B%86%E6%88%90%E4%BD%BF%E7%94%A8"><span class="toc-number">1.4.4.</span> <span class="toc-text">正文2：以Qt为例，部署到目标项目里集成使用</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95"><span class="toc-number">1.5.</span> <span class="toc-text">测试</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E8%AF%86%E5%88%AB%E4%BE%9D%E8%B5%96"><span class="toc-number">1.5.0.1.</span> <span class="toc-text">添加识别依赖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E8%AE%BE%E7%BD%AETESSDATA-PREFIX"><span class="toc-number">1.5.0.2.</span> <span class="toc-text">下载数据集与设置TESSDATA_PREFIX</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%951%EF%BC%9A-%E5%9C%A8Visual-Studio%E4%B8%8A%E6%B5%8B%E8%AF%95vcpkg%E4%BA%A7%E5%87%BA%E7%9A%84Tesseract-OCR"><span class="toc-number">1.5.1.</span> <span class="toc-text">测试1： 在Visual Studio上测试vcpkg产出的Tesseract OCR</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%B5%8B%E8%AF%952%EF%BC%9A%E5%9C%A8-Qt-%E4%B8%8A%E4%BD%BF%E7%94%A8Tesseract-OCR-C"><span class="toc-number">1.5.2.</span> <span class="toc-text">测试2：在 Qt 上使用Tesseract OCR C++</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B5%8B%E8%AF%95%E7%A8%8B%E5%BA%8F%EF%BC%9A"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">测试程序：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#MSVC-Special"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">MSVC Special</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#Mingw-%E7%89%88%E6%9C%AC"><span class="toc-number">1.5.2.3.</span> <span class="toc-text">Mingw 版本</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%9C%80%E5%90%8E%E2%80%A6"><span class="toc-number">1.6.</span> <span class="toc-text">最后…</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/" title="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上"/></a><div class="content"><a class="title" href="/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/" title="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上">如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上</a><time datetime="2024-07-27T09:13:46.000Z" title="发表于 2024-07-27 17:13:46">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/STM32%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%AE%B0%E5%BD%95%E2%80%94%E2%80%94%E5%85%B3%E4%BA%8EPlatformIO-VSCode-CubeMX%E7%9A%84%E9%9B%86%E6%88%90%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" title="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置"/></a><div class="content"><a class="title" href="/2024/07/27/STM32%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%AE%B0%E5%BD%95%E2%80%94%E2%80%94%E5%85%B3%E4%BA%8EPlatformIO-VSCode-CubeMX%E7%9A%84%E9%9B%86%E6%88%90%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" title="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置">STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置</a><time datetime="2024-07-27T09:07:15.000Z" title="发表于 2024-07-27 17:07:15">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/QEMU-Vscode-Arm-Arch%E2%80%98s-Linux%E8%B0%83%E8%AF%95%E5%B0%8F%E8%AE%B0/" title="QEMU + Vscode + Arm Arch‘s Linux调试小记"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="QEMU + Vscode + Arm Arch‘s Linux调试小记"/></a><div class="content"><a class="title" href="/2024/07/27/QEMU-Vscode-Arm-Arch%E2%80%98s-Linux%E8%B0%83%E8%AF%95%E5%B0%8F%E8%AE%B0/" title="QEMU + Vscode + Arm Arch‘s Linux调试小记">QEMU + Vscode + Arm Arch‘s Linux调试小记</a><time datetime="2024-07-27T09:03:08.000Z" title="发表于 2024-07-27 17:03:08">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/" title="Linux_如何现代的编译和安装内核"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux_如何现代的编译和安装内核"/></a><div class="content"><a class="title" href="/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/" title="Linux_如何现代的编译和安装内核">Linux_如何现代的编译和安装内核</a><time datetime="2024-07-27T09:01:36.000Z" title="发表于 2024-07-27 17:01:36">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/" title="Linux Coding:小写一个debugfs"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux Coding:小写一个debugfs"/></a><div class="content"><a class="title" href="/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/" title="Linux Coding:小写一个debugfs">Linux Coding:小写一个debugfs</a><time datetime="2024-07-27T09:00:32.000Z" title="发表于 2024-07-27 17:00:32">2024-07-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

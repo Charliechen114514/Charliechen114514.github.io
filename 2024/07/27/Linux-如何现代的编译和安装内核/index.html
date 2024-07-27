@@ -1,0 +1,304 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Linux_如何现代的编译和安装内核 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="如何现代的编译和安装内核前言：本文是在阅读书目时找到了一篇非常高质量的文章。的原文是英文，现在我自己手头翻译了一下，发布到这里。 原文连接：How to compile a Linux kernel in the 21st century | Opensource.com 目录 更新内核的现代方法 安装内核模块 下载，并且安装一个驱动 编译(Compiling)或给kernel打补丁(Patchi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux_如何现代的编译和安装内核">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="如何现代的编译和安装内核前言：本文是在阅读书目时找到了一篇非常高质量的文章。的原文是英文，现在我自己手头翻译了一下，发布到这里。 原文连接：How to compile a Linux kernel in the 21st century | Opensource.com 目录 更新内核的现代方法 安装内核模块 下载，并且安装一个驱动 编译(Compiling)或给kernel打补丁(Patchi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-07-27T09:01:36.000Z">
+<meta property="article:modified_time" content="2024-07-27T09:02:52.114Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux_如何现代的编译和安装内核',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-27 17:02:52'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux_如何现代的编译和安装内核</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-27T09:01:36.000Z" title="发表于 2024-07-27 17:01:36">2024-07-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-27T09:02:52.114Z" title="更新于 2024-07-27 17:02:52">2024-07-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>13分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux_如何现代的编译和安装内核"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="如何现代的编译和安装内核"><a href="#如何现代的编译和安装内核" class="headerlink" title="如何现代的编译和安装内核"></a>如何现代的编译和安装内核</h1><p>前言：本文是在阅读书目时找到了一篇非常高质量的文章。的原文是英文，现在我自己手头翻译了一下，发布到这里。</p>
+<p>原文连接：<a target="_blank" rel="noopener" href="https://opensource.com/article/19/8/linux-kernel-21st-century">How to compile a Linux kernel in the 21st century | Opensource.com</a></p>
+<p><strong>目录</strong></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/140106686#更新内核的现代方法">更新内核的现代方法</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/140106686#安装内核模块">安装内核模块</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/140106686#下载，并且安装一个驱动">下载，并且安装一个驱动</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/140106686#编译(Compiling">编译(Compiling)或给kernel打补丁(Patching)</a>或给kernel打补丁(Patching))</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/140106686#实际编译">实际编译</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/140106686#内核">内核</a></p>
+<hr>
+<h4 id="如何现代的编译和安装内核-1"><a href="#如何现代的编译和安装内核-1" class="headerlink" title="如何现代的编译和安装内核"></a>如何现代的编译和安装<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=内核&amp;spm=1001.2101.3001.7020">内核</a></h4><p>在<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=计算机&amp;spm=1001.2101.3001.7020">计算机</a>领域，<strong>内核是处理与硬件通信和一般系统协调的底层软件。</strong>除了计算机主板上内置的一些初始固件外，当你启动计算机时，内核向上提供一种抽象，让应用层软件知道计算机有硬盘、屏幕、键盘和网卡。内核的工作还包括确保每个组件都有相同的运行时间（或多或少），以便图形、音频、文件系统和网络都能顺利运行，它们可以是同时运行的。</p>
+<p>不过，对硬件支持的追求是持续性的，因为发布的硬件越多，内核就必须在代码中采用越多的东西，才能使硬件按预期运行。虽然很难获得准确的数字，但 <a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=Linux&amp;spm=1001.2101.3001.7020">Linux</a> 内核在硬件兼容性方面肯定是名列前茅的。Linux 操作着无数的电脑和手机、业余爱好者和工业用途的嵌入式系统芯片（SoC）板、RAID 卡等等。</p>
+<p>在 20 世纪（甚至 21 世纪初），Linux 用户在购买新硬件时，需要下载最新的内核源代码、编译并安装，以便获得设备支持。但最近，你很难找到一个自己编译内核的 Linux 用户，除非是为了好玩或通过高度专业化的定制硬件获利。现在，一般不需要自己编译 Linux 内核了。</p>
+<p>以下是编译内核的原因，以及如何在需要时编译内核的快速教程。</p>
+<h5 id="更新内核的现代方法"><a href="#更新内核的现代方法" class="headerlink" title="更新内核的现代方法"></a>更新内核的现代方法</h5><p>无论你是买了一台全新的笔记本电脑，配备了炫目的新显卡或 WiFi 芯片组，还是刚把一台新打印机带回家，你的操作系统（称为 GNU+Linux 或简称 Linux，也是内核的名称）都需要一个驱动程序来打开与新组件（显卡、WiFi 芯片、打印机或其他）的通信通道。有时，当你插入一个新设备时，你的电脑<em>似乎</em>承认了它，这可能具有欺骗性。但千万别被骗了。有时这就是你所需要的，但有时你的操作系统只是使用通用协议来探测已连接的设备。</p>
+<p>例如，你的电脑可能能够识别你的新网络打印机，但有时这只是因为打印机中的网卡被编程为识别自己的网络，以便获得 DHCP 地址。这并不一定意味着你的电脑知道向打印机发送什么指令才能打印出一页文本。事实上，你可能会说，计算机甚至并不真正 “知道 “该设备是一台打印机；它可能只是显示网络上有一台设备在一个特定的地址上，而该设备用一系列字符<em>p-r-i-n-t-e-r</em>来标识自己。人类的语言习惯对计算机来说毫无意义，它需要的是一个驱动程序。</p>
+<p>内核开发人员、硬件制造商、技术支持人员和业余爱好者都知道，新硬件在不断推出。他们中的许多人都会直接向内核开发团队提交驱动程序，以便将其纳入 Linux。例如，Nvidia 显卡驱动程序通常被写入<a target="_blank" rel="noopener" href="https://nouveau.freedesktop.org/wiki/">Nouveau</a>内核模块，而且，由于 Nvidia 显卡很常见，这些代码通常会被包含在任何发布的通用内核中（如下载<a target="_blank" rel="noopener" href="http://fedoraproject.org/">Fedora</a> 或<a target="_blank" rel="noopener" href="http://ubuntu.com/">Ubuntu</a>时获得的内核）。在 Nvidia 不常用的地方，例如嵌入式系统中，Nouveau 模块通常被排除在外。许多其他设备也有类似的模块：打印机有 <a target="_blank" rel="noopener" href="https://wiki.linuxfoundation.org/openprinting/database/foomatic">Foomatic</a> 和 <a target="_blank" rel="noopener" href="https://www.cups.org/">CUPS</a> 模块，无线网卡有 <a target="_blank" rel="noopener" href="https://wireless.wiki.kernel.org/en/users/drivers">b43, ath9k, wl</a> 模块，等等。</p>
+<p>发行版倾向于在其 Linux 内核构建中尽可能多地包含这些模块，因为它们希望你能够连接设备并立即开始使用，而无需安装驱动程序。这在大多数情况下都会发生，尤其是现在许多设备供应商都在为他们销售的硬件提供 Linux 驱动程序开发资金，并将这些驱动程序直接提交给内核团队进行发布。</p>
+<p>但有时，你运行的是六个月前安装的内核，而一周前刚上市的新设备令人兴奋。在这种情况下，你的内核可能没有该设备的驱动程序。好在很多时候，最近版本的内核中可能就有该设备的驱动程序，这意味着你只需更新正在运行的内核即可。</p>
+<p>一般来说，这可以通过软件包管理器完成。例如，在 RHEL、CentOS 和 Fedora 上：</p>
+<pre class="line-numbers language-none"><code class="language-none">sudo dnf update kernel<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>对于Debian和 Ubuntu 上，首先需要查看的是系统内核的版本：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ uname -r
+6.5.0-41-generic<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>下一步就是查找更新的源：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ sudo apt update
+$ sudo apt search linux-image<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>我们看看结果如何</p>
+<pre class="line-numbers language-none"><code class="language-none">linux-image-5.15.0-76-lowlatency&#x2F;jammy-updates,jammy-security 5.15.0-76.83 amd64
+linux-image-6.8.0-1008-azure&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+linux-image-6.8.0-1008-azure-fde&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+linux-image-6.8.0-1008-nvidia&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+linux-image-azure-edge&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+linux-image-azure-fde-edge&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+linux-image-nvidia-6.8&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+linux-image-nvidia-hwe-22.04-wip&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+linux-image-uc-6.8.0-1008-nvidia&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+linux-image-unsigned-5.15.0-76-lowlatency&#x2F;jammy-updates,jammy-security 5.15.0-76.83 amd64
+linux-image-unsigned-6.8.0-1008-azure&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+  Linux kernel image for version 6.8.0 on 64 bit x86 SMP
+linux-image-unsigned-6.8.0-1008-nvidia&#x2F;jammy-updates,jammy-security 6.8.0-1008.8~22.04.1 amd64
+  Linux kernel image for version 6.8.0 on 64 bit x86 SMP<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>我们可以找最新的6.8的内核</p>
+<pre class="line-numbers language-none"><code class="language-none">sudo apt install linux-image-6.8.0<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>下载完成，下一步就是简单的重启就行。</p>
+<h5 id="安装内核模块"><a href="#安装内核模块" class="headerlink" title="安装内核模块"></a>安装内核模块</h5><p>有时，发行版并不希望用户经常使用某个设备（或者至少不希望设备驱动程序出现在 Linux 内核中）。Linux 采用模块化方式处理驱动程序，因此发行版可以提供单独的驱动程序包，即使驱动程序没有编译到内核中，内核也可以加载这些驱动程序包。这很有用，不过当内核中不包含驱动程序，但在启动过程中需要使用，或者内核从模块化驱动程序下更新时，情况就会变得复杂。第一个问题由 initrd（初始 RAM 磁盘）解决，不在本文讨论范围之内，第二个问题由名为 kmod 的系统解决。</p>
+<p>下面，我们一个 Nvidia 驱动程序作为例子：</p>
+<p>kmod 系统能确保内核更新时，同时安装的所有模块化驱动程序也得到更新。如果你手动安装驱动程序，就会错过 kmod 提供的自动化功能，因此只要有 kmod 软件包，你就应该选择安装。例如，虽然 Nvidia 驱动程序作为 Nouveau 驱动程序内置于内核中，但 Nvidia 官方驱动程序仅由 Nvidia 发布。你可以通过访问网站、下载 .run 文件并运行其提供的 shell 脚本来手动安装 Nvidia 品牌的驱动程序，但在安装新内核后，你必须重复同样的过程，因为没有任何信息会告诉你的软件包管理器你手动安装了内核驱动程序。由于显卡由 Nvidia 驱动，手动更新 Nvidia 驱动程序通常意味着你必须在终端上执行更新，因为没有正常运行的显卡驱动程序就没有显卡。</p>
+<p><img src="image-20240727170220692.png" alt="image-20240727170220692"></p>
+<p>当然，我们如果下载的是Nvidia的模块驱动，我们可以直接以挂载module的方式，在更新系统的时候把驱动更新了。</p>
+<p>Fedora系列的：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ sudo dnf install kmod-nvidia<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在Debian系列的</p>
+<pre class="line-numbers language-none"><code class="language-none">sudo apt update
+$ sudo apt install nvidia-kernel-common nvidia-kernel-dkms nvidia-glx nvidia-xconfig nvidia-settings nvidia-vdpau-driver vdpau-va-driver<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>当然这仅仅只是一个例子，但是如果你正在下载英伟达显卡驱动，你必须将Nouveau的驱动拉入黑名单。更加具体的需要查看你的发行版的文档，以获取最佳的安装步骤。</p>
+<h5 id="下载，并且安装一个驱动"><a href="#下载，并且安装一个驱动" class="headerlink" title="下载，并且安装一个驱动"></a>下载，并且安装一个驱动</h5><p>并非所有东西都包含在内核中，也并非所有其他东西都可以作为内核模块使用。在某些情况下，你必须下载由硬件供应商编写和捆绑的特殊驱动程序，而在其他情况下，你有驱动程序却没有配置驱动程序选项的前端。</p>
+<p>惠普打印机和 Wacom 绘图板就是两个常见的例子。如果你买的是惠普打印机，那么你可能拥有可以与打印机通信的通用驱动程序。你甚至可以打印。但通用驱动程序可能无法提供针对你的型号的专门选项，如双面打印、拼版、纸盘选择等。HPLIP（HP Linux 成像和打印系统）提供了管理作业、调整打印选项、选择适用纸盘等选项。</p>
+<p>HPLIP 通常捆绑在软件包管理器中；只需搜索 “hplip “即可。</p>
+<p><img src="image-20240727170239207.png" alt="image-20240727170239207"></p>
+<p>同样，Wacom 平板电脑（数字艺术家的主要插画平板电脑）的驱动程序通常包含在内核中，但微调设置的选项（如压力灵敏度和按钮功能）只能通过 GNOME 默认包含的图形控制面板访问，但在 KDE 中可作为额外软件包 kde-config-tablet 安装。</p>
+<p>可能还有一些相对罕见的情况——内核中没有驱动程序，但以 RPM 或 DEB 文件的形式提供 kmod 版本的驱动模块，你可以通过软件包管理器下载并安装。</p>
+<h5 id="编译-Compiling-或给kernel打补丁-Patching"><a href="#编译-Compiling-或给kernel打补丁-Patching" class="headerlink" title="编译(Compiling)或给kernel打补丁(Patching)"></a>编译<code>(Compiling)</code>或给kernel打补丁<code>(Patching)</code></h5><p>即使在未来乌托邦的 21 世纪，也有一些厂商对开放源代码的理解不够深刻，无法提供可安装的驱动程序。有时，这些公司会提供驱动程序的源代码，但希望你下载代码、修补内核、编译并手动安装。</p>
+<p>这种发布模式与在 kmod 系统外安装打包驱动程序有同样的缺点：内核更新会破坏驱动程序，因为每次更换新内核时，都必须手动将其重新集成到内核中。</p>
+<p>令人欣慰的是，这种情况已经很少见了，因为 Linux 内核团队已经做得很好，他们大声恳求公司与他们沟通，而且公司也终于接受了开源不会很快消失的事实。但仍有一些新奇或超专业的设备只提供内核补丁。</p>
+<p>官方对如何编译内核有特定的发行版偏好，以便让软件包管理器参与升级系统中如此重要的部分。软件包管理器种类繁多，无法一一列举；举例来说，以下是 Fedora 上的 rpmdev 或 Debian 上的 build-essential 和 devscripts 等工具的幕后工作。</p>
+<p>一般的步骤如下：</p>
+<pre class="line-numbers language-none"><code class="language-none">uname -r<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在大多数情况下，如果您还没有升级内核，那么升级内核是安全的。毕竟，你的问题有可能在最新版本中得到解决。如果你尝试了，但没有成功，那么你应该下载你正在运行的内核的源代码。大多数发行版都为此提供了专门的命令，但要手动下载，你可以在 kernel.org 上找到源代码。</p>
+<p>您还必须下载内核所需的补丁。有时，这些补丁与内核版本有关，因此要谨慎选择。</p>
+<p>将源代码和补丁文件放在 /usr/src/linux 中是一种传统做法，至少在人们经常编译自己的内核时是这样。</p>
+<p>根据需要解压缩内核源代码和补丁文件：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ cd &#x2F;usr&#x2F;src&#x2F;linux
+$ bzip2 --decompress linux-5.2.4.tar.bz2
+$ cd  linux-5.2.4
+$ bzip2 -d ..&#x2F;patch*bz2<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>这里的补丁文件可能会有若干指引步骤来指导你如何来给内核。打补丁，但是通常的他们会被设计。在你的代码层次数上的顶层开始执行。</p>
+<pre class="line-numbers language-none"><code class="language-none">$ patch -p1 &lt; patch*example.patch<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>一旦你的内核代码被打上了补丁，你可以尝试用你电脑的旧的配置文件来准备对内核配置进行补丁。</p>
+<pre class="line-numbers language-none"><code class="language-none">$ make oldconfig<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p><strong>make oldconfig</strong>指令完成两个重要的目的，它继承了你当前内核的配置，以及它允许你去配置新的选项，这些新的选项则是通过补丁而被引入的。</p>
+<p>你也有可能需要运行<strong>make menuconfig</strong> ，他们是受这样的一些包进行支持的 ：ncurses-based, menu-driven等。菜单可能会让人应接不暇，但由于它是以你的旧配置为基础启动的，你可以查看菜单，禁用那些你知道自己没有、预计也不需要的硬件模块。另外，如果你知道自己拥有某些硬件，但发现当前配置中不包含这些硬件，你可以选择将其作为模块或直接内置到内核中。从理论上讲，这并不是必须的，因为如果没有丢失的补丁，你当前的内核应该是不错的，而且你应用的补丁可能已经激活了所有必要的选项，不管是什么设备促使你首先为内核打上补丁。</p>
+<p>接下来，编译内核及其模块：</p>
+<pre class="line-numbers language-none"><code class="language-none">$ make bzImage
+$ make modules<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span></span></code></pre>
+<p>采取如此的行动将会给你生成一个这样的文件，它是可以被启动内核的文件的压缩版本。我们保留旧的内核压缩版本，然后把新的内核压缩文件放到<code>/boot</code>目录下</p>
+<pre class="line-numbers language-none"><code class="language-none">$ sudo mv &#x2F;boot&#x2F;vmlinuz &#x2F;boot&#x2F;vmlinuz.nopatch
+$ sudo cat arch&#x2F;x86_64&#x2F;boot&#x2F;bzImage &gt; &#x2F;boot&#x2F;vmlinuz
+$ sudo mv &#x2F;boot&#x2F;System.map &#x2F;boot&#x2F;System.map.stock
+$ sudo cp System.map &#x2F;boot&#x2F;System.map<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span></span></code></pre>
+<p>目前为止你已经给内核打上补丁，并且将之完成构建以及相关的模块，你已经成功的安装了内核，但是你并没有安装模块，所以我们需要做最后的步骤。</p>
+<pre class="line-numbers language-none"><code class="language-none">$ sudo make modules_install<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>在新的内核已经就位以及它的模块也被安装完成，最后一步就是更新我们的bootloader，这样的话我们的电脑将会加载这些新的内核。这一步就是告知GRUB启动器内核的位置。</p>
+<pre class="line-numbers language-none"><code class="language-none">$ sudo grub2-mkconfig<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<h5 id="实际编译"><a href="#实际编译" class="headerlink" title="实际编译"></a>实际编译</h5><p>当然，现在没人会执行这些手动命令。取而代之的是，你可以参考发行版的说明，使用发行版维护者使用的开发者工具集修改内核。该工具集可能会创建一个包含所有补丁的新安装包，提醒软件包管理器进行升级，并为你更新引导加载器。</p>
+<h5 id="内核"><a href="#内核" class="headerlink" title="内核"></a>内核</h5><p>操作系统和内核是很神秘的东西，但要了解它们是基于什么组件构建的并不难。下一次，当你得到一项似乎无法在 Linux 上运行的技术时，深吸一口气，调查驱动程序的可用性，然后选择阻力最小的途径。Linux 比以往任何时候都要简单，包括内核。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/">http://charliechen114514.github.io/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/07/27/QEMU-Vscode-Arm-Arch%E2%80%98s-Linux%E8%B0%83%E8%AF%95%E5%B0%8F%E8%AE%B0/" title="QEMU + Vscode + Arm Arch‘s Linux调试小记"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">QEMU + Vscode + Arm Arch‘s Linux调试小记</div></div></a></div><div class="next-post pull-right"><a href="/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/" title="Linux Coding:小写一个debugfs"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Linux Coding:小写一个debugfs</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/04/16/LearnLinuxBasicNote/" title="LearnLinuxBasicNote"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-16</div><div class="title">LearnLinuxBasicNote</div></div></a></div><div><a href="/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/" title="TCP&#x2F;IP 网络编程笔记——1，2，3"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-23</div><div class="title">TCP&#x2F;IP 网络编程笔记——1，2，3</div></div></a></div><div><a href="/2023/08/17/Unix-network-programming-Guidance/" title="Unix网络编程 - 1"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">Unix网络编程 - 1</div></div></a></div><div><a href="/2023/08/19/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E2%80%94%E2%80%94%E5%AF%BC%E8%AE%BA%E4%B8%8E%E4%B8%89%E7%A7%8D%E5%8D%8F%E8%AE%AE/" title="Unix网络编程——导论与三种协议"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-19</div><div class="title">Unix网络编程——导论与三种协议</div></div></a></div><div><a href="/2023/08/20/%E5%B5%8C%E5%85%A5%E5%BC%8FC%E4%BF%AE%E5%85%BB%E2%80%94%E2%80%94%E5%89%8D%E5%AF%BC/" title="嵌入式C修养——前导"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-20</div><div class="title">嵌入式C修养——前导</div></div></a></div><div><a href="/2024/01/19/Linux%E6%BC%AB%E6%B8%B8%E5%90%88%E9%9B%86/" title="Linux漫游合集"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-19</div><div class="title">Linux漫游合集</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8"><span class="toc-number">1.</span> <span class="toc-text">如何现代的编译和安装内核</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8-1"><span class="toc-number">1.0.0.1.</span> <span class="toc-text">如何现代的编译和安装内核</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%9B%B4%E6%96%B0%E5%86%85%E6%A0%B8%E7%9A%84%E7%8E%B0%E4%BB%A3%E6%96%B9%E6%B3%95"><span class="toc-number">1.0.0.1.1.</span> <span class="toc-text">更新内核的现代方法</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97"><span class="toc-number">1.0.0.1.2.</span> <span class="toc-text">安装内核模块</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%EF%BC%8C%E5%B9%B6%E4%B8%94%E5%AE%89%E8%A3%85%E4%B8%80%E4%B8%AA%E9%A9%B1%E5%8A%A8"><span class="toc-number">1.0.0.1.3.</span> <span class="toc-text">下载，并且安装一个驱动</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E7%BC%96%E8%AF%91-Compiling-%E6%88%96%E7%BB%99kernel%E6%89%93%E8%A1%A5%E4%B8%81-Patching"><span class="toc-number">1.0.0.1.4.</span> <span class="toc-text">编译(Compiling)或给kernel打补丁(Patching)</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%9E%E9%99%85%E7%BC%96%E8%AF%91"><span class="toc-number">1.0.0.1.5.</span> <span class="toc-text">实际编译</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%86%85%E6%A0%B8"><span class="toc-number">1.0.0.1.6.</span> <span class="toc-text">内核</span></a></li></ol></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/" title="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上"/></a><div class="content"><a class="title" href="/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/" title="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上">如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上</a><time datetime="2024-07-27T09:13:46.000Z" title="发表于 2024-07-27 17:13:46">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/STM32%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%AE%B0%E5%BD%95%E2%80%94%E2%80%94%E5%85%B3%E4%BA%8EPlatformIO-VSCode-CubeMX%E7%9A%84%E9%9B%86%E6%88%90%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" title="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置"/></a><div class="content"><a class="title" href="/2024/07/27/STM32%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%AE%B0%E5%BD%95%E2%80%94%E2%80%94%E5%85%B3%E4%BA%8EPlatformIO-VSCode-CubeMX%E7%9A%84%E9%9B%86%E6%88%90%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" title="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置">STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置</a><time datetime="2024-07-27T09:07:15.000Z" title="发表于 2024-07-27 17:07:15">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/QEMU-Vscode-Arm-Arch%E2%80%98s-Linux%E8%B0%83%E8%AF%95%E5%B0%8F%E8%AE%B0/" title="QEMU + Vscode + Arm Arch‘s Linux调试小记"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="QEMU + Vscode + Arm Arch‘s Linux调试小记"/></a><div class="content"><a class="title" href="/2024/07/27/QEMU-Vscode-Arm-Arch%E2%80%98s-Linux%E8%B0%83%E8%AF%95%E5%B0%8F%E8%AE%B0/" title="QEMU + Vscode + Arm Arch‘s Linux调试小记">QEMU + Vscode + Arm Arch‘s Linux调试小记</a><time datetime="2024-07-27T09:03:08.000Z" title="发表于 2024-07-27 17:03:08">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/" title="Linux_如何现代的编译和安装内核"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux_如何现代的编译和安装内核"/></a><div class="content"><a class="title" href="/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/" title="Linux_如何现代的编译和安装内核">Linux_如何现代的编译和安装内核</a><time datetime="2024-07-27T09:01:36.000Z" title="发表于 2024-07-27 17:01:36">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/" title="Linux Coding:小写一个debugfs"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux Coding:小写一个debugfs"/></a><div class="content"><a class="title" href="/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/" title="Linux Coding:小写一个debugfs">Linux Coding:小写一个debugfs</a><time datetime="2024-07-27T09:00:32.000Z" title="发表于 2024-07-27 17:00:32">2024-07-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

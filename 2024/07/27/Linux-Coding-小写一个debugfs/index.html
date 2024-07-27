@@ -1,0 +1,401 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>Linux Coding:小写一个debugfs | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Linux Coding:小写一个debugfs上一次整活还是在上一个月，写了一个简单的module并且熟悉了module的挂载查看和卸载。这一次我们自然玩一个大的，就是利用linux的debugfs API写一个调试文件系统。 事实上，底层的API全写好了，我们就是简单的调调API就成的事情！ 事先检查第一步是检查我们当前的内核是否支持debugfs调试： zcat &#x2F;proc&amp;#x2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux Coding:小写一个debugfs">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="Linux Coding:小写一个debugfs上一次整活还是在上一个月，写了一个简单的module并且熟悉了module的挂载查看和卸载。这一次我们自然玩一个大的，就是利用linux的debugfs API写一个调试文件系统。 事实上，底层的API全写好了，我们就是简单的调调API就成的事情！ 事先检查第一步是检查我们当前的内核是否支持debugfs调试： zcat &#x2F;proc&amp;#x2">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-07-27T09:00:32.000Z">
+<meta property="article:modified_time" content="2024-07-27T09:01:04.830Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Linux Coding:小写一个debugfs',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-07-27 17:01:04'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Linux Coding:小写一个debugfs</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-07-27T09:00:32.000Z" title="发表于 2024-07-27 17:00:32">2024-07-27</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-07-27T09:01:04.830Z" title="更新于 2024-07-27 17:01:04">2024-07-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.8k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>8分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Linux Coding:小写一个debugfs"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Linux-Coding-小写一个debugfs"><a href="#Linux-Coding-小写一个debugfs" class="headerlink" title="Linux Coding:小写一个debugfs"></a>Linux Coding:小写一个debugfs</h1><p>上一次整活还是在上一个月，写了一个简单的module并且熟悉了module的<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=挂载&amp;spm=1001.2101.3001.7020">挂载</a>查看和卸载。这一次我们自然玩一个大的，就是利用linux的debugfs API写一个调试文件系统。</p>
+<p>事实上，底层的<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=API&amp;spm=1001.2101.3001.7020">API</a>全写好了，我们就是简单的调调API就成的事情！</p>
+<h3 id="事先检查"><a href="#事先检查" class="headerlink" title="事先检查"></a>事先检查</h3><p>第一步是检查我们当前的内核是否支持debugfs调试：</p>
+<pre class="line-numbers language-none"><code class="language-none">zcat &#x2F;proc&#x2F;config.gz | grep DEBUG_FS
+# CONFIG_XEN_DEBUG_FS is not set
+CONFIG_BLK_DEBUG_FS&#x3D;y
+CONFIG_BLK_DEBUG_FS_ZONED&#x3D;y
+# CONFIG_SCSI_SNIC_DEBUG_FS is not set
+# CONFIG_SCSI_LPFC_DEBUG_FS is not set
+# CONFIG_USB_GADGET_DEBUG_FS is not set
+# CONFIG_OCFS2_DEBUG_FS is not set
+CONFIG_DEBUG_FS&#x3D;y
+CONFIG_DEBUG_FS_ALLOW_ALL&#x3D;y
+# CONFIG_DEBUG_FS_DISALLOW_MOUNT is not set
+# CONFIG_DEBUG_FS_ALLOW_NONE is not set<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>在这里，我们是要查看的是：<code>CONFIG_DEBUG_FS=y</code>，在这件事情上，如果是n，说明当前内核是不支持调试文件系统的，这就要求我们另外编译内核（打开这个开关），安装并进入内核才行。这里不再赘述如何自定义内核了。</p>
+<h3 id="开干"><a href="#开干" class="headerlink" title="开干"></a>开干</h3><p>我们的文件系统有自己的一套fops，这里，也不是意外的。和我们对文件系统自身的认知，我们知道文件系统实际上就是提供一种对目标设备一套被抽象出来的访问读写等若干操作的句柄。所以我们所需要做的就是自己实现这一套句柄。显然我们需要实现的有打开文件 ，读文件以及写文件，这是最基本的！</p>
+<p>我们的文件系统将会以模块的方式动态的加载到内核。所以这就要求我们需要先掌握学习如何编写模块的知识，这个在我之前的博客里有所提到。<a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/139374482?spm=1001.2014.3001.5502">关于如何在Arch Linux上编写自己的第一个module_archlinux modules-CSDN博客</a></p>
+<p>各位看官之前并没有了解到这方面的知识，可以阅读我上面所写的博客等掌握这个知识之后，再进行下一步的实践。</p>
+<p>现在，我们沿用写模块的Makefile:</p>
+<pre class="line-numbers language-none"><code class="language-none">obj-m:&#x3D; charlie.o
+pwd:&#x3D; $(shell pwd)
+ker-ver:&#x3D; $(shell uname -r)
+KDIR:&#x3D; &#x2F;lib&#x2F;modules&#x2F;$(ker-ver)&#x2F;build
+# 下面这一行是用来调试的
+# ccflags-y +&#x3D; -DDEBUG -g -ggdb -gdwarf-4 -Og \
+                -Wall -fno-omit-frame-pointer -fvar-tracking-assignments
+
+all:
+    make -C $(KDIR) M&#x3D;$(pwd) modules # 先调整一下目录，用人家的Makefile
+
+clean:
+    rm -rf *.o .* .cmd *.ko *.mod.c .tmp_versions *.order *.symvers *.mod写代码！<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h3 id="撸代码"><a href="#撸代码" class="headerlink" title="撸代码"></a>撸代码</h3><p>我们首先需要引入写模块和调试文件系统的基本头文件。</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;linux&#x2F;debugfs.h&gt;
+#include &lt;linux&#x2F;module.h&gt;
+#include &lt;linux&#x2F;fs.h&gt;
+#include &lt;linux&#x2F;uaccess.h&gt;
+#include &lt;linux&#x2F;errno.h&gt;
+#include &lt;linux&#x2F;types.h&gt;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>然后完成读写，打开等基本操作。</p>
+<pre class="line-numbers language-none"><code class="language-none">static int charlie_fs_open(struct inode* inode, struct file* pfile)
+&#123;
+&#x2F;&#x2F; 函数是打开某一个文件，准备进行读或者写。
+    printk(&quot;Charlie_filesystem_open\n&quot;);
+    pfile-&gt;private_data &#x3D; inode-&gt;i_private;
+    return 0;
+&#125;
+
+
+static ssize_t charlie_fs_read(struct file* pFile, char __user *buf, size_t cnt, loff_t* offp)
+&#123;
+&#x2F;&#x2F; 函数完成的任务是对传入进来的内存块进行存入buf里。
+    int retval &#x3D; 0;
+    if((*offp + cnt) &gt; 512)
+        cnt &#x3D; 512 - *offp;
+&#x2F;&#x2F; printk函数主要是向控制台打印一些控制信息，这个信息需要通过这条指令进行查看: sudo dmesg
+    printk(&quot;Received read request! count:%ld, offset:%lld\n&quot;, cnt, *offp);
+    if(copy_to_user(buf, charlie_buf + *offp, cnt))&#123;
+        &#x2F;&#x2F; 警告！
+        pr_warn(&quot;Oh no, failed to copy to user! count is %ld\n&quot;, cnt);
+        retval &#x3D; -EFAULT;
+        goto out;
+    &#125;
+    *offp +&#x3D; cnt;
+    retval &#x3D; cnt;
+out:
+    return retval; 
+&#125;
+
+static ssize_t charlie_fs_write(struct file* pFile, const char __user *buf, size_t cnt, loff_t* offp)
+&#123;
+&#x2F;&#x2F; 函数完成的任务是向文件块进行写入。
+    int retval;
+    pr_info(&quot;Write request is here: count: %ld, offset:%lld\n&quot;, cnt, *offp);
+    if(*offp &gt; 512)
+        return 0;
+    if((*offp + cnt) &gt; 512)
+        cnt &#x3D; 512 - *offp;
+    if(copy_from_user(charlie_buf + *offp, (const void*)buf, cnt))&#123;
+        pr_warn(&quot;Oh no, failed to copy from user! count is %ld\n&quot;, cnt);
+        retval &#x3D; -EFAULT;
+        goto out;
+    &#125;
+    *offp +&#x3D; cnt;
+    retval &#x3D; cnt;
+out:
+    return retval; 
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>关于这里的几个所用到的函数都是什么意思，各位看官可自行百度更加详细的说明！</p>
+<p>我们的文件系统是通过模块进行载入和卸载的，这就意味着我们仍然需要写初始化函数和析构函数。我们所做的就是要在初始化的时候完成对文件系统处理函数的注册。即在卸载文件系统的时候，移除我们在初始化时进行注册的相关函数。</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;&#x2F; 句柄
+struct file_operations charlie_fs_fops &#x3D; &#123;
+    .owner &#x3D; THIS_MODULE,
+    .read &#x3D; charlie_fs_read,
+    .write &#x3D; charlie_fs_write,
+    .open &#x3D; charlie_fs_open
+&#125;;
+
+
+&#x2F;&#x2F; 模块的初始化
+static int __init charlie_debug_fs_init(void)
+&#123;
+    pr_info(&quot;The module is initing...&quot;);
+    charlie_dir &#x3D; debugfs_create_dir(&quot;Charliedir&quot;, NULL);
+    if(!charlie_dir)&#123;
+        pr_crit(&quot;Failing shit! can not create any dir at all!&quot;);
+        goto failed;
+    &#125;
+
+    static struct dentry* sub_charlie_dir;
+    sub_charlie_dir &#x3D;  debugfs_create_dir(&quot;CharlieSubDir&quot;, charlie_dir);
+        if(!sub_charlie_dir)&#123;
+        pr_crit(&quot;Failing shit! can not create any sub dir at all!&quot;);
+        goto failed;
+    &#125;
+
+    struct dentry* filent &#x3D; debugfs_create_file(&quot;Charlie&quot;, 0644, sub_charlie_dir, NULL, &amp;charlie_fs_fops);
+    if(!filent)&#123;
+        pr_err(&quot;Can not create file!&quot;);
+        goto failed;
+    &#125;
+    pr_info(&quot;Init finish!&quot;);
+    return 0;
+failed:
+    return -ENOENT;
+&#125;
+
+&#x2F;&#x2F; 模块的析构函数
+static void __exit charlie_debug_fs_exit(void)
+&#123;
+    pr_info(&quot;Safe quit! begin&quot;);
+    debugfs_remove_recursive(charlie_dir);
+    pr_info(&quot;Safe quit! end&quot;);
+&#125;
+
+module_init(charlie_debug_fs_init);
+module_exit(charlie_debug_fs_exit);
+MODULE_LICENSE(&quot;GPL&quot;);
+MODULE_AUTHOR(&quot;Charliechen&quot;);<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>到这里我们保存，然后make一下</p>
+<pre class="line-numbers language-none"><code class="language-none">make -C &#x2F;lib&#x2F;modules&#x2F;6.9.7-arch1-1&#x2F;build M&#x3D;&#x2F;home&#x2F;Charliechen&#x2F;Works&#x2F;opearte_system&#x2F;module&#x2F;test2 modules
+make[1]: Entering directory &#39;&#x2F;usr&#x2F;lib&#x2F;modules&#x2F;6.9.7-arch1-1&#x2F;build&#39;
+  CC [M]  &#x2F;home&#x2F;Charliechen&#x2F;Works&#x2F;opearte_system&#x2F;module&#x2F;test2&#x2F;charlie.o
+  MODPOST &#x2F;home&#x2F;Charliechen&#x2F;Works&#x2F;opearte_system&#x2F;module&#x2F;test2&#x2F;Module.symvers
+  CC [M]  &#x2F;home&#x2F;Charliechen&#x2F;Works&#x2F;opearte_system&#x2F;module&#x2F;test2&#x2F;charlie.mod.o
+  LD [M]  &#x2F;home&#x2F;Charliechen&#x2F;Works&#x2F;opearte_system&#x2F;module&#x2F;test2&#x2F;charlie.ko
+  BTF [M] &#x2F;home&#x2F;Charliechen&#x2F;Works&#x2F;opearte_system&#x2F;module&#x2F;test2&#x2F;charlie.ko
+make[1]: Leaving directory &#39;&#x2F;usr&#x2F;lib&#x2F;modules&#x2F;6.9.7-arch1-1&#x2F;build&#39;
+➜  sudo insmod charlie.ko &amp;&amp; lsmod | grep charlie
+[sudo] password for Charliechen: 
+charlie                16384  0<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>看到我们的模块已经被正确的挂载！下一步，则是测试我们写的一系列功能。</p>
+<pre class="line-numbers language-none"><code class="language-none">➜  sudo ls &#x2F;sys&#x2F;kernel&#x2F;debug&#x2F; | grep Charliedir
+Charliedir
+➜  sudo ls &#x2F;sys&#x2F;kernel&#x2F;debug&#x2F;Charliedir
+CharlieSubDir
+➜  sudo ls &#x2F;sys&#x2F;kernel&#x2F;debug&#x2F;Charliedir&#x2F;CharlieSubDir
+Charlie
+➜  su
+Password: 
+[root@ArchLinux test2]# ls
+charlie.c  charlie.ko  charlie.mod  charlie.mod.c  charlie.mod.o  charlie.o  Makefile  modules.order  Module.symvers
+[root@ArchLinux test2]# sudo insmod charlie.ko &amp;&amp; lsmod | grep charlie
+charlie                16384  0
+[root@ArchLinux test2]# echo 114514 &gt; &#x2F;sys&#x2F;kernel&#x2F;debug&#x2F;Charliedir&#x2F;CharlieSubDir&#x2F;Charlie
+[root@ArchLinux test2]# dmesg | tail -4
+[18109.769088] The module is initing...
+[18109.769097] Init finish!
+[18117.722104] Charlie_filesystem_open
+[18117.722177] Write request is here: count: 7, offset:0
+[root@ArchLinux test2]# cat &#x2F;sys&#x2F;kernel&#x2F;debug&#x2F;Charliedir&#x2F;CharlieSubDir&#x2F;Charlie 
+114514
+
+[root@ArchLinux test2]# dmesg | tail -7
+[18109.769088] The module is initing...
+[18109.769097] Init finish!
+[18117.722104] Charlie_filesystem_open
+[18117.722177] Write request is here: count: 7, offset:0
+[18147.692623] Charlie_filesystem_open
+[18147.692645] Received read request! count:512, offset:0
+[18147.692666] Received read request! count:0, offset:512
+[root@ArchLinux test2]# rmmod charlie.ko
+[root@ArchLinux test2]# dmesg | tail -8
+[18109.769088] The module is initing...
+[18109.769097] Init finish!
+[18117.722104] Charlie_filesystem_open
+[18117.722177] Write request is here: count: 7, offset:0
+[18147.692623] Charlie_filesystem_open
+[18147.692645] Received read request! count:512, offset:0
+[18147.692666] Received read request! count:0, offset:512
+[18165.395570] Safe quit! begin<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>完成！</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/">http://charliechen114514.github.io/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Linux/">Linux</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/" title="Linux_如何现代的编译和安装内核"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Linux_如何现代的编译和安装内核</div></div></a></div><div class="next-post pull-right"><a href="/2024/07/27/%E5%85%B3%E4%BA%8E%E5%A6%82%E4%BD%95%E5%9C%A8Arch-Linux%E4%B8%8A%E7%BC%96%E5%86%99%E8%87%AA%E5%B7%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AAmodule/" title="关于如何在Arch Linux上编写自己的第一个module"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">关于如何在Arch Linux上编写自己的第一个module</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2023/04/16/LearnLinuxBasicNote/" title="LearnLinuxBasicNote"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-04-16</div><div class="title">LearnLinuxBasicNote</div></div></a></div><div><a href="/2023/08/23/TCP-IP-%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%AC%94%E8%AE%B0%E2%80%94%E2%80%941%EF%BC%8C2%EF%BC%8C3/" title="TCP&#x2F;IP 网络编程笔记——1，2，3"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-23</div><div class="title">TCP&#x2F;IP 网络编程笔记——1，2，3</div></div></a></div><div><a href="/2023/08/17/Unix-network-programming-Guidance/" title="Unix网络编程 - 1"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-17</div><div class="title">Unix网络编程 - 1</div></div></a></div><div><a href="/2023/08/19/Unix%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E2%80%94%E2%80%94%E5%AF%BC%E8%AE%BA%E4%B8%8E%E4%B8%89%E7%A7%8D%E5%8D%8F%E8%AE%AE/" title="Unix网络编程——导论与三种协议"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-19</div><div class="title">Unix网络编程——导论与三种协议</div></div></a></div><div><a href="/2023/08/20/%E5%B5%8C%E5%85%A5%E5%BC%8FC%E4%BF%AE%E5%85%BB%E2%80%94%E2%80%94%E5%89%8D%E5%AF%BC/" title="嵌入式C修养——前导"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-08-20</div><div class="title">嵌入式C修养——前导</div></div></a></div><div><a href="/2024/01/19/Linux%E6%BC%AB%E6%B8%B8%E5%90%88%E9%9B%86/" title="Linux漫游合集"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-19</div><div class="title">Linux漫游合集</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">69</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">31</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">合并了大部分博客，并且优化了目录和标签！部分老博客删除，数据结构部分将会用Algorithm_in_C为大纲重写，可以期待一下（）</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs"><span class="toc-number">1.</span> <span class="toc-text">Linux Coding:小写一个debugfs</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BA%8B%E5%85%88%E6%A3%80%E6%9F%A5"><span class="toc-number">1.0.1.</span> <span class="toc-text">事先检查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%BC%80%E5%B9%B2"><span class="toc-number">1.0.2.</span> <span class="toc-text">开干</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%92%B8%E4%BB%A3%E7%A0%81"><span class="toc-number">1.0.3.</span> <span class="toc-text">撸代码</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/" title="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上"/></a><div class="content"><a class="title" href="/2024/07/27/%E5%A6%82%E4%BD%95%E5%9C%A8Windows%E4%B8%8A%E7%BC%96%E8%AF%91%E5%8F%AF%E7%94%A8%E7%9A%84Tesseract-OCR-in-C-%E5%B9%B6%E9%83%A8%E7%BD%B2%E5%9C%A8Visual-Studio%E4%B8%8EQt6%E4%B8%8A/" title="如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上">如何在Windows上编译可用的Tesseract OCR in C++ 并部署在Visual Studio与Qt6上</a><time datetime="2024-07-27T09:13:46.000Z" title="发表于 2024-07-27 17:13:46">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/STM32%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%AE%B0%E5%BD%95%E2%80%94%E2%80%94%E5%85%B3%E4%BA%8EPlatformIO-VSCode-CubeMX%E7%9A%84%E9%9B%86%E6%88%90%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" title="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置"/></a><div class="content"><a class="title" href="/2024/07/27/STM32%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E8%AE%B0%E5%BD%95%E2%80%94%E2%80%94%E5%85%B3%E4%BA%8EPlatformIO-VSCode-CubeMX%E7%9A%84%E9%9B%86%E6%88%90%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/" title="STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置">STM32开发环境配置记录——关于PlatformIO + VSCode + CubeMX的集成环境配置</a><time datetime="2024-07-27T09:07:15.000Z" title="发表于 2024-07-27 17:07:15">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/QEMU-Vscode-Arm-Arch%E2%80%98s-Linux%E8%B0%83%E8%AF%95%E5%B0%8F%E8%AE%B0/" title="QEMU + Vscode + Arm Arch‘s Linux调试小记"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="QEMU + Vscode + Arm Arch‘s Linux调试小记"/></a><div class="content"><a class="title" href="/2024/07/27/QEMU-Vscode-Arm-Arch%E2%80%98s-Linux%E8%B0%83%E8%AF%95%E5%B0%8F%E8%AE%B0/" title="QEMU + Vscode + Arm Arch‘s Linux调试小记">QEMU + Vscode + Arm Arch‘s Linux调试小记</a><time datetime="2024-07-27T09:03:08.000Z" title="发表于 2024-07-27 17:03:08">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/" title="Linux_如何现代的编译和安装内核"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux_如何现代的编译和安装内核"/></a><div class="content"><a class="title" href="/2024/07/27/Linux-%E5%A6%82%E4%BD%95%E7%8E%B0%E4%BB%A3%E7%9A%84%E7%BC%96%E8%AF%91%E5%92%8C%E5%AE%89%E8%A3%85%E5%86%85%E6%A0%B8/" title="Linux_如何现代的编译和安装内核">Linux_如何现代的编译和安装内核</a><time datetime="2024-07-27T09:01:36.000Z" title="发表于 2024-07-27 17:01:36">2024-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/" title="Linux Coding:小写一个debugfs"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Linux Coding:小写一个debugfs"/></a><div class="content"><a class="title" href="/2024/07/27/Linux-Coding-%E5%B0%8F%E5%86%99%E4%B8%80%E4%B8%AAdebugfs/" title="Linux Coding:小写一个debugfs">Linux Coding:小写一个debugfs</a><time datetime="2024-07-27T09:00:32.000Z" title="发表于 2024-07-27 17:00:32">2024-07-27</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
