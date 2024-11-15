@@ -1,0 +1,1349 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>STM32单片机之分析启动文件小论(II) | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="写在前面​    请各位看官看本篇笔记的时候首先了解一下计算机体系架构，了解基本的arm汇编后再来阅读此教程。当然不必深入，了解即可。 ​    对于一些弱符号含义，笔者已经放到Help当中，请酌情参考（笔者不是特别熟悉ARM汇编）！ 速通：做了什么：​    这个是ST公司在startup_stm32f103xe.s文件的开头所写。  初始化堆栈指针 SP &#x3D; _initial_sp  初始化程">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM32单片机之分析启动文件小论(II)">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="写在前面​    请各位看官看本篇笔记的时候首先了解一下计算机体系架构，了解基本的arm汇编后再来阅读此教程。当然不必深入，了解即可。 ​    对于一些弱符号含义，笔者已经放到Help当中，请酌情参考（笔者不是特别熟悉ARM汇编）！ 速通：做了什么：​    这个是ST公司在startup_stm32f103xe.s文件的开头所写。  初始化堆栈指针 SP &#x3D; _initial_sp  初始化程">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-11-15T13:05:50.000Z">
+<meta property="article:modified_time" content="2024-11-15T13:06:50.828Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="stm32">
+<meta property="article:tag" content="ARM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'STM32单片机之分析启动文件小论(II)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-15 21:06:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">STM32单片机之分析启动文件小论(II)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-11-15T13:05:50.000Z" title="发表于 2024-11-15 21:05:50">2024-11-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-11-15T13:06:50.828Z" title="更新于 2024-11-15 21:06:50">2024-11-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">4.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>22分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="STM32单片机之分析启动文件小论(II)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="写在前面"><a href="#写在前面" class="headerlink" title="写在前面"></a>写在前面</h2><p>​    请各位看官看本篇笔记的时候首先了解一下计算机体系架构，了解基本的arm汇编后再来阅读此教程。当然不必深入，了解即可。</p>
+<p>​    对于一些弱符号含义，笔者已经放到Help当中，请酌情参考（笔者不是特别熟悉ARM汇编）！</p>
+<h2 id="速通：做了什么："><a href="#速通：做了什么：" class="headerlink" title="速通：做了什么："></a>速通：做了什么：</h2><p>​    这个是ST公司在startup_stm32f103xe.s文件的开头所写。</p>
+<ol>
+<li>初始化堆栈指针 SP = _initial_sp </li>
+<li>初始化程序计数器指针 PC = Reset_Handler </li>
+<li>设置堆和栈的大小 </li>
+<li>初始化中断向量表 </li>
+<li>配置外部SRAM 作为数据存储器（可选） </li>
+<li>配置系统时钟，通过调用SystemInit 函数（可选） </li>
+<li>调用 C 库中的 _main 函数初始化用户堆栈，最终调用 main 函数 </li>
+</ol>
+<h2 id="分析I：分析2011年的startup文件所作"><a href="#分析I：分析2011年的startup文件所作" class="headerlink" title="分析I：分析2011年的startup文件所作"></a>分析I：分析2011年的startup文件所作</h2><p>​    老一部分的分析，笔者这里推介的是自己写的：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/137664579?ops_request_misc=%7B%22request%5Fid%22%3A%22CFEE748F-1EDB-4DA5-B743-C3BD181EB61B%22%2C%22scm%22%3A%2220140713.130102334.pc%5Fblog.%22%7D&amp;request_id=CFEE748F-1EDB-4DA5-B743-C3BD181EB61B&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~blog~first_rank_ecpm_v1~rank_v31_ecpm-2-137664579-null-null.nonecase&amp;utm_term=STM &amp;spm=1018.2226.3001.4450">STM32启动流程简述_defined(stm32f103xe)-CSDN博客</a></p>
+</blockquote>
+<p>​    现在看看有点太随意了，重新阐述一下：</p>
+<pre class="line-numbers language-none"><code class="language-none">; Amount of memory (in bytes) allocated for Stack
+; Tailor this value to your application needs
+; &lt;h&gt; Stack Configuration
+;   &lt;o&gt; Stack Size (in Bytes) &lt;0x0-0xFFFFFFFF:8&gt;
+; &lt;&#x2F;h&gt;
+Stack_Size      EQU     0x00000400
+
+                AREA    STACK, NOINIT, READWRITE, ALIGN&#x3D;3
+Stack_Mem       SPACE   Stack_Size
+__initial_sp<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    先说栈多大！熟悉操作系统的人都知道必须要首先定义栈的大小！这样的话才方便分配空间，同时这个栈就是我们操作数据保存数据的一个重要的中转点！ </p>
+<p>​    下一部分我们讨论的是对我们知道堆是程序运行中的一个重要的部分。（malloc在这里申请！）</p>
+<pre class="line-numbers language-none"><code class="language-none">; &lt;h&gt; Heap Configuration
+;   &lt;o&gt;  Heap Size (in Bytes) &lt;0x0-0xFFFFFFFF:8&gt;
+; &lt;&#x2F;h&gt;
+
+Heap_Size       EQU     0x00000200
+
+                AREA    HEAP, NOINIT, READWRITE, ALIGN&#x3D;3
+__heap_base
+Heap_Mem        SPACE   Heap_Size
+__heap_limit
+
+                PRESERVE8
+                THUMB<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    下面这里我们导出了一些符号，这些符号如果各位仔细看的话就是中断处理函数！也就是说STM32在发生中断时就会根据对应的中断类型跳转进入对应的中断处理子程序。 在这段程序的结尾定义了大小！</p>
+<pre class="line-numbers language-none"><code class="language-none">; Vector Table Mapped to Address 0 at Reset
+                AREA    RESET, DATA, READONLY
+                EXPORT  __Vectors
+                EXPORT  __Vectors_End
+                EXPORT  __Vectors_Size
+
+__Vectors       DCD     __initial_sp               ; Top of Stack
+...
+__Vectors_End
+__Vectors_Size  EQU  __Vectors_End - __Vectors
+
+                AREA    |.text|, CODE, READONLY
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    下面这个片段非常的重要因为它定义了我们STM32从上电到执行我们程序中最重要的几个部分：即首先执行了：SystemInit，然后跳转道__main函数，最终程序进入我们的main进行代码执行！</p>
+<pre class="line-numbers language-none"><code class="language-none">; Reset handler
+Reset_Handler    PROC
+                 EXPORT  Reset_Handler             [WEAK]
+     IMPORT  __main
+     IMPORT  SystemInit
+                 LDR     R0, &#x3D;SystemInit
+                 BLX     R0
+                 LDR     R0, &#x3D;__main
+                 BX      R0
+                 END<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    中间更大一部分定义了一些默认的中断处理子程序如果我们修改了这些子程序入口地址子，它也就会调用我们修改的而不是默认的！（当然不要直接汇编改，注册中断更为好！） </p>
+<p>​    最后是：</p>
+<pre class="line-numbers language-none"><code class="language-none">;*******************************************************************************
+; User Stack and Heap initialization
+;*******************************************************************************
+                 IF      :DEF:__MICROLIB           
+                
+                 EXPORT  __initial_sp
+                 EXPORT  __heap_base
+                 EXPORT  __heap_limit
+                
+                 ELSE
+                
+                 IMPORT  __use_two_region_memory
+                 EXPORT  __user_initial_stackheap
+                 
+__user_initial_stackheap
+
+                 LDR     R0, &#x3D;  Heap_Mem
+                 LDR     R1, &#x3D;(Stack_Mem + Stack_Size)
+                 LDR     R2, &#x3D; (Heap_Mem +  Heap_Size)
+                 LDR     R3, &#x3D; Stack_Mem
+                 BX      LR
+
+                 ALIGN
+
+                 ENDIF
+
+                 END
+
+;******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE*****<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    最后这一段无非就是在问是否定义了MICROLIB宏。如果使用了MICROLIB，那么程序的启动就使用St公司提供的微库！如果不是就，使用用户提供的初始化函数。</p>
+<p>​    对比2017年St公司提供的汇编启动文件，11年的启动文件就显得相对的简单。</p>
+<h2 id="分析II：分析2017年的startup文件所作"><a href="#分析II：分析2017年的startup文件所作" class="headerlink" title="分析II：分析2017年的startup文件所作"></a>分析II：分析2017年的startup文件所作</h2><p>​    对比来看，2017年的汇编文件使用的arm汇编更为现代（至少nasm味道很冲）。在开头定义和初始化了一些程序启动必备的段： <code>.data</code> 和 BSS 段。<code>.data</code> 段用于存放已初始化的全局和静态变量，而 BSS 段用于存放未初始化的全局和静态变量。</p>
+<p>​    下面就是经典的初始化Reset处理程序以及告知到哪里跳转到main函数：</p>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+ * @brief  This is the code that gets called when the processor first
+ *          starts execution following a reset event. Only the absolutely
+ *          necessary set is performed, after which the application
+ *          supplied main() routine is called.
+ * @param  None
+ * @retval : None
+*&#x2F;
+
+  .section .text.Reset_Handler
+  .weak Reset_Handler
+  .type Reset_Handler, %function
+Reset_Handler:
+
+&#x2F;* 给时钟做初始化 *&#x2F;
+&#x2F;* Call the clock system initialization function.*&#x2F;
+    bl  SystemInit
+
+&#x2F;* Copy the data segment initializers from flash to SRAM *&#x2F;
+  ldr r0, &#x3D;_sdata
+  ldr r1, &#x3D;_edata
+  ldr r2, &#x3D;_sidata
+  movs r3, #0
+  b LoopCopyDataInit
+
+&#x2F;* 设置寄存器，准备好源地址和目的地址 *&#x2F;
+CopyDataInit:
+  ldr r4, [r2, r3]
+  str r4, [r0, r3]
+  adds r3, r3, #4
+
+&#x2F;* 循环体！ *&#x2F;
+LoopCopyDataInit:
+  adds r4, r0, r3
+  cmp r4, r1
+  bcc CopyDataInit
+  
+&#x2F;* Zero fill the bss segment. *&#x2F;
+  ldr r2, &#x3D;_sbss
+  ldr r4, &#x3D;_ebss
+  movs r3, #0
+  b LoopFillZerobss
+
+FillZerobss:
+  str  r3, [r2]
+  adds r2, r2, #4
+
+LoopFillZerobss:
+  cmp r2, r4
+  bcc FillZerobss
+
+&#x2F;* Call static constructors *&#x2F;
+    bl __libc_init_array
+&#x2F;* Call the application&#39;s entry point.*&#x2F;
+  bl main
+  bx lr
+.size Reset_Handler, .-Reset_Handler<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    在下面就比2011年的文件更加干净了，就是定义了tables和默认的处理子程序。而且没有废话。具体参考最下面我贴出来的文件。</p>
+<h2 id="Helps"><a href="#Helps" class="headerlink" title="Helps"></a>Helps</h2><h3 id="2011"><a href="#2011" class="headerlink" title="2011"></a>2011</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>详细说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>EQU</td>
+<td><code>EQU</code> 指令用于为一个数字常量取一个符号名，相当于 C 语言中的 <code>#define</code>。通过这种方式，可以为常量提供一个易于识别的名称，从而提高代码的可读性和可维护性。例如，可以使用 <code>VALUE EQU 10</code> 来定义一个名为 <code>VALUE</code> 的常量，其值为 <code>10</code>。可以联想到nasm的equ，一个意思！</td>
+</tr>
+<tr>
+<td>AREA</td>
+<td><code>AREA</code> 指令用于定义一个新的代码段或数据段。它可以指定段的名称、类型（如代码段或数据段），以及其他属性。在汇编程序中，代码和数据通常被组织成不同的区域，以便于管理和访问。</td>
+</tr>
+<tr>
+<td>ALIGN</td>
+<td><code>ALIGN</code> 指令用于对齐数据或指令的存放地址。它通常需要跟一个立即数，表示对齐的字节数。默认情况下，缺省值为 4 字节对齐。<strong>对齐可以提高内存访问效率，确保数据在合适的地址边界上存放。</strong>（大部分架构要求严格的对齐！）</td>
+</tr>
+<tr>
+<td>SPACE</td>
+<td><code>SPACE</code> 指令用于分配指定数量的字节内存空间。这可以用于为数据结构、数组或其他需要在内存中分配空间的元素分配内存。分配的内存不会被初始化。</td>
+</tr>
+<tr>
+<td>PRESERVE8</td>
+<td><code>PRESERVE8</code> 指令用于指定当前文件的堆栈需要按照 8 字节对齐。这在处理某些数据结构（如 64 位数据类型）时很重要，因为不正确的对齐可能会导致性能下降或硬件故障。</td>
+</tr>
+<tr>
+<td>THUMB</td>
+<td><code>THUMB</code> 指令用于指示后续指令使用 THUMB 指令集，这是一种用于 ARM 处理器的指令集架构。Cortex-M 系列微控制器使用 THUMB-2 指令集，它支持 16 位和 32 位指令，旨在提高代码密度并减少内存占用。</td>
+</tr>
+<tr>
+<td>EXPORT</td>
+<td><code>EXPORT</code> 指令用于声明一个标号具有全局属性，这意味着该标号可以被其他外部文件访问。它用于模块化编程，使得不同模块之间可以共享函数或数据。</td>
+</tr>
+<tr>
+<td>DCD</td>
+<td><code>DCD</code> 指令用于以字节为单位分配内存，并要求内存按照 4 字节对齐，同时初始化这些内存。可以在指令后面跟随初始化值，通常用于定义常量数组或数据结构。</td>
+</tr>
+<tr>
+<td>PROC</td>
+<td><code>PROC</code> 指令用于定义一个子程序，与 <code>ENDP</code> 指令配对使用。它标志着一个子程序的开始和结束，允许代码的重用和结构化，提高程序的可读性和可维护性。</td>
+</tr>
+<tr>
+<td>WEAK</td>
+<td><code>WEAK</code> 指令用于声明一个弱定义的标号。如果外部文件中存在同名的标号，则优先使用外部文件定义的标号；如果没有定义，则使用当前文件中的定义。这在实现库时很有用，可以允许用户自定义某些功能，而不会导致链接错误。</td>
+</tr>
+<tr>
+<td>IMPORT</td>
+<td><code>IMPORT</code> 指令用于声明一个标号来自外部文件，类似于 C 语言中的 <code>extern</code> 关键字。这使得可以在当前汇编文件中引用其他模块或库中的标号。</td>
+</tr>
+<tr>
+<td>LDR</td>
+<td><code>LDR</code> 指令用于从存储器中加载一个字到指定的寄存器。它用于读取数据并将其存储在处理器的寄存器中，以便进行后续操作。这是 ARM 汇编语言中非常重要的一个指令，用于内存访问。</td>
+</tr>
+<tr>
+<td>BLX</td>
+<td><code>BLX</code> 指令用于跳转到由寄存器给出的地址，同时保存跳转前的下一条指令地址到链接寄存器（LR）。此指令还根据寄存器的最低有效位（LSE）确定处理器的状态，以支持 THUMB 指令集和 ARM 指令集之间的切换。</td>
+</tr>
+<tr>
+<td>BX</td>
+<td><code>BX</code> 指令用于跳转到由寄存器或标号给出的地址，并不保存返回地址。这在函数调用或中断处理时常用，以直接跳转到新的执行位置。</td>
+</tr>
+<tr>
+<td>B</td>
+<td><code>B</code> 指令用于无条件地跳转到一个标号，常用于控制程序的流程。这是实现循环和条件执行的基础。</td>
+</tr>
+<tr>
+<td>IF, ELSE, ENDIF</td>
+<td>这些指令用于实现汇编条件分支语句，类似于 C 语言中的 <code>if</code>、<code>else</code> 和 <code>endif</code> 结构。它们允许在汇编代码中根据条件选择执行不同的代码块。</td>
+</tr>
+<tr>
+<td>END</td>
+<td><code>END</code> 指令用于标记汇编文件的末尾，表示编译器可以停止处理该文件。这是每个汇编源文件的结束标志。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h3 id="2017"><a href="#2017" class="headerlink" title="2017"></a>2017</h3><div class="table-container">
+<table>
+<thead>
+<tr>
+<th>伪指令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>.syntax unified</code></td>
+<td>指定使用统一汇编语法，适用于 ARM 和 THUMB 模式。</td>
+</tr>
+<tr>
+<td><code>.cpu cortex-m3</code></td>
+<td>指定目标 CPU 为 Cortex-M3。</td>
+</tr>
+<tr>
+<td><code>.fpu softvfp</code></td>
+<td>指定使用软件浮点支持。</td>
+</tr>
+<tr>
+<td><code>.thumb</code></td>
+<td>指定后续代码使用 THUMB 指令集。</td>
+</tr>
+<tr>
+<td><code>.global</code></td>
+<td>声明全局符号，使得该符号在其他模块或文件中可被引用。</td>
+</tr>
+<tr>
+<td><code>.word</code></td>
+<td>定义一个或多个字（4 字节）数据，通常用于定义内存地址或数据常量。</td>
+</tr>
+<tr>
+<td><code>.equ</code></td>
+<td>定义常量，用于在代码中使用易读的符号名代替数值。</td>
+</tr>
+<tr>
+<td><code>.section</code></td>
+<td>指定代码或数据的段（section），以组织代码和数据。</td>
+</tr>
+<tr>
+<td><code>.weak</code></td>
+<td>声明弱符号，允许其他具有相同名称的符号覆盖该符号。</td>
+</tr>
+<tr>
+<td><code>.type</code></td>
+<td>指定符号的类型，如函数或对象。</td>
+</tr>
+<tr>
+<td><code>.size</code></td>
+<td>指定符号的大小，通常用于描述函数或数据段的长度。</td>
+</tr>
+<tr>
+<td><code>.bss</code></td>
+<td>表示未初始化的数据段，通常用于分配内存。</td>
+</tr>
+<tr>
+<td><code>.text</code></td>
+<td>指定代码段，用于放置程序的指令。</td>
+</tr>
+<tr>
+<td><code>.data</code></td>
+<td>指定已初始化的数据段，用于存放已初始化的变量。</td>
+</tr>
+<tr>
+<td><code>.isr_vector</code></td>
+<td>指定中断向量表段，通常用于定义中断处理程序的地址。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th>指令</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>bl</code></td>
+<td>分支到指定地址的函数，同时将返回地址存储到链接寄存器（LR），用于函数调用。</td>
+</tr>
+<tr>
+<td><code>ldr</code></td>
+<td>从内存中加载一个字（4 字节）到指定的寄存器中。</td>
+</tr>
+<tr>
+<td><code>str</code></td>
+<td>将寄存器中的值存储到内存中指定的地址。</td>
+</tr>
+<tr>
+<td><code>movs</code></td>
+<td>将一个立即数移动到寄存器中，并更新状态寄存器的条件标志。</td>
+</tr>
+<tr>
+<td><code>adds</code></td>
+<td>将两个寄存器的值相加，并将结果存储在第一个寄存器中，同时更新状态寄存器的条件标志。</td>
+</tr>
+<tr>
+<td><code>cmp</code></td>
+<td>比较两个寄存器的值，并更新状态寄存器，以便进行条件跳转。</td>
+</tr>
+<tr>
+<td><code>bcc</code></td>
+<td>如果前一次比较的结果小于，则进行条件跳转（无符号比较）。</td>
+</tr>
+<tr>
+<td><code>b</code></td>
+<td>无条件跳转到指定的标签或地址。</td>
+</tr>
+<tr>
+<td><code>bx</code></td>
+<td>跳转到寄存器中指定的地址，并返回到调用点。</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h2><pre class="line-numbers language-none"><code class="language-none">;******************** (C) COPYRIGHT 2011 STMicroelectronics ********************
+;* File Name          : startup_stm32f10x_md.s
+;* Author             : MCD Application Team
+;* Version            : V3.5.0
+;* Date               : 11-March-2011
+;* Description        : STM32F10x Medium Density Devices vector table for MDK-ARM 
+;*                      toolchain.  
+;*                      This module performs:
+;*                      - Set the initial SP
+;*                      - Set the initial PC &#x3D;&#x3D; Reset_Handler
+;*                      - Set the vector table entries with the exceptions ISR address
+;*                      - Configure the clock system
+;*                      - Branches to __main in the C library (which eventually
+;*                        calls main()).
+;*                      After Reset the CortexM3 processor is in Thread mode,
+;*                      priority is Privileged, and the Stack is set to Main.
+;* &lt;&lt;&lt; Use Configuration Wizard in Context Menu &gt;&gt;&gt;   
+;*******************************************************************************
+; THE PRESENT FIRMWARE WHICH IS FOR GUIDANCE ONLY AIMS AT PROVIDING CUSTOMERS
+; WITH CODING INFORMATION REGARDING THEIR PRODUCTS IN ORDER FOR THEM TO SAVE TIME.
+; AS A RESULT, STMICROELECTRONICS SHALL NOT BE HELD LIABLE FOR ANY DIRECT,
+; INDIRECT OR CONSEQUENTIAL DAMAGES WITH RESPECT TO ANY CLAIMS ARISING FROM THE
+; CONTENT OF SUCH FIRMWARE AND&#x2F;OR THE USE MADE BY CUSTOMERS OF THE CODING
+; INFORMATION CONTAINED HEREIN IN CONNECTION WITH THEIR PRODUCTS.
+;*******************************************************************************
+
+; Amount of memory (in bytes) allocated for Stack
+; Tailor this value to your application needs
+; &lt;h&gt; Stack Configuration
+;   &lt;o&gt; Stack Size (in Bytes) &lt;0x0-0xFFFFFFFF:8&gt;
+; &lt;&#x2F;h&gt;
+
+Stack_Size      EQU     0x00000400
+
+                AREA    STACK, NOINIT, READWRITE, ALIGN&#x3D;3
+Stack_Mem       SPACE   Stack_Size
+__initial_sp
+
+
+; &lt;h&gt; Heap Configuration
+;   &lt;o&gt;  Heap Size (in Bytes) &lt;0x0-0xFFFFFFFF:8&gt;
+; &lt;&#x2F;h&gt;
+
+Heap_Size       EQU     0x00000200
+
+                AREA    HEAP, NOINIT, READWRITE, ALIGN&#x3D;3
+__heap_base
+Heap_Mem        SPACE   Heap_Size
+__heap_limit
+
+                PRESERVE8
+                THUMB
+
+
+; Vector Table Mapped to Address 0 at Reset
+                AREA    RESET, DATA, READONLY
+                EXPORT  __Vectors
+                EXPORT  __Vectors_End
+                EXPORT  __Vectors_Size
+
+__Vectors       DCD     __initial_sp               ; Top of Stack
+                DCD     Reset_Handler              ; Reset Handler
+                DCD     NMI_Handler                ; NMI Handler
+                DCD     HardFault_Handler          ; Hard Fault Handler
+                DCD     MemManage_Handler          ; MPU Fault Handler
+                DCD     BusFault_Handler           ; Bus Fault Handler
+                DCD     UsageFault_Handler         ; Usage Fault Handler
+                DCD     0                          ; Reserved
+                DCD     0                          ; Reserved
+                DCD     0                          ; Reserved
+                DCD     0                          ; Reserved
+                DCD     SVC_Handler                ; SVCall Handler
+                DCD     DebugMon_Handler           ; Debug Monitor Handler
+                DCD     0                          ; Reserved
+                DCD     PendSV_Handler             ; PendSV Handler
+                DCD     SysTick_Handler            ; SysTick Handler
+
+                ; External Interrupts
+                DCD     WWDG_IRQHandler            ; Window Watchdog
+                DCD     PVD_IRQHandler             ; PVD through EXTI Line detect
+                DCD     TAMPER_IRQHandler          ; Tamper
+                DCD     RTC_IRQHandler             ; RTC
+                DCD     FLASH_IRQHandler           ; Flash
+                DCD     RCC_IRQHandler             ; RCC
+                DCD     EXTI0_IRQHandler           ; EXTI Line 0
+                DCD     EXTI1_IRQHandler           ; EXTI Line 1
+                DCD     EXTI2_IRQHandler           ; EXTI Line 2
+                DCD     EXTI3_IRQHandler           ; EXTI Line 3
+                DCD     EXTI4_IRQHandler           ; EXTI Line 4
+                DCD     DMA1_Channel1_IRQHandler   ; DMA1 Channel 1
+                DCD     DMA1_Channel2_IRQHandler   ; DMA1 Channel 2
+                DCD     DMA1_Channel3_IRQHandler   ; DMA1 Channel 3
+                DCD     DMA1_Channel4_IRQHandler   ; DMA1 Channel 4
+                DCD     DMA1_Channel5_IRQHandler   ; DMA1 Channel 5
+                DCD     DMA1_Channel6_IRQHandler   ; DMA1 Channel 6
+                DCD     DMA1_Channel7_IRQHandler   ; DMA1 Channel 7
+                DCD     ADC1_2_IRQHandler          ; ADC1_2
+                DCD     USB_HP_CAN1_TX_IRQHandler  ; USB High Priority or CAN1 TX
+                DCD     USB_LP_CAN1_RX0_IRQHandler ; USB Low  Priority or CAN1 RX0
+                DCD     CAN1_RX1_IRQHandler        ; CAN1 RX1
+                DCD     CAN1_SCE_IRQHandler        ; CAN1 SCE
+                DCD     EXTI9_5_IRQHandler         ; EXTI Line 9..5
+                DCD     TIM1_BRK_IRQHandler        ; TIM1 Break
+                DCD     TIM1_UP_IRQHandler         ; TIM1 Update
+                DCD     TIM1_TRG_COM_IRQHandler    ; TIM1 Trigger and Commutation
+                DCD     TIM1_CC_IRQHandler         ; TIM1 Capture Compare
+                DCD     TIM2_IRQHandler            ; TIM2
+                DCD     TIM3_IRQHandler            ; TIM3
+                DCD     TIM4_IRQHandler            ; TIM4
+                DCD     I2C1_EV_IRQHandler         ; I2C1 Event
+                DCD     I2C1_ER_IRQHandler         ; I2C1 Error
+                DCD     I2C2_EV_IRQHandler         ; I2C2 Event
+                DCD     I2C2_ER_IRQHandler         ; I2C2 Error
+                DCD     SPI1_IRQHandler            ; SPI1
+                DCD     SPI2_IRQHandler            ; SPI2
+                DCD     USART1_IRQHandler          ; USART1
+                DCD     USART2_IRQHandler          ; USART2
+                DCD     USART3_IRQHandler          ; USART3
+                DCD     EXTI15_10_IRQHandler       ; EXTI Line 15..10
+                DCD     RTCAlarm_IRQHandler        ; RTC Alarm through EXTI Line
+                DCD     USBWakeUp_IRQHandler       ; USB Wakeup from suspend
+__Vectors_End
+
+__Vectors_Size  EQU  __Vectors_End - __Vectors
+
+                AREA    |.text|, CODE, READONLY
+
+; Reset handler
+Reset_Handler    PROC
+                 EXPORT  Reset_Handler             [WEAK]
+     IMPORT  __main
+     IMPORT  SystemInit
+                 LDR     R0, &#x3D;SystemInit
+                 BLX     R0
+                 LDR     R0, &#x3D;__main
+                 BX      R0
+                 ENDP
+
+; Dummy Exception Handlers (infinite loops which can be modified)
+
+NMI_Handler     PROC
+                EXPORT  NMI_Handler                [WEAK]
+                B       .
+                ENDP
+HardFault_Handler\
+                PROC
+                EXPORT  HardFault_Handler          [WEAK]
+                B       .
+                ENDP
+MemManage_Handler\
+                PROC
+                EXPORT  MemManage_Handler          [WEAK]
+                B       .
+                ENDP
+BusFault_Handler\
+                PROC
+                EXPORT  BusFault_Handler           [WEAK]
+                B       .
+                ENDP
+UsageFault_Handler\
+                PROC
+                EXPORT  UsageFault_Handler         [WEAK]
+                B       .
+                ENDP
+SVC_Handler     PROC
+                EXPORT  SVC_Handler                [WEAK]
+                B       .
+                ENDP
+DebugMon_Handler\
+                PROC
+                EXPORT  DebugMon_Handler           [WEAK]
+                B       .
+                ENDP
+PendSV_Handler  PROC
+                EXPORT  PendSV_Handler             [WEAK]
+                B       .
+                ENDP
+SysTick_Handler PROC
+                EXPORT  SysTick_Handler            [WEAK]
+                B       .
+                ENDP
+
+Default_Handler PROC
+
+                EXPORT  WWDG_IRQHandler            [WEAK]
+                EXPORT  PVD_IRQHandler             [WEAK]
+                EXPORT  TAMPER_IRQHandler          [WEAK]
+                EXPORT  RTC_IRQHandler             [WEAK]
+                EXPORT  FLASH_IRQHandler           [WEAK]
+                EXPORT  RCC_IRQHandler             [WEAK]
+                EXPORT  EXTI0_IRQHandler           [WEAK]
+                EXPORT  EXTI1_IRQHandler           [WEAK]
+                EXPORT  EXTI2_IRQHandler           [WEAK]
+                EXPORT  EXTI3_IRQHandler           [WEAK]
+                EXPORT  EXTI4_IRQHandler           [WEAK]
+                EXPORT  DMA1_Channel1_IRQHandler   [WEAK]
+                EXPORT  DMA1_Channel2_IRQHandler   [WEAK]
+                EXPORT  DMA1_Channel3_IRQHandler   [WEAK]
+                EXPORT  DMA1_Channel4_IRQHandler   [WEAK]
+                EXPORT  DMA1_Channel5_IRQHandler   [WEAK]
+                EXPORT  DMA1_Channel6_IRQHandler   [WEAK]
+                EXPORT  DMA1_Channel7_IRQHandler   [WEAK]
+                EXPORT  ADC1_2_IRQHandler          [WEAK]
+                EXPORT  USB_HP_CAN1_TX_IRQHandler  [WEAK]
+                EXPORT  USB_LP_CAN1_RX0_IRQHandler [WEAK]
+                EXPORT  CAN1_RX1_IRQHandler        [WEAK]
+                EXPORT  CAN1_SCE_IRQHandler        [WEAK]
+                EXPORT  EXTI9_5_IRQHandler         [WEAK]
+                EXPORT  TIM1_BRK_IRQHandler        [WEAK]
+                EXPORT  TIM1_UP_IRQHandler         [WEAK]
+                EXPORT  TIM1_TRG_COM_IRQHandler    [WEAK]
+                EXPORT  TIM1_CC_IRQHandler         [WEAK]
+                EXPORT  TIM2_IRQHandler            [WEAK]
+                EXPORT  TIM3_IRQHandler            [WEAK]
+                EXPORT  TIM4_IRQHandler            [WEAK]
+                EXPORT  I2C1_EV_IRQHandler         [WEAK]
+                EXPORT  I2C1_ER_IRQHandler         [WEAK]
+                EXPORT  I2C2_EV_IRQHandler         [WEAK]
+                EXPORT  I2C2_ER_IRQHandler         [WEAK]
+                EXPORT  SPI1_IRQHandler            [WEAK]
+                EXPORT  SPI2_IRQHandler            [WEAK]
+                EXPORT  USART1_IRQHandler          [WEAK]
+                EXPORT  USART2_IRQHandler          [WEAK]
+                EXPORT  USART3_IRQHandler          [WEAK]
+                EXPORT  EXTI15_10_IRQHandler       [WEAK]
+                EXPORT  RTCAlarm_IRQHandler        [WEAK]
+                EXPORT  USBWakeUp_IRQHandler       [WEAK]
+
+WWDG_IRQHandler
+PVD_IRQHandler
+TAMPER_IRQHandler
+RTC_IRQHandler
+FLASH_IRQHandler
+RCC_IRQHandler
+EXTI0_IRQHandler
+EXTI1_IRQHandler
+EXTI2_IRQHandler
+EXTI3_IRQHandler
+EXTI4_IRQHandler
+DMA1_Channel1_IRQHandler
+DMA1_Channel2_IRQHandler
+DMA1_Channel3_IRQHandler
+DMA1_Channel4_IRQHandler
+DMA1_Channel5_IRQHandler
+DMA1_Channel6_IRQHandler
+DMA1_Channel7_IRQHandler
+ADC1_2_IRQHandler
+USB_HP_CAN1_TX_IRQHandler
+USB_LP_CAN1_RX0_IRQHandler
+CAN1_RX1_IRQHandler
+CAN1_SCE_IRQHandler
+EXTI9_5_IRQHandler
+TIM1_BRK_IRQHandler
+TIM1_UP_IRQHandler
+TIM1_TRG_COM_IRQHandler
+TIM1_CC_IRQHandler
+TIM2_IRQHandler
+TIM3_IRQHandler
+TIM4_IRQHandler
+I2C1_EV_IRQHandler
+I2C1_ER_IRQHandler
+I2C2_EV_IRQHandler
+I2C2_ER_IRQHandler
+SPI1_IRQHandler
+SPI2_IRQHandler
+USART1_IRQHandler
+USART2_IRQHandler
+USART3_IRQHandler
+EXTI15_10_IRQHandler
+RTCAlarm_IRQHandler
+USBWakeUp_IRQHandler
+
+                B       .
+
+                ENDP
+
+                ALIGN
+
+;*******************************************************************************
+; User Stack and Heap initialization
+;*******************************************************************************
+                 IF      :DEF:__MICROLIB           
+                
+                 EXPORT  __initial_sp
+                 EXPORT  __heap_base
+                 EXPORT  __heap_limit
+                
+                 ELSE
+                
+                 IMPORT  __use_two_region_memory
+                 EXPORT  __user_initial_stackheap
+                 
+__user_initial_stackheap
+
+                 LDR     R0, &#x3D;  Heap_Mem
+                 LDR     R1, &#x3D;(Stack_Mem + Stack_Size)
+                 LDR     R2, &#x3D; (Heap_Mem +  Heap_Size)
+                 LDR     R3, &#x3D; Stack_Mem
+                 BX      LR
+
+                 ALIGN
+
+                 ENDIF
+
+                 END
+
+;******************* (C) COPYRIGHT 2011 STMicroelectronics *****END OF FILE*****
+<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>startup_stm32f103xe.s（2017）</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">&#x2F;**
+  *************** (C) COPYRIGHT 2017 STMicroelectronics ************************
+  * @file      startup_stm32f103xe.s
+  * @author    MCD Application Team
+  * @brief     STM32F103xE Devices vector table for Atollic toolchain.
+  *            This module performs:
+  *                - Set the initial SP
+  *                - Set the initial PC &#x3D;&#x3D; Reset_Handler,
+  *                - Set the vector table entries with the exceptions ISR address
+  *                - Configure the clock system   
+  *                - Configure external SRAM mounted on STM3210E-EVAL board
+  *                  to be used as data memory (optional, to be enabled by user)
+  *                - Branches to main in the C library (which eventually
+  *                  calls main()).
+  *            After Reset the Cortex-M3 processor is in Thread mode,
+  *            priority is Privileged, and the Stack is set to Main.
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2017-2021 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  *&#x2F;
+
+  .syntax unified
+  .cpu cortex-m3
+  .fpu softvfp
+  .thumb
+
+.global g_pfnVectors
+.global Default_Handler
+
+&#x2F;* start address for the initialization values of the .data section.
+defined in linker script *&#x2F;
+.word _sidata
+&#x2F;* start address for the .data section. defined in linker script *&#x2F;
+.word _sdata
+&#x2F;* end address for the .data section. defined in linker script *&#x2F;
+.word _edata
+&#x2F;* start address for the .bss section. defined in linker script *&#x2F;
+.word _sbss
+&#x2F;* end address for the .bss section. defined in linker script *&#x2F;
+.word _ebss
+
+.equ  BootRAM,        0xF1E0F85F
+&#x2F;**
+ * @brief  This is the code that gets called when the processor first
+ *          starts execution following a reset event. Only the absolutely
+ *          necessary set is performed, after which the application
+ *          supplied main() routine is called.
+ * @param  None
+ * @retval : None
+*&#x2F;
+
+  .section .text.Reset_Handler
+  .weak Reset_Handler
+  .type Reset_Handler, %function
+Reset_Handler:
+
+&#x2F;* Call the clock system initialization function.*&#x2F;
+    bl  SystemInit
+
+&#x2F;* Copy the data segment initializers from flash to SRAM *&#x2F;
+  ldr r0, &#x3D;_sdata
+  ldr r1, &#x3D;_edata
+  ldr r2, &#x3D;_sidata
+  movs r3, #0
+  b LoopCopyDataInit
+
+CopyDataInit:
+  ldr r4, [r2, r3]
+  str r4, [r0, r3]
+  adds r3, r3, #4
+
+LoopCopyDataInit:
+  adds r4, r0, r3
+  cmp r4, r1
+  bcc CopyDataInit
+  
+&#x2F;* Zero fill the bss segment. *&#x2F;
+  ldr r2, &#x3D;_sbss
+  ldr r4, &#x3D;_ebss
+  movs r3, #0
+  b LoopFillZerobss
+
+FillZerobss:
+  str  r3, [r2]
+  adds r2, r2, #4
+
+LoopFillZerobss:
+  cmp r2, r4
+  bcc FillZerobss
+
+&#x2F;* Call static constructors *&#x2F;
+    bl __libc_init_array
+&#x2F;* Call the application&#39;s entry point.*&#x2F;
+  bl main
+  bx lr
+.size Reset_Handler, .-Reset_Handler
+
+&#x2F;**
+ * @brief  This is the code that gets called when the processor receives an
+ *         unexpected interrupt.  This simply enters an infinite loop, preserving
+ *         the system state for examination by a debugger.
+ *
+ * @param  None
+ * @retval : None
+*&#x2F;
+    .section .text.Default_Handler,&quot;ax&quot;,%progbits
+Default_Handler:
+Infinite_Loop:
+  b Infinite_Loop
+  .size Default_Handler, .-Default_Handler
+&#x2F;******************************************************************************
+*
+* The minimal vector table for a Cortex M3.  Note that the proper constructs
+* must be placed on this to ensure that it ends up at physical address
+* 0x0000.0000.
+*
+******************************************************************************&#x2F;
+  .section .isr_vector,&quot;a&quot;,%progbits
+  .type g_pfnVectors, %object
+  .size g_pfnVectors, .-g_pfnVectors
+
+
+g_pfnVectors:
+
+  .word _estack
+  .word Reset_Handler
+  .word NMI_Handler
+  .word HardFault_Handler
+  .word MemManage_Handler
+  .word BusFault_Handler
+  .word UsageFault_Handler
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word SVC_Handler
+  .word DebugMon_Handler
+  .word 0
+  .word PendSV_Handler
+  .word SysTick_Handler
+  .word WWDG_IRQHandler
+  .word PVD_IRQHandler
+  .word TAMPER_IRQHandler
+  .word RTC_IRQHandler
+  .word FLASH_IRQHandler
+  .word RCC_IRQHandler
+  .word EXTI0_IRQHandler
+  .word EXTI1_IRQHandler
+  .word EXTI2_IRQHandler
+  .word EXTI3_IRQHandler
+  .word EXTI4_IRQHandler
+  .word DMA1_Channel1_IRQHandler
+  .word DMA1_Channel2_IRQHandler
+  .word DMA1_Channel3_IRQHandler
+  .word DMA1_Channel4_IRQHandler
+  .word DMA1_Channel5_IRQHandler
+  .word DMA1_Channel6_IRQHandler
+  .word DMA1_Channel7_IRQHandler
+  .word ADC1_2_IRQHandler
+  .word USB_HP_CAN1_TX_IRQHandler
+  .word USB_LP_CAN1_RX0_IRQHandler
+  .word CAN1_RX1_IRQHandler
+  .word CAN1_SCE_IRQHandler
+  .word EXTI9_5_IRQHandler
+  .word TIM1_BRK_IRQHandler
+  .word TIM1_UP_IRQHandler
+  .word TIM1_TRG_COM_IRQHandler
+  .word TIM1_CC_IRQHandler
+  .word TIM2_IRQHandler
+  .word TIM3_IRQHandler
+  .word TIM4_IRQHandler
+  .word I2C1_EV_IRQHandler
+  .word I2C1_ER_IRQHandler
+  .word I2C2_EV_IRQHandler
+  .word I2C2_ER_IRQHandler
+  .word SPI1_IRQHandler
+  .word SPI2_IRQHandler
+  .word USART1_IRQHandler
+  .word USART2_IRQHandler
+  .word USART3_IRQHandler
+  .word EXTI15_10_IRQHandler
+  .word RTC_Alarm_IRQHandler
+  .word USBWakeUp_IRQHandler
+  .word TIM8_BRK_IRQHandler
+  .word TIM8_UP_IRQHandler
+  .word TIM8_TRG_COM_IRQHandler
+  .word TIM8_CC_IRQHandler
+  .word ADC3_IRQHandler
+  .word FSMC_IRQHandler
+  .word SDIO_IRQHandler
+  .word TIM5_IRQHandler
+  .word SPI3_IRQHandler
+  .word UART4_IRQHandler
+  .word UART5_IRQHandler
+  .word TIM6_IRQHandler
+  .word TIM7_IRQHandler
+  .word DMA2_Channel1_IRQHandler
+  .word DMA2_Channel2_IRQHandler
+  .word DMA2_Channel3_IRQHandler
+  .word DMA2_Channel4_5_IRQHandler
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word 0
+  .word BootRAM       &#x2F;* @0x1E0. This is for boot in RAM mode for
+                         STM32F10x High Density devices. *&#x2F;
+
+&#x2F;*******************************************************************************
+*
+* Provide weak aliases for each Exception handler to the Default_Handler.
+* As they are weak aliases, any function with the same name will override
+* this definition.
+*
+*******************************************************************************&#x2F;
+
+  .weak NMI_Handler
+  .thumb_set NMI_Handler,Default_Handler
+
+  .weak HardFault_Handler
+  .thumb_set HardFault_Handler,Default_Handler
+
+  .weak MemManage_Handler
+  .thumb_set MemManage_Handler,Default_Handler
+
+  .weak BusFault_Handler
+  .thumb_set BusFault_Handler,Default_Handler
+
+  .weak UsageFault_Handler
+  .thumb_set UsageFault_Handler,Default_Handler
+
+  .weak SVC_Handler
+  .thumb_set SVC_Handler,Default_Handler
+
+  .weak DebugMon_Handler
+  .thumb_set DebugMon_Handler,Default_Handler
+
+  .weak PendSV_Handler
+  .thumb_set PendSV_Handler,Default_Handler
+
+  .weak SysTick_Handler
+  .thumb_set SysTick_Handler,Default_Handler
+
+  .weak WWDG_IRQHandler
+  .thumb_set WWDG_IRQHandler,Default_Handler
+
+  .weak PVD_IRQHandler
+  .thumb_set PVD_IRQHandler,Default_Handler
+
+  .weak TAMPER_IRQHandler
+  .thumb_set TAMPER_IRQHandler,Default_Handler
+
+  .weak RTC_IRQHandler
+  .thumb_set RTC_IRQHandler,Default_Handler
+
+  .weak FLASH_IRQHandler
+  .thumb_set FLASH_IRQHandler,Default_Handler
+
+  .weak RCC_IRQHandler
+  .thumb_set RCC_IRQHandler,Default_Handler
+
+  .weak EXTI0_IRQHandler
+  .thumb_set EXTI0_IRQHandler,Default_Handler
+
+  .weak EXTI1_IRQHandler
+  .thumb_set EXTI1_IRQHandler,Default_Handler
+
+  .weak EXTI2_IRQHandler
+  .thumb_set EXTI2_IRQHandler,Default_Handler
+
+  .weak EXTI3_IRQHandler
+  .thumb_set EXTI3_IRQHandler,Default_Handler
+
+  .weak EXTI4_IRQHandler
+  .thumb_set EXTI4_IRQHandler,Default_Handler
+
+  .weak DMA1_Channel1_IRQHandler
+  .thumb_set DMA1_Channel1_IRQHandler,Default_Handler
+
+  .weak DMA1_Channel2_IRQHandler
+  .thumb_set DMA1_Channel2_IRQHandler,Default_Handler
+
+  .weak DMA1_Channel3_IRQHandler
+  .thumb_set DMA1_Channel3_IRQHandler,Default_Handler
+
+  .weak DMA1_Channel4_IRQHandler
+  .thumb_set DMA1_Channel4_IRQHandler,Default_Handler
+
+  .weak DMA1_Channel5_IRQHandler
+  .thumb_set DMA1_Channel5_IRQHandler,Default_Handler
+
+  .weak DMA1_Channel6_IRQHandler
+  .thumb_set DMA1_Channel6_IRQHandler,Default_Handler
+
+  .weak DMA1_Channel7_IRQHandler
+  .thumb_set DMA1_Channel7_IRQHandler,Default_Handler
+
+  .weak ADC1_2_IRQHandler
+  .thumb_set ADC1_2_IRQHandler,Default_Handler
+
+  .weak USB_HP_CAN1_TX_IRQHandler
+  .thumb_set USB_HP_CAN1_TX_IRQHandler,Default_Handler
+
+  .weak USB_LP_CAN1_RX0_IRQHandler
+  .thumb_set USB_LP_CAN1_RX0_IRQHandler,Default_Handler
+
+  .weak CAN1_RX1_IRQHandler
+  .thumb_set CAN1_RX1_IRQHandler,Default_Handler
+
+  .weak CAN1_SCE_IRQHandler
+  .thumb_set CAN1_SCE_IRQHandler,Default_Handler
+
+  .weak EXTI9_5_IRQHandler
+  .thumb_set EXTI9_5_IRQHandler,Default_Handler
+
+  .weak TIM1_BRK_IRQHandler
+  .thumb_set TIM1_BRK_IRQHandler,Default_Handler
+
+  .weak TIM1_UP_IRQHandler
+  .thumb_set TIM1_UP_IRQHandler,Default_Handler
+
+  .weak TIM1_TRG_COM_IRQHandler
+  .thumb_set TIM1_TRG_COM_IRQHandler,Default_Handler
+
+  .weak TIM1_CC_IRQHandler
+  .thumb_set TIM1_CC_IRQHandler,Default_Handler
+
+  .weak TIM2_IRQHandler
+  .thumb_set TIM2_IRQHandler,Default_Handler
+
+  .weak TIM3_IRQHandler
+  .thumb_set TIM3_IRQHandler,Default_Handler
+
+  .weak TIM4_IRQHandler
+  .thumb_set TIM4_IRQHandler,Default_Handler
+
+  .weak I2C1_EV_IRQHandler
+  .thumb_set I2C1_EV_IRQHandler,Default_Handler
+
+  .weak I2C1_ER_IRQHandler
+  .thumb_set I2C1_ER_IRQHandler,Default_Handler
+
+  .weak I2C2_EV_IRQHandler
+  .thumb_set I2C2_EV_IRQHandler,Default_Handler
+
+  .weak I2C2_ER_IRQHandler
+  .thumb_set I2C2_ER_IRQHandler,Default_Handler
+
+  .weak SPI1_IRQHandler
+  .thumb_set SPI1_IRQHandler,Default_Handler
+
+  .weak SPI2_IRQHandler
+  .thumb_set SPI2_IRQHandler,Default_Handler
+
+  .weak USART1_IRQHandler
+  .thumb_set USART1_IRQHandler,Default_Handler
+
+  .weak USART2_IRQHandler
+  .thumb_set USART2_IRQHandler,Default_Handler
+
+  .weak USART3_IRQHandler
+  .thumb_set USART3_IRQHandler,Default_Handler
+
+  .weak EXTI15_10_IRQHandler
+  .thumb_set EXTI15_10_IRQHandler,Default_Handler
+
+  .weak RTC_Alarm_IRQHandler
+  .thumb_set RTC_Alarm_IRQHandler,Default_Handler
+
+  .weak USBWakeUp_IRQHandler
+  .thumb_set USBWakeUp_IRQHandler,Default_Handler
+
+  .weak TIM8_BRK_IRQHandler
+  .thumb_set TIM8_BRK_IRQHandler,Default_Handler
+
+  .weak TIM8_UP_IRQHandler
+  .thumb_set TIM8_UP_IRQHandler,Default_Handler
+
+  .weak TIM8_TRG_COM_IRQHandler
+  .thumb_set TIM8_TRG_COM_IRQHandler,Default_Handler
+
+  .weak TIM8_CC_IRQHandler
+  .thumb_set TIM8_CC_IRQHandler,Default_Handler
+
+  .weak ADC3_IRQHandler
+  .thumb_set ADC3_IRQHandler,Default_Handler
+
+  .weak FSMC_IRQHandler
+  .thumb_set FSMC_IRQHandler,Default_Handler
+
+  .weak SDIO_IRQHandler
+  .thumb_set SDIO_IRQHandler,Default_Handler
+
+  .weak TIM5_IRQHandler
+  .thumb_set TIM5_IRQHandler,Default_Handler
+
+  .weak SPI3_IRQHandler
+  .thumb_set SPI3_IRQHandler,Default_Handler
+
+  .weak UART4_IRQHandler
+  .thumb_set UART4_IRQHandler,Default_Handler
+
+  .weak UART5_IRQHandler
+  .thumb_set UART5_IRQHandler,Default_Handler
+
+  .weak TIM6_IRQHandler
+  .thumb_set TIM6_IRQHandler,Default_Handler
+
+  .weak TIM7_IRQHandler
+  .thumb_set TIM7_IRQHandler,Default_Handler
+
+  .weak DMA2_Channel1_IRQHandler
+  .thumb_set DMA2_Channel1_IRQHandler,Default_Handler
+
+  .weak DMA2_Channel2_IRQHandler
+  .thumb_set DMA2_Channel2_IRQHandler,Default_Handler
+
+  .weak DMA2_Channel3_IRQHandler
+  .thumb_set DMA2_Channel3_IRQHandler,Default_Handler
+
+  .weak DMA2_Channel4_5_IRQHandler
+  .thumb_set DMA2_Channel4_5_IRQHandler,Default_Handler<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/">http://charliechen114514.github.io/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/stm32/">stm32</a><a class="post-meta__tags" href="/tags/ARM/">ARM</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/11/15/WSL2%E4%B8%8B%E4%BD%BF%E7%94%A8miniconda-cuda-cudnn%E6%96%B9%E6%A1%88%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%96%B9%E6%A1%88/" title="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案</div></div></a></div><div class="next-post pull-right"><a href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/" title="STM32单片机之分析启动文件小论(I)"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">STM32单片机之分析启动文件小论(I)</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/" title="STM32单片机之分析启动文件小论(I)"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-15</div><div class="title">STM32单片机之分析启动文件小论(I)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">上传了一些在CSDN和博客园写的博客(喜),甚至更换了背景图(喜x2)</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%86%99%E5%9C%A8%E5%89%8D%E9%9D%A2"><span class="toc-number">1.</span> <span class="toc-text">写在前面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%80%9F%E9%80%9A%EF%BC%9A%E5%81%9A%E4%BA%86%E4%BB%80%E4%B9%88%EF%BC%9A"><span class="toc-number">2.</span> <span class="toc-text">速通：做了什么：</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90I%EF%BC%9A%E5%88%86%E6%9E%902011%E5%B9%B4%E7%9A%84startup%E6%96%87%E4%BB%B6%E6%89%80%E4%BD%9C"><span class="toc-number">3.</span> <span class="toc-text">分析I：分析2011年的startup文件所作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%86%E6%9E%90II%EF%BC%9A%E5%88%86%E6%9E%902017%E5%B9%B4%E7%9A%84startup%E6%96%87%E4%BB%B6%E6%89%80%E4%BD%9C"><span class="toc-number">4.</span> <span class="toc-text">分析II：分析2017年的startup文件所作</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Helps"><span class="toc-number">5.</span> <span class="toc-text">Helps</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2011"><span class="toc-number">5.1.</span> <span class="toc-text">2011</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2017"><span class="toc-number">5.2.</span> <span class="toc-text">2017</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Reference"><span class="toc-number">6.</span> <span class="toc-text">Reference</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/11/15/WSL2%E4%B8%8B%E4%BD%BF%E7%94%A8miniconda-cuda-cudnn%E6%96%B9%E6%A1%88%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%96%B9%E6%A1%88/" title="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案"/></a><div class="content"><a class="title" href="/2024/11/15/WSL2%E4%B8%8B%E4%BD%BF%E7%94%A8miniconda-cuda-cudnn%E6%96%B9%E6%A1%88%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%96%B9%E6%A1%88/" title="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案">WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案</a><time datetime="2024-11-15T13:11:50.000Z" title="发表于 2024-11-15 21:11:50">2024-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/" title="STM32单片机之分析启动文件小论(II)"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32单片机之分析启动文件小论(II)"/></a><div class="content"><a class="title" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/" title="STM32单片机之分析启动文件小论(II)">STM32单片机之分析启动文件小论(II)</a><time datetime="2024-11-15T13:05:50.000Z" title="发表于 2024-11-15 21:05:50">2024-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/" title="STM32单片机之分析启动文件小论(I)"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32单片机之分析启动文件小论(I)"/></a><div class="content"><a class="title" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/" title="STM32单片机之分析启动文件小论(I)">STM32单片机之分析启动文件小论(I)</a><time datetime="2024-11-15T13:05:45.000Z" title="发表于 2024-11-15 21:05:45">2024-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/18/%E6%9D%82%E8%B0%88%E7%AC%94%E8%AE%B0%EF%BC%9A%E4%B8%80%E4%B8%AAdebug%E8%AE%B0%E5%BD%95%E4%B9%8B%E9%94%99%E8%AF%AF%E7%9A%84ld-interpreter/" title="杂谈笔记：一个debug记录之错误的ld interpreter"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="杂谈笔记：一个debug记录之错误的ld interpreter"/></a><div class="content"><a class="title" href="/2024/10/18/%E6%9D%82%E8%B0%88%E7%AC%94%E8%AE%B0%EF%BC%9A%E4%B8%80%E4%B8%AAdebug%E8%AE%B0%E5%BD%95%E4%B9%8B%E9%94%99%E8%AF%AF%E7%9A%84ld-interpreter/" title="杂谈笔记：一个debug记录之错误的ld interpreter">杂谈笔记：一个debug记录之错误的ld interpreter</a><time datetime="2024-10-18T11:55:58.000Z" title="发表于 2024-10-18 19:55:58">2024-10-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/29/%E5%A6%82%E4%BD%95%E5%9C%A8Linux%E4%B8%8A%E6%9E%84%E5%BB%BARaspberry-Pi%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" title="如何在Linux上构建Raspberry Pi虚拟环境"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何在Linux上构建Raspberry Pi虚拟环境"/></a><div class="content"><a class="title" href="/2024/07/29/%E5%A6%82%E4%BD%95%E5%9C%A8Linux%E4%B8%8A%E6%9E%84%E5%BB%BARaspberry-Pi%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" title="如何在Linux上构建Raspberry Pi虚拟环境">如何在Linux上构建Raspberry Pi虚拟环境</a><time datetime="2024-07-29T14:11:04.000Z" title="发表于 2024-07-29 22:11:04">2024-07-29</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

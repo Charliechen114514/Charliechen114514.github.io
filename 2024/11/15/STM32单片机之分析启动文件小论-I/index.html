@@ -1,0 +1,488 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>STM32单片机之分析启动文件小论(I) | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="STM32单片机之分析启动文件小论(I)上电时我们的STM32一经上电，他会跟CPU上电的行为一致，也就是跳转到一个固定的地址。我们的STM32也是一样，对于不同的boot选择，他会跳转到不同的地址。这就跟启动模式的三种方式很有关系：     BOOT0 BOOT1 启动模式 0x00000000的映射地址 0x00000004的映射地址     0 x 内部FLASH 0x08000000 0x">
+<meta property="og:type" content="article">
+<meta property="og:title" content="STM32单片机之分析启动文件小论(I)">
+<meta property="og:url" content="http://charliechen114514.github.io/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="STM32单片机之分析启动文件小论(I)上电时我们的STM32一经上电，他会跟CPU上电的行为一致，也就是跳转到一个固定的地址。我们的STM32也是一样，对于不同的boot选择，他会跳转到不同的地址。这就跟启动模式的三种方式很有关系：     BOOT0 BOOT1 启动模式 0x00000000的映射地址 0x00000004的映射地址     0 x 内部FLASH 0x08000000 0x">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2024-11-15T13:05:45.000Z">
+<meta property="article:modified_time" content="2024-11-15T13:09:53.270Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="stm32">
+<meta property="article:tag" content="ARM">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'STM32单片机之分析启动文件小论(I)',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-15 21:09:53'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">STM32单片机之分析启动文件小论(I)</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-11-15T13:05:45.000Z" title="发表于 2024-11-15 21:05:45">2024-11-15</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-11-15T13:09:53.270Z" title="更新于 2024-11-15 21:09:53">2024-11-15</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>6分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="STM32单片机之分析启动文件小论(I)"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="STM32单片机之分析启动文件小论-I"><a href="#STM32单片机之分析启动文件小论-I" class="headerlink" title="STM32单片机之分析启动文件小论(I)"></a>STM32单片机之分析启动文件小论(I)</h1><h3 id="上电时"><a href="#上电时" class="headerlink" title="上电时"></a>上电时</h3><p>我们的STM32一经上电，他会跟<a target="_blank" rel="noopener" href="https://so.csdn.net/so/search?q=CPU&amp;spm=1001.2101.3001.7020">CPU</a>上电的行为一致，也就是跳转到一个固定的地址。我们的STM32也是一样，对于不同的boot选择，他会跳转到不同的地址。这就跟启动模式的三种方式很有关系：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">BOOT0</th>
+<th style="text-align:left">BOOT1</th>
+<th style="text-align:left">启动模式</th>
+<th style="text-align:left">0x00000000的映射地址</th>
+<th style="text-align:left">0x00000004的映射地址</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">0</td>
+<td style="text-align:left">x</td>
+<td style="text-align:left">内部FLASH</td>
+<td style="text-align:left">0x08000000</td>
+<td style="text-align:left">0x08000004</td>
+</tr>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">1</td>
+<td style="text-align:left">内部SRAM</td>
+<td style="text-align:left">0x20000000</td>
+<td style="text-align:left">0x20000004</td>
+</tr>
+<tr>
+<td style="text-align:left">1</td>
+<td style="text-align:left">0</td>
+<td style="text-align:left">系统存储器</td>
+<td style="text-align:left">0x1FFFF000</td>
+<td style="text-align:left">0x1FFFF004</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>也就是说，选择不同的boot引脚本质上就是在选择不一样的跳转地址，无论如何，我们要做的，就是在选定我们的特定的跳转地址后，在这些地址上排列我们之后的指令。</p>
+<h3 id="启动文件分析"><a href="#启动文件分析" class="headerlink" title="启动文件分析"></a>启动文件分析</h3><p>这一场串的文件很大，也是一份arm汇编文件，为此，为了理解这份文件，我们来看看一些简单的汇编标识符：</p>
+<div class="table-container">
+<table>
+<thead>
+<tr>
+<th style="text-align:left">指令名称</th>
+<th style="text-align:left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">EQU</td>
+<td style="text-align:left">相当于#define给常量取名称</td>
+</tr>
+<tr>
+<td style="text-align:left">AREA</td>
+<td style="text-align:left">汇编一段全新的段</td>
+</tr>
+<tr>
+<td style="text-align:left">ALIGN</td>
+<td style="text-align:left">编译器对指令或者数据的存放地址进行对齐。一般需要跟一个立即数，缺省表示四字节对齐。不过要注意的是：<strong>这个并不是arm汇编指令，而是编译器的内置指令</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">SPACE</td>
+<td style="text-align:left">分配内存空间</td>
+</tr>
+<tr>
+<td style="text-align:left">PRESERVE8</td>
+<td style="text-align:left">当前文件堆栈需要按照八字节对齐</td>
+</tr>
+<tr>
+<td style="text-align:left">THUMB</td>
+<td style="text-align:left">表示向后兼容THUMB指令（详细可以查询ARM状态和THUMB状态）</td>
+</tr>
+<tr>
+<td style="text-align:left">EXPORT</td>
+<td style="text-align:left">声明导出这个符号给外边文件用</td>
+</tr>
+<tr>
+<td style="text-align:left">IMPORT</td>
+<td style="text-align:left">声明这个符号来源于外面</td>
+</tr>
+<tr>
+<td style="text-align:left">DCD</td>
+<td style="text-align:left">以字节为单位分配内存要求四字节对齐并且要求初始化这些内存</td>
+</tr>
+<tr>
+<td style="text-align:left">PROC</td>
+<td style="text-align:left">子程序的开始，要求以ENDP成对出现</td>
+</tr>
+<tr>
+<td style="text-align:left">WEAK</td>
+<td style="text-align:left">这表示若定义如果外部文件声明的一个符号，则优先使用外部文件定义的符号。如果外部文件没有定义这个符号也不会出错。<strong>要注意的是这也不是arm的汇编指令而是编译器的内置指令</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">LDR</td>
+<td style="text-align:left">从存储器加载一个字</td>
+</tr>
+<tr>
+<td style="text-align:left">BLX</td>
+<td style="text-align:left">跳转到寄存器给出的地址，并且根据寄存器的LSE确定处理器的状态，还要把跳转前的下条指令地址保存到LR（实际上就是call）</td>
+</tr>
+<tr>
+<td style="text-align:left">BX</td>
+<td style="text-align:left">跳转到由寄存器或者标号给出的地址不用返回</td>
+</tr>
+<tr>
+<td style="text-align:left">B</td>
+<td style="text-align:left">跳转到一个标号</td>
+</tr>
+<tr>
+<td style="text-align:left">IF ELSE ENDIF</td>
+<td style="text-align:left">汇编条件分支语句跟C语言类似</td>
+</tr>
+<tr>
+<td style="text-align:left">END</td>
+<td style="text-align:left">文件结束</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>那我们现在尝试着手分析这个文件</p>
+<blockquote>
+<p>文件名称：startup_stm32f103xe.s</p>
+</blockquote>
+<pre class="line-numbers language-none"><code class="language-none">Stack_Size      EQU     0x00000400                      # 声明一个栈大小的宏
+
+                AREA    STACK, NOINIT, READWRITE, ALIGN&#x3D;3 # STACK栈区域，不初始化，可读可写，对齐3字节
+Stack_Mem       SPACE   Stack_Size                      # 表达栈的大小是1024B，也就是1KB大小
+__initial_sp                                            
+                                                  
+; &lt;h&gt; Heap Configuration
+;   &lt;o&gt;  Heap Size (in Bytes) &lt;0x0-0xFFFFFFFF:8&gt;
+; &lt;&#x2F;h&gt;
+
+Heap_Size       EQU     0x00000200                      # 堆大小为512B
+
+                AREA    HEAP, NOINIT, READWRITE, ALIGN&#x3D;3  # HEAP堆区域，不初始化，可读可写，对齐3字节 
+__heap_base                                           # HEAP起始地址
+Heap_Mem        SPACE   Heap_Size                       # HEAP区域
+__heap_limit                                          # HEAP终止地址
+
+                PRESERVE8                               # 这两条看上面的说明：当前文件堆栈需要按照八字节对齐
+                THUMB                                   # THUMB指令
+
+; 上面的区域划分了区域，下面开始排布中断向量表，他在0地址处（数据段）
+
+; Vector Table Mapped to Address 0 at Reset
+                AREA    RESET, DATA, READONLY           # 中断向量表安排在0地址处
+                EXPORT  __Vectors                      # 下面的三个符号将会可见（被外面的使用）
+                EXPORT  __Vectors_End
+                EXPORT  __Vectors_Size
+# 具体含义如何不是这里的侧重点
+__Vectors       DCD     __initial_sp               ; Top of Stack   
+                DCD     Reset_Handler              ; Reset Handler  
+;               ... 省略了大量的中断向量
+                DCD     DMA2_Channel4_5_IRQHandler ; DMA2 Channel4 &amp; Channel5
+__Vectors_End
+
+__Vectors_Size  EQU  __Vectors_End - __Vectors          # 推导出我们的向量表的大小
+
+                AREA    |.text|, CODE, READONLY         # 只读代码段，放在.text段上
+                
+; Reset handler # 我们很关心这个
+Reset_Handler   PROC
+                EXPORT  Reset_Handler             [WEAK]
+                # __main函数，也是标准的C库函数，负责初始化堆栈（这里要求要连接到C库）
+                IMPORT  __main
+                # SystemInit()是一个库函数，在system_stm32f1xx.c中定义的
+                IMPORT  SystemInit  # SystemInit贴在了下面
+                # 先调用SystemInit
+                LDR     R0, &#x3D;SystemInit
+                BLX     R0         
+                # 再调用__main函数初始化
+                LDR     R0, &#x3D;__main
+                BX      R0
+                ENDP
+                
+; 省略了大量的handlers的弱定义
+; ....
+; ....
+; 结束
+
+;*******************************************************************************
+; User Stack and Heap initialization
+;*******************************************************************************
+# 有没有定义__MICROLIB?我们默认人没有定义，这样的化就是使用C库函数___main帮助我们完成初始化，
+                 IF      :DEF:__MICROLIB
+                
+                 EXPORT  __initial_sp
+                 EXPORT  __heap_base
+                 EXPORT  __heap_limit
+                
+                 ELSE
+                 # 我们正常走这里
+                 IMPORT  __use_two_region_memory
+                 EXPORT  __user_initial_stackheap
+                 
+__user_initial_stackheap
+
+                 LDR     R0, &#x3D;  Heap_Mem
+                 LDR     R1, &#x3D;(Stack_Mem + Stack_Size)
+                 LDR     R2, &#x3D; (Heap_Mem +  Heap_Size)
+                 LDR     R3, &#x3D; Stack_Mem
+                 BX      LR
+
+                 ALIGN
+
+                 ENDIF
+
+                 END
+
+;************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE*****
+
+**
+ * @brief Setup the microcontroller system
+ * Initialize the Embedded Flash Interface, the PLL and update the 
+ * SystemCoreClock variable.
+ * @note This function should be used only after reset.
+ * @param None
+ * @retval None
+ *&#x2F;
+ # 简单来讲就是初始化Flash接口和初始化系统的时钟
+void SystemInit (void)
+&#123;
+ &#x2F;* Reset the RCC clock configuration to the default reset state(for debug purpose) *&#x2F;
+ &#x2F;* Set HSION bit *&#x2F;
+ RCC-&gt;CR |&#x3D; 0x00000001U;
+ 
+ &#x2F;* Reset SW, HPRE, PPRE1, PPRE2, ADCPRE and MCO bits *&#x2F;
+#if !defined(STM32F105xC) &amp;&amp; !defined(STM32F107xC)
+ RCC-&gt;CFGR &amp;&#x3D; 0xF8FF0000U;
+#else
+ RCC-&gt;CFGR &amp;&#x3D; 0xF0FF0000U;
+#endif &#x2F;* STM32F105xC *&#x2F; 
+ 
+ &#x2F;* Reset HSEON, CSSON and PLLON bits *&#x2F;
+ RCC-&gt;CR &amp;&#x3D; 0xFEF6FFFFU;
+ 
+ &#x2F;* Reset HSEBYP bit *&#x2F;
+ RCC-&gt;CR &amp;&#x3D; 0xFFFBFFFFU;
+ 
+ &#x2F;* Reset PLLSRC, PLLXTPRE, PLLMUL and USBPRE&#x2F;OTGFSPRE bits *&#x2F;
+ RCC-&gt;CFGR &amp;&#x3D; 0xFF80FFFFU;
+ 
+#if defined(STM32F105xC) || defined(STM32F107xC)
+ &#x2F;* Reset PLL2ON and PLL3ON bits *&#x2F;
+ RCC-&gt;CR &amp;&#x3D; 0xEBFFFFFFU;
+ 
+ &#x2F;* Disable all interrupts and clear pending bits *&#x2F;
+ RCC-&gt;CIR &#x3D; 0x00FF0000U;
+ 
+ &#x2F;* Reset CFGR2 register *&#x2F;
+ RCC-&gt;CFGR2 &#x3D; 0x00000000U;
+#elif defined(STM32F100xB) || defined(STM32F100xE)
+ &#x2F;* Disable all interrupts and clear pending bits *&#x2F;
+ RCC-&gt;CIR &#x3D; 0x009F0000U;
+ 
+ &#x2F;* Reset CFGR2 register *&#x2F;
+ RCC-&gt;CFGR2 &#x3D; 0x00000000U; 
+#else
+ &#x2F;* Disable all interrupts and clear pending bits *&#x2F;
+ RCC-&gt;CIR &#x3D; 0x009F0000U;
+#endif &#x2F;* STM32F105xC *&#x2F;
+ 
+#if defined(STM32F100xE) || defined(STM32F101xE) || defined(STM32F101xG) || defined(STM32F103xE) || defined(STM32F103xG)
+ #ifdef DATA_IN_ExtSRAM
+ SystemInit_ExtMemCtl(); 
+ #endif &#x2F;* DATA_IN_ExtSRAM *&#x2F;
+#endif 
+ 
+#ifdef VECT_TAB_SRAM
+ SCB-&gt;VTOR &#x3D; SRAM_BASE | VECT_TAB_OFFSET; &#x2F;* Vector Table Relocation in Internal SRAM. *&#x2F;
+#else
+ SCB-&gt;VTOR &#x3D; FLASH_BASE | VECT_TAB_OFFSET; &#x2F;* Vector Table Relocation in Internal FLASH. *&#x2F;
+#endif 
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>看完了：我们捋一下如何启动的：</p>
+<h3 id="启动流程分析"><a href="#启动流程分析" class="headerlink" title="启动流程分析"></a>启动流程分析</h3><p><strong>上电：单片机根据选择的BOOT引脚跳转到相应的地址，开始取出堆栈指针的初始值（栈顶的初始值）和PC计数器的值（下一条指令在哪里）</strong></p>
+<p><strong>这个PC值就是中断向量表的起始地址，也是复位程序的入口地址，接着跳转到复位程序入口处，初始向量表，然后设置时钟(SystemInit)，设置堆栈(__main函数)，最后跳转到C空间的main函数，即进入用户程序</strong></p>
+<p><strong>实际上就是这样的简单。</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/">http://charliechen114514.github.io/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/stm32/">stm32</a><a class="post-meta__tags" href="/tags/ARM/">ARM</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/" title="STM32单片机之分析启动文件小论(II)"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">STM32单片机之分析启动文件小论(II)</div></div></a></div><div class="next-post pull-right"><a href="/2024/10/18/%E6%9D%82%E8%B0%88%E7%AC%94%E8%AE%B0%EF%BC%9A%E4%B8%80%E4%B8%AAdebug%E8%AE%B0%E5%BD%95%E4%B9%8B%E9%94%99%E8%AF%AF%E7%9A%84ld-interpreter/" title="杂谈笔记：一个debug记录之错误的ld interpreter"><img class="cover" src="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">杂谈笔记：一个debug记录之错误的ld interpreter</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/" title="STM32单片机之分析启动文件小论(II)"><img class="cover" src="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-11-15</div><div class="title">STM32单片机之分析启动文件小论(II)</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">18</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">16</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">上传了一些在CSDN和博客园写的博客(喜),甚至更换了背景图(喜x2)</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I"><span class="toc-number">1.</span> <span class="toc-text">STM32单片机之分析启动文件小论(I)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8A%E7%94%B5%E6%97%B6"><span class="toc-number">1.0.1.</span> <span class="toc-text">上电时</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%88%86%E6%9E%90"><span class="toc-number">1.0.2.</span> <span class="toc-text">启动文件分析</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="toc-number">1.0.3.</span> <span class="toc-text">启动流程分析</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/11/15/WSL2%E4%B8%8B%E4%BD%BF%E7%94%A8miniconda-cuda-cudnn%E6%96%B9%E6%A1%88%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%96%B9%E6%A1%88/" title="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案"/></a><div class="content"><a class="title" href="/2024/11/15/WSL2%E4%B8%8B%E4%BD%BF%E7%94%A8miniconda-cuda-cudnn%E6%96%B9%E6%A1%88%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%96%B9%E6%A1%88/" title="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案">WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案</a><time datetime="2024-11-15T13:11:50.000Z" title="发表于 2024-11-15 21:11:50">2024-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/" title="STM32单片机之分析启动文件小论(II)"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32单片机之分析启动文件小论(II)"/></a><div class="content"><a class="title" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/" title="STM32单片机之分析启动文件小论(II)">STM32单片机之分析启动文件小论(II)</a><time datetime="2024-11-15T13:05:50.000Z" title="发表于 2024-11-15 21:05:50">2024-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/" title="STM32单片机之分析启动文件小论(I)"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32单片机之分析启动文件小论(I)"/></a><div class="content"><a class="title" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-I/" title="STM32单片机之分析启动文件小论(I)">STM32单片机之分析启动文件小论(I)</a><time datetime="2024-11-15T13:05:45.000Z" title="发表于 2024-11-15 21:05:45">2024-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/18/%E6%9D%82%E8%B0%88%E7%AC%94%E8%AE%B0%EF%BC%9A%E4%B8%80%E4%B8%AAdebug%E8%AE%B0%E5%BD%95%E4%B9%8B%E9%94%99%E8%AF%AF%E7%9A%84ld-interpreter/" title="杂谈笔记：一个debug记录之错误的ld interpreter"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="杂谈笔记：一个debug记录之错误的ld interpreter"/></a><div class="content"><a class="title" href="/2024/10/18/%E6%9D%82%E8%B0%88%E7%AC%94%E8%AE%B0%EF%BC%9A%E4%B8%80%E4%B8%AAdebug%E8%AE%B0%E5%BD%95%E4%B9%8B%E9%94%99%E8%AF%AF%E7%9A%84ld-interpreter/" title="杂谈笔记：一个debug记录之错误的ld interpreter">杂谈笔记：一个debug记录之错误的ld interpreter</a><time datetime="2024-10-18T11:55:58.000Z" title="发表于 2024-10-18 19:55:58">2024-10-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/07/29/%E5%A6%82%E4%BD%95%E5%9C%A8Linux%E4%B8%8A%E6%9E%84%E5%BB%BARaspberry-Pi%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" title="如何在Linux上构建Raspberry Pi虚拟环境"><img src="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="如何在Linux上构建Raspberry Pi虚拟环境"/></a><div class="content"><a class="title" href="/2024/07/29/%E5%A6%82%E4%BD%95%E5%9C%A8Linux%E4%B8%8A%E6%9E%84%E5%BB%BARaspberry-Pi%E8%99%9A%E6%8B%9F%E7%8E%AF%E5%A2%83/" title="如何在Linux上构建Raspberry Pi虚拟环境">如何在Linux上构建Raspberry Pi虚拟环境</a><time datetime="2024-07-29T14:11:04.000Z" title="发表于 2024-07-29 22:11:04">2024-07-29</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
