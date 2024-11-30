@@ -320,27 +320,6 @@
     
     
     <entry>
-      <title>Net-Experience-report Using_STMP2SendAEmail</title>
-      <link href="/2023/07/25/Net-Experience-report-Using-STMP2SendAEmail/"/>
-      <url>/2023/07/25/Net-Experience-report-Using-STMP2SendAEmail/</url>
-      
-        <content type="html"><![CDATA[<h1 id="使用telnet-QQ邮箱在命令行下发送邮件"><a href="#使用telnet-QQ邮箱在命令行下发送邮件" class="headerlink" title="使用telnet + QQ邮箱在命令行下发送邮件"></a>使用telnet + QQ邮箱在命令行下发送邮件</h1><p>​        整个活(后空翻)</p><h2 id="前导"><a href="#前导" class="headerlink" title="前导"></a>前导</h2><p>​        最近写C++和操作系统写腻歪了,来点活.</p><h2 id="配置telnet"><a href="#配置telnet" class="headerlink" title="配置telnet"></a>配置telnet</h2><p>​        Windows11相当的智能,我们只需要打开控制面板:</p><p><img src="image-20230725104103213.png" alt="image-20230725104103213"></p><p><img src="image-20230725104221212.png" alt="image-20230725104221212"></p><p><img src="image-20230725104447916.png" alt="image-20230725104447916"></p><p>​        对,把这玩意勾上就好.如果你是第一次开,Windows就会准备好相关的文件.</p><h2 id="打开QQ邮箱的SMTP服务"><a href="#打开QQ邮箱的SMTP服务" class="headerlink" title="打开QQ邮箱的SMTP服务"></a>打开QQ邮箱的SMTP服务</h2><p>​        qq邮箱-&gt; 设置-&gt;账户 -&gt; 找到这些服务，开启SMTP服务.</p><p>​        以及,我们开启服务会收到一个授权码,请务必!请务必保存好!</p><h2 id="login"><a href="#login" class="headerlink" title="login"></a>login</h2><p>​        现在火速前往cmd.或者PowerShell,只需要输入</p><pre class="line-numbers language-none"><code class="language-none">telnet smtp.qq.com 25<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>​        25是端口号,也有人会要求你输入加密端口587,我的评价是:无所谓.</p><p>​        如果你发现telnet不认识,爬回去返回第一大步.</p><p><img src="image-20230725104858217.png" alt="image-20230725104858217"></p><p>​        220是我们的状态码, 表示的是服务就绪.我们输入</p><pre class="line-numbers language-none"><code class="language-none">helo qq.com<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p><img src="image-20230725105125071.png" alt="image-20230725105125071"></p><p>​        表示我们发出请求.</p><p>​        对了,我们的输入中,发现输错了就需要重新输入.退格是无用的:服务器会每时每刻接受我们的输入字符而不会撤回.</p><p><img src="image-20230725105241994.png" alt="image-20230725105241994"></p><p>​        这个代表我们的链接成功</p><pre class="line-numbers language-none"><code class="language-none">auth login<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>​        我们发出了登录账户的请求. 如果在这个步骤中发出了 502 错误,稍后尝试(也有可能你输错了,比如我整了auto login…)</p><p><img src="image-20230725105537073.png" alt="image-20230725105537073"></p><p>​        这是什么意思? 334表示的是认证输入,就像我们需要输入账号和密码一样.事实上,这里的ASCII文字是使用base64编码了的.我们使用解码:</p><p>​        在网站：<a href="https://link.zhihu.com/?target=https%3A//base64.us/">Base64 加密解密 - Base64.us</a></p><p><img src="image-20230725105842209.png" alt="image-20230725105842209"></p><pre class="line-numbers language-none"><code class="language-none">334 Username:<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>​        就是这样.</p><p>​        我把邮箱给出去—-<strong>但是务必注意是base64编码</strong></p><p><img src="image-20230725105905462.png" alt="image-20230725105905462"></p><p><img src="image-20230725105930962.png" alt="image-20230725105930962"></p><p><img src="image-20230725105944043.png" alt="image-20230725105944043"></p><p>​        别急着输入你的QQ密码,首先, 我们要的是 base64编码,其次,要的是那个授权码!我们得吧授权码给编码后再输入</p><p><img src="image-20230725110134366.png" alt="image-20230725110134366"></p><p>​        235表示认证成功.</p><pre class="line-numbers language-none"><code class="language-none">注意！！我们在输入用户名和密码的时候如果打错字了，需要重来。退格之后空格是没用的，因为键盘每一次敲下都把数据传到了服务器上面，而服务器上面的呈现方式和我们所看到的是不一样的，所以这一步是最最最麻烦的。（包括在输入命令的时候也是一样，错了就要换行重输）<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre><p>​        然后,我们可以开始操作了:</p><h2 id="MAIL-FROM与RCPT-TO"><a href="#MAIL-FROM与RCPT-TO" class="headerlink" title="MAIL FROM与RCPT TO"></a>MAIL FROM与RCPT TO</h2><p>MAIL FROM必须写自己所登录的邮箱名字，RCPT TO写收件人的邮箱名字。</p><p><img src="image-20230725110313627.png" alt="image-20230725110313627"></p><h2 id="DATA"><a href="#DATA" class="headerlink" title="DATA"></a>DATA</h2><p>​        DATA表示的是我们预备好输入邮件内容</p><p><img src="image-20230725110350476.png" alt="image-20230725110350476"></p><p>​        注意,要符合发送规范:</p><pre class="line-numbers language-none"><code class="language-none">from:sender@qq.comto:sendee@qq.comsubject:urSub正文内容<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre><p>​        sender, sendee换成自己的和对方的邮箱.</p><p>​        结束输入的方式,是单独开启一行打一个点<code>.</code></p><p><img src="image-20230725110553260.png" alt="image-20230725110553260"></p><p>​        这个时候敲回车</p><p><img src="image-20230725110605782.png" alt="image-20230725110605782"></p><p>​        发送成功!</p><p><img src="image-20230725110722059.png" alt="image-20230725110722059"></p>]]></content>
-      
-      
-      
-        <tags>
-            
-            <tag> Experiment </tag>
-            
-            <tag> NetWork </tag>
-            
-        </tags>
-      
-    </entry>
-    
-    
-    
-    <entry>
       <title>Qt &amp;&amp; Opencv Config</title>
       <link href="/2023/06/01/Qt-Opencv-Config/"/>
       <url>/2023/06/01/Qt-Opencv-Config/</url>
