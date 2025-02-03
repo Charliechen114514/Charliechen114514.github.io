@@ -1,0 +1,973 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0"><title>快速入门C++并发编程 | Hello World!</title><meta name="author" content="Charlie Chen"><meta name="copyright" content="Charlie Chen"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="高阶开发基础——快速入门C++并发编程1前言​    这个部分是高阶开发的第一个基础部分，也就是并发编程。笔者需要激进的假设各位已经掌握了基本的C++语法。学习过经典的计算机四件套中的计算机组成原理，操作系统。对并发已经有了最初步的认识。这里，笔者打算做一个偏向于总结性质的博客笔记。来在后续学习更加高阶的开发的时候理解并掌握并发和异步的知识。 并发与线程​    笔者先前开过一些线程部分的博客，但">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快速入门C++并发编程">
+<meta property="og:url" content="http://charliechen114514.github.io/2025/02/03/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/index.html">
+<meta property="og:site_name" content="Hello World!">
+<meta property="og:description" content="高阶开发基础——快速入门C++并发编程1前言​    这个部分是高阶开发的第一个基础部分，也就是并发编程。笔者需要激进的假设各位已经掌握了基本的C++语法。学习过经典的计算机四件套中的计算机组成原理，操作系统。对并发已经有了最初步的认识。这里，笔者打算做一个偏向于总结性质的博客笔记。来在后续学习更加高阶的开发的时候理解并掌握并发和异步的知识。 并发与线程​    笔者先前开过一些线程部分的博客，但">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="http://charliechen114514.github.io/img/passagepage.png">
+<meta property="article:published_time" content="2025-02-03T10:42:25.000Z">
+<meta property="article:modified_time" content="2025-02-03T10:44:00.240Z">
+<meta property="article:author" content="Charlie Chen">
+<meta property="article:tag" content="C&#x2F;C++">
+<meta property="article:tag" content="并发编程">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://charliechen114514.github.io/img/passagepage.png"><link rel="shortcut icon" href="/img/webicon.png"><link rel="canonical" href="http://charliechen114514.github.io/2025/02/03/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":false,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  }
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '快速入门C++并发编程',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2025-02-03 18:44:00'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+    win.getCSS = url => new Promise((resolve, reject) => {
+      const link = document.createElement('link')
+      link.rel = 'stylesheet'
+      link.href = url
+      link.onload = () => resolve()
+      link.onerror = () => reject()
+      document.head.appendChild(link)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><!-- hexo injector head_end start -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.12.0/dist/katex.min.css">
+<!-- hexo injector head_end end --><meta name="generator" content="Hexo 6.3.0"></head><body><div id="web_bg"></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="/img/loading.gif" data-original="/img/webicon.png" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/passagepage.png')"><nav id="nav"><span id="blog-info"><a href="/" title="Hello World!"><span class="site-name">Hello World!</span></a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search" href="javascript:void(0);"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/comments/"><i class="fa-fw fa fa-paper-plane"></i><span> 留言板</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 大爹们</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">快速入门C++并发编程</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-02-03T10:42:25.000Z" title="发表于 2025-02-03 18:42:25">2025-02-03</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-02-03T10:44:00.240Z" title="更新于 2025-02-03 18:44:00">2025-02-03</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">7.6k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>30分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="快速入门C++并发编程"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="高阶开发基础——快速入门C-并发编程1"><a href="#高阶开发基础——快速入门C-并发编程1" class="headerlink" title="高阶开发基础——快速入门C++并发编程1"></a>高阶开发基础——快速入门C++并发编程1</h1><h2 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h2><p>​    这个部分是高阶开发的第一个基础部分，也就是并发编程。笔者需要激进的假设各位已经掌握了基本的C++语法。学习过经典的计算机四件套中的计算机组成原理，操作系统。对并发已经有了最初步的认识。这里，笔者打算做一个偏向于总结性质的博客笔记。来在后续学习更加高阶的开发的时候理解并掌握并发和异步的知识。</p>
+<h2 id="并发与线程"><a href="#并发与线程" class="headerlink" title="并发与线程"></a>并发与线程</h2><p>​    笔者先前开过一些线程部分的博客，但是遗憾的是都烂尾了。</p>
+<blockquote>
+<p>传送门：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/138192417">https://blog.csdn.net/charlie114514191/article/details/138192417</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/138243670">https://blog.csdn.net/charlie114514191/article/details/138243670</a></p>
+</blockquote>
+<p>​    可以先看这两篇笔者早期的博客进行梳理，但是并不全面。主要是铺垫一下对<code>std::thread</code>的理解。</p>
+<p>​    简单谈到并发就是——发挥机器多核的性能，让同一时间计算机做多个事情。换而言之，就跟我现在左手拿着杯子喝水，右手正在敲键盘，眼睛正在看着我的Typora编辑文档一样。这三个事情我都是在同时进行。这就属于一种并发。相比你很快意识到，并发可以有效的提升程序的性能，对于UI编程，则是特别的提升了程序的响应程度。至少，一个良好设计的UI界面程序不会因为程序做耗时的操作而卡死。</p>
+<p>​    将飘渺的并发落到实地的就是线程。可以这样认为：我们的主程序被装在一个进程当中（各位看官不着急反驳多进程的进程协作的大型项目，这个属于另外的进程协作话题）后，想要在一个进程的运行时并发的完成任务，就需要开辟多个线程完成指定的任务。这样来看，我们学习C++并发编程，<strong>实际上就是在谈论如何使用C++提供的并发构件完成我们的需求</strong>。更加具体的说，使用std::thread来完成我们在C++中的并发（题外话，是对异步更加感兴趣的了解经典的std::async和std::await，疑似不少人并不知道C++原生提供了简单的异步原语）。</p>
+<p>​    这里，我们不谈论线程在操作系统的实现。你需要知道的是——任何一个进程，现在是线程，都需要一个任务堆栈完成自己的任务。我们的线程有自己的私有栈，可以认为线程就是一个迷你的进程。也都可以访问，读写进程中的公共数据（我们后面的竞争冒险话题围绕于此）</p>
+<h2 id="理解std-thread"><a href="#理解std-thread" class="headerlink" title="理解std::thread"></a>理解std::thread</h2><h3 id="推介cpp-reference"><a href="#推介cpp-reference" class="headerlink" title="推介cpp reference"></a>推介cpp reference</h3><p>​    笔者混迹于一些C++的交流群，不少大佬是从这里查询C++提供的脚手架的使用办法。这里提供的是连接：</p>
+<blockquote>
+<p>English Version:<a target="_blank" rel="noopener" href="https://en.cppreference.com/w/">cppreference.com</a></p>
+<p>中文版本：<a target="_blank" rel="noopener" href="https://zh.cppreference.com/w/首页">cppreference.com</a></p>
+</blockquote>
+<h3 id="从std-thread开始"><a href="#从std-thread开始" class="headerlink" title="从std::thread开始"></a>从std::thread开始</h3><p>​    thread就是线程的意思。从编程的角度上，我们需要理解的是</p>
+<blockquote>
+<p>提供一个任务和一个任务需要的输入，能够并发的返回给我们一个输出即可。</p>
+</blockquote>
+<p><img src="/img/loading.gif" data-original="image-20250203121606082.png" alt="image-20250203121606082"></p>
+<p>​    这个图的解读姿势是——左侧是我们这样写代码的流程执行流</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int main()
+&#123;
+    ...
+	worker();
+    ...
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    当我们使用并发的时候…</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++">int main()
+&#123;
+	std::thread working_thread &#x3D; std::thread(worker);
+    printf(&quot;You see iam still in!&quot;);
+    working_thread.join();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    理解这个事情，我们就知道，使用std::thread而且完成了线程启动之后。我们的线程就会立刻的开始执行我们委派的任务，我们继续若无其事的在主线程干好其他的工作即可。</p>
+<h3 id="如何构造一个std-thread"><a href="#如何构造一个std-thread" class="headerlink" title="如何构造一个std::thread"></a>如何构造一个std::thread</h3><p>​    很好，那我们应该如何构造一个std::thread呢？这个事情我们可以查看C++ Reference</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://zh.cppreference.com/w/cpp/thread/thread/thread">std::thread::thread - cppreference.com</a></p>
+</blockquote>
+<p>​    可以看到，我们可以移动一个线程，向内传递一个工作函数和它所需要的参数。但是不可以拷贝一个线程（拷贝一个线程是没有意义的，这个你想一下，比起来完成多个任务肯定是委派相同的工作函数带上不同的参数，或者说，没有必要在相同的时间接受相同的输入做同样的事情，更何况带来的冲突会让你喝上两壶！）</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;cstdio&gt;
+#include &lt;print&gt;
+#include &lt;string&gt;
+#include &lt;thread&gt;
+
+void worker(std::string &amp;value, int &amp;a) &#123;
+    a++;
+    std::print(&quot;handlings the string &#123;&#125;\n&quot;
+               &quot;With the value of ready invoked as &#123;&#125;\n&quot;,
+               value, a);
+&#125;
+
+int main() &#123;
+    std::string value &#x3D; &quot;hello&quot;;
+    int ready &#x3D; 1;
+    std::thread th(worker, std::ref(value), std::ref(ready));
+    th.join();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    这就是一个带有参数例子的std::thread构造，当然，你需要知道的是std::ref是一个C++Type traits，用来表达显示的传递一个引用，这是因为thread的参数类型默认按照值进行传递。（这个事情是为了有效引用考虑的，当你使用了std::ref的时候，就保证了你清楚的知道你在传递一个引用！）试一试这个代码！</p>
+<blockquote>
+<p>引申思考：传进去将亡值会发生什么？值得提示的是，高版本的编译器会明确阻止你，但是低版本的不会（GCC测试），所以，不要写未定义的程序。（为什么是未定义的？答案是，一些场景下将亡值因为瞬间被使用完毕而赶在了被回收之前，值仍然有效，但是只要程序一个复杂起来，瞬间爆炸的概论大幅度提升）</p>
+</blockquote>
+<h3 id="如何确保正确的结束线程"><a href="#如何确保正确的结束线程" class="headerlink" title="如何确保正确的结束线程"></a>如何确保正确的结束线程</h3><p>​    再来看看这个图：</p>
+<p><img src="/img/loading.gif" data-original="image-20250203121606082.png" alt="image-20250203121606082"></p>
+<p>​    毫无疑问，我们的线程是有始有终的，必须明确好我们的线程是如何终止的。你可以尝试一下：</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;cstdio&gt;
+#include &lt;print&gt;
+#include &lt;string&gt;
+#include &lt;thread&gt;
+
+void worker(std::string &amp;value, int &amp;a) &#123;
+    a++;
+    std::print(&quot;handlings the string &#123;&#125;\n&quot;
+               &quot;With the value of ready invoked as &#123;&#125;\n&quot;,
+               value, a);
+&#125;
+
+int main() &#123;
+    std::string value &#x3D; &quot;hello&quot;;
+    int ready &#x3D; 1;
+    std::thread th(worker, std::ref(value), std::ref(ready));
+    &#x2F;&#x2F; th.join();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    这个代码有极高的概率崩溃，为什么是概率？因为我们不知道处理器是否会在主线程（Main函数）推出之前把worker执行完毕，既然不知道，那就是UB，当我们没有执行完子线程就退出，线程就会发出异常，程序就会崩溃。解决这个的最好的办法就是讲清楚：</p>
+<blockquote>
+<p>你到底是希望在main函数之前要求把活做完呢？（在结尾join线程）还是发出去后就不理睬我们的线程自生自灭了？（将线程detach出去）</p>
+</blockquote>
+<p>​    C++中，我们的std::thread的两个重要表达如何处理线程结束的两个成员函数是<code>join()</code> 和 <code>detach()</code> ，他们用于控制线程的生命周期。</p>
+<p>​    <code>join()</code> 用于等待线程执行完毕。调用 <code>join()</code> 的线程会阻塞，直到被调用的线程完成其任务。如果我们构造一个非空的线程立马join，那么就会变成同步原语，所以，一般是在主线程做好了一些事情后调用join来等待线程。所以，当你需要确保一个线程在继续执行主线程或其他线程之前完成其任务时，使用 <code>join()</code>。下面是一个简单的join的小例子</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;iostream&gt;
+#include &lt;thread&gt;
+
+void task() &#123;
+    std::cout &lt;&lt; &quot;Thread is running...&quot; &lt;&lt; std::endl;
+&#125;
+
+int main() &#123;
+    std::thread t(task);
+    t.join();  &#x2F;&#x2F; 等待线程t执行完毕
+    std::cout &lt;&lt; &quot;Thread has finished.&quot; &lt;&lt; std::endl;
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    <code>detach()</code> 用于将线程与 <code>std::thread</code> 对象分离，使得线程在后台独立运行。调用 <code>detach()</code> 后，<code>std::thread</code> 对象不再与该线程关联，线程的资源会在其完成任务后自动释放。换而言之，他坐完事就让他自生自灭了，那就使用detach，让他自己干活，我们不会跟他产生任何直接联系了，这个时候使用detach就能很好的表达我们的含义（当你不需要等待线程完成，或者希望线程在后台运行时，使用 <code>detach()</code>。）。当然很少用。一般都是join的</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;iostream&gt;
+#include &lt;thread&gt;
+
+void task() &#123;
+    std::cout &lt;&lt; &quot;Thread is running...&quot; &lt;&lt; std::endl;
+&#125;
+
+int main() &#123;
+    std::thread t(task);
+    t.detach();  &#x2F;&#x2F; 将线程t分离，使其在后台运行
+    std::cout &lt;&lt; &quot;Thread is detached.&quot; &lt;&lt; std::endl;
+    &#x2F;&#x2F; 主线程继续执行，不等待t完成
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h4 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h4><p>​    我们的join和detach都只能调用一次，C++使用了一个方法叫做joinable来检查我们能不能对一个线程进行join和detach。</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;iostream&gt;
+#include &lt;thread&gt;
+void foo() &#123;
+    std::cout &lt;&lt; &quot;Thread started&quot; &lt;&lt; std::endl;
+    &#x2F;&#x2F; ...
+    std::cout &lt;&lt; &quot;Thread about to quit&quot; &lt;&lt; std::endl;
+&#125;
+int main() &#123;
+    std::thread t(foo);
+    if (t.joinable()) &#123;
+    	std::cout &lt;&lt; &quot;Thread is joinable, join the thread right now&quot; &lt;&lt; std::endl;
+        t.join();
+    &#125;
+    std::cout &lt;&lt; &quot;Thread has been joined&quot; &lt;&lt; std::endl;
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    这样的程序才是健壮的!</p>
+<h1 id="Reference"><a href="#Reference" class="headerlink" title="Reference"></a>Reference</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="https://zh.cppreference.com/w/首页">cppreference.com</a><br><a target="_blank" rel="noopener" href="http://www.seestudy.cn/?list_9/31.html">1. C++11 Thead线程库的基本使用-See的编程日记 (seestudy.cn)</a></p>
+</blockquote>
+<h1 id="高阶开发基础——快速入门C-并发编程2"><a href="#高阶开发基础——快速入门C-并发编程2" class="headerlink" title="高阶开发基础——快速入门C++并发编程2"></a>高阶开发基础——快速入门C++并发编程2</h1><h2 id="常见的几个经典错误——1-关于内存访问的几个经典的错误"><a href="#常见的几个经典错误——1-关于内存访问的几个经典的错误" class="headerlink" title="常见的几个经典错误——1: 关于内存访问的几个经典的错误"></a>常见的几个经典错误——1: 关于内存访问的几个经典的错误</h2><p>​    为了深入的理解一些潜在的错误，笔者设计了一个这样的样例，各位请看：</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;chrono&gt;
+#include &lt;thread&gt;
+
+
+std::thread th;
+void inc_ref(int &amp;ref) &#123;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    ref++;
+&#125;
+
+void worker() &#123;
+    int value &#x3D; 1;
+    th &#x3D; std::thread(inc_ref, std::ref(value));
+&#125;
+
+int main()
+&#123;
+    worker();
+    th.join();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    你发现问题了嘛？</p>
+<p>​    答案是，worker是一个同步函数，我们的value的作用域隶属于worker函数的范围内，现在，worker一旦将th线程派发出去，里面的工作函数的引用ref就会非法。现在，我们对一个非法的变量自增，自然就会爆错</p>
+<pre class="line-numbers language-none"><code class="language-none">➜  make
+[ 50%] Building CXX object CMakeFiles&#x2F;demo.dir&#x2F;main.cpp.o
+[100%] Linking CXX executable demo
+[100%] Built target demo
+➜  .&#x2F;demo 
+Segmentation fault (core dumped)<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<blockquote>
+<p>扩展：</p>
+<ol>
+<li>关于C++的时间库，C++的时间库抽象了几个经典的必要的时间操作，因此，使用这个库来表达我们的时间非常的方便。</li>
+</ol>
+<ul>
+<li><strong><code>std::chrono::duration</code></strong>: 表示时间间隔，例如 5 秒、10 毫秒等。</li>
+<li><strong><code>std::chrono::time_point</code></strong>: 表示一个时间点，通常是相对于某个纪元（如 1970 年 1 月 1 日）的时间。</li>
+<li><strong><code>std::chrono::system_clock</code></strong>: 系统范围的实时时钟，表示当前的日历时间。</li>
+<li><strong><code>std::chrono::steady_clock</code></strong>: 单调时钟，适用于测量时间间隔，不会受到系统时间调整的影响。</li>
+<li><strong><code>std::chrono::high_resolution_clock</code></strong>: 高精度时钟，通常是 <code>steady_clock</code> 或 <code>system_clock</code> 的别名。</li>
+</ul>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;iostream&gt;
+#include &lt;chrono&gt;
+
+int main() &#123;
+    &#x2F;&#x2F; 定义一个 5 秒的时间间隔
+    std::chrono::seconds duration(5);
+
+    &#x2F;&#x2F; 获取当前时间点
+    auto start &#x3D; std::chrono::steady_clock::now();
+
+    &#x2F;&#x2F; 模拟一些操作
+    std::this_thread::sleep_for(duration);
+
+    &#x2F;&#x2F; 获取结束时间点
+    auto end &#x3D; std::chrono::steady_clock::now();
+
+    &#x2F;&#x2F; 计算时间间隔
+    auto elapsed &#x3D; std::chrono::duration_cast&lt;std::chrono::milliseconds&gt;(end - start);
+
+    std::cout &lt;&lt; &quot;Elapsed time: &quot; &lt;&lt; elapsed.count() &lt;&lt; &quot; ms&quot; &lt;&lt; std::endl;
+
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<ol>
+<li><code>std::this_thread::sleep_for</code></li>
+</ol>
+<p><code>std::this_thread::sleep_for</code> 是 C++11 引入的函数，用于使当前线程休眠指定的时间。它接受一个 <code>std::chrono::duration</code> 类型的参数，表示休眠的时间长度。这个this_thread表达的是当前的运行线程的线程句柄，也就是说，调用这个函数表达了运行这个函数的当前线程实体休眠若干秒</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;chrono&gt;
+
+int main() &#123;
+    std::cout &lt;&lt; &quot;Sleeping for 2 seconds...&quot; &lt;&lt; std::endl;
+
+    &#x2F;&#x2F; 使当前线程休眠 2 秒
+    std::this_thread::sleep_for(std::chrono::seconds(2));
+
+    std::cout &lt;&lt; &quot;Awake!&quot; &lt;&lt; std::endl;
+
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>笔者在这里故意延迟，是为了让worker有时间清理他自己的函数栈，让程序必然报错。但是在项目中，很有可能线程在worker清理完之前就执行完成了，这会导致给项目埋雷，引入非常大的不确定性。</p>
+</blockquote>
+<p>​    这样的例子还有对堆上的内存，这同样管用：</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;chrono&gt;
+#include &lt;thread&gt;
+#include &lt;print&gt;
+
+std::thread th;
+void inc_ref(int* ref) &#123;
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+    (*ref)++;
+    std::print(&quot;value of the ref points to is &#123;&#125;\n&quot;, *ref);
+&#125;
+
+void worker() &#123;
+    int* value &#x3D; new int;
+    *value &#x3D; 1;
+    th &#x3D; std::thread(inc_ref, value);
+    delete value; &#x2F;&#x2F; free immediately
+&#125;
+
+int main()
+&#123;
+    worker();
+    th.join();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    程序一样会崩溃，这里，我们没有协调内存块的声明周期。一个很好的办法就是使用智能指针，关于智能指针，笔者再最早期写过两篇博客介绍：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/136489270">C++智能指针1</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/charlie114514191/article/details/136573103">C++智能指针2</a></p>
+</blockquote>
+<p>​    也就是保持变量的引用到最后一刻，不用就释放！</p>
+<h2 id="解决多线程流对单一数据的写问题"><a href="#解决多线程流对单一数据的写问题" class="headerlink" title="解决多线程流对单一数据的写问题"></a>解决多线程流对单一数据的写问题</h2><p>​    可变性！并发编程中一个最大的议题就是讨论对贡献数据的写同步性问题。现在，我们来看一个例子</p>
+<pre class="line-numbers language-none"><code class="language-none">static int shared_value;
+void worker_no_promise() &#123;
+    for (int i &#x3D; 0; i &lt; 1000000; i++) &#123;
+        shared_value++;
+    &#125;
+&#125;
+
+int main() &#123;
+    auto thread1 &#x3D; std::thread(worker_no_promise);
+    auto thread2 &#x3D; std::thread(worker_no_promise);
+    thread1.join();
+    thread2.join();
+
+    std::print(&quot;value of shared is: &#123;&#125;\n&quot;, shared_value);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    你猜到问题了嘛？</p>
+<pre class="line-numbers language-none"><code class="language-none">➜  make &amp;&amp; .&#x2F;demo
+[ 50%] Building CXX object CMakeFiles&#x2F;demo.dir&#x2F;main.cpp.o
+[100%] Linking CXX executable demo
+[100%] Built target demo
+value of shared is: 1173798<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    奇怪？为什么不是200000呢？答案是非原子操作！这是因为一个简单的自增需要——将数据从内存中加载，操作，放回内存中——遵循这三个基本的步骤。所以，可能我们的两个线程从内存中加载了同样的数，自增放回去了也就会是相同的数，两个线程实际上只加了一次。甚至，可能没有增加！（这个你可以自己画图求解，笔者不在这里花费时间了）</p>
+<p>​    如何处理，我们下面引出的是锁这个概念。</p>
+<h2 id="std-mutex"><a href="#std-mutex" class="headerlink" title="std::mutex"></a>std::mutex</h2><p>​    mutex就是锁的意思。它的意思很明白——那就是对共享的数据部分进行“上锁”，当一个线程持有了这个锁后，其他的线程想要请求这个锁就必须门外竖着——阻塞等待。</p>
+<pre class="line-numbers language-none"><code class="language-none">static int shared_value;
+std::mutex mtx;
+void worker() &#123;
+    for (int i &#x3D; 0; i &lt; 1000000; i++) &#123;
+        mtx.lock();
+        shared_value++;
+        mtx.unlock();
+    &#125;
+&#125;
+
+int main() &#123;
+    auto thread1 &#x3D; std::thread(worker);
+    auto thread2 &#x3D; std::thread(worker);
+    thread1.join();
+    thread2.join();
+
+    std::print(&quot;value of shared is: &#123;&#125;\n&quot;, shared_value);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    现在我们的结果相当好！</p>
+<pre class="line-numbers language-none"><code class="language-none">➜  make &amp;&amp; .&#x2F;demo
+[ 50%] Building CXX object CMakeFiles&#x2F;demo.dir&#x2F;main.cpp.o
+[100%] Linking CXX executable demo
+[100%] Built target demo
+value of shared is: 2000000<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    事实上，只要不超过INT64_MAX的值，相加的结果都应该是正确的！</p>
+<h1 id="高阶开发基础——快速入门C-并发编程3"><a href="#高阶开发基础——快速入门C-并发编程3" class="headerlink" title="高阶开发基础——快速入门C++并发编程3"></a>高阶开发基础——快速入门C++并发编程3</h1><h2 id="关于互斥量死锁"><a href="#关于互斥量死锁" class="headerlink" title="关于互斥量死锁"></a>关于互斥量死锁</h2><p>​    上一篇博客中，我们看到了mutex可以保护数据，但是这也引来了新的麻烦，那就是互斥量的死锁。</p>
+<p>​    互斥量（Mutex）是用于保护共享资源的一种同步机制。死锁（Deadlock）是指多个线程或进程因竞争资源而陷入相互等待的状态，导致程序无法继续执行。死锁通常发生在以下四个条件同时满足时：</p>
+<ol>
+<li><strong>互斥条件</strong>：资源一次只能被一个线程占用。</li>
+<li><strong>占有并等待</strong>：线程持有至少一个资源，并等待获取其他被占用的资源。</li>
+<li><strong>非抢占条件</strong>：线程已持有的资源不能被其他线程强行抢占，只能由线程主动释放。</li>
+<li><strong>循环等待条件</strong>：存在一个线程的循环链，每个线程都在等待下一个线程所持有的资源。</li>
+</ol>
+<p>​    说的很空，我们现在来看一段代码：</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;iostream&gt;
+#include &lt;thread&gt;
+#include &lt;mutex&gt;
+
+std::mutex mutex1;
+std::mutex mutex2;
+
+void thread1() &#123;
+    std::lock_guard&lt;std::mutex&gt; lock1(mutex1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100)); &#x2F;&#x2F; 模拟一些操作
+    std::lock_guard&lt;std::mutex&gt; lock2(mutex2);
+    std::cout &lt;&lt; &quot;Thread 1 finished&quot; &lt;&lt; std::endl;
+&#125;
+
+void thread2() &#123;
+    std::lock_guard&lt;std::mutex&gt; lock2(mutex2);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100)); &#x2F;&#x2F; 模拟一些操作
+    std::lock_guard&lt;std::mutex&gt; lock1(mutex1);
+    std::cout &lt;&lt; &quot;Thread 2 finished&quot; &lt;&lt; std::endl;
+&#125;
+
+int main() &#123;
+    std::thread t1(thread1);
+    std::thread t2(thread2);
+
+    t1.join();
+    t2.join();
+
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    上面的代码就是一段死锁代码。分析一下，thread1先启动了，快速的占用了mutex1，thread2随后占用了mutex1.麻烦来了，现在做好了一系列操作后，我们马上有需要获取第二个锁，对于thread1而言，他要拿到mutex2，就必须让thread2放掉他自己手中的mutex2，但是，thread2想要放掉自己的mutex2，就必须拿到thread1手中的mutex1…好！你一眼发现，这是双方都盯着对方的资源而不肯松手自己的资源导致的，现在程序卡死了。</p>
+<h2 id="解决方案"><a href="#解决方案" class="headerlink" title="解决方案"></a>解决方案</h2><h3 id="顺序上锁。"><a href="#顺序上锁。" class="headerlink" title="顺序上锁。"></a>顺序上锁。</h3><pre class="line-numbers language-none"><code class="language-none">void thread1() &#123;
+    std::lock_guard&lt;std::mutex&gt; lock1(mutex1);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100)); &#x2F;&#x2F; 模拟一些操作
+    std::lock_guard&lt;std::mutex&gt; lock2(mutex2);
+    std::cout &lt;&lt; &quot;Thread 1 finished&quot; &lt;&lt; std::endl;
+&#125;
+
+void thread2() &#123;
+    std::lock_guard&lt;std::mutex&gt; lock2(mutex2);
+    std::this_thread::sleep_for(std::chrono::milliseconds(100)); &#x2F;&#x2F; 模拟一些操作
+    std::lock_guard&lt;std::mutex&gt; lock1(mutex1);
+    std::cout &lt;&lt; &quot;Thread 2 finished&quot; &lt;&lt; std::endl;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    你看，这是资源锁获取顺序不一致导致的。调成一致，就可以有效的回避死锁（必须按照顺序请求资源），但麻烦之处在于，我们就丧失了一定的灵活性！所以，当资源的请求顺序是无所谓的时候，可以采用这个办法。但是，效率必然不会高！</p>
+<p>​    另一个办法是——优化自己的编程思路，看看是不是真的不得不用多重锁，如果优化到后面，发现可以使用其他方案解决，那就更好了。</p>
+<h3 id="超时机制"><a href="#超时机制" class="headerlink" title="超时机制"></a>超时机制</h3><p>​    还有一种，如果你的上锁是比较宽松的，允许获取锁失败，可以尝试使用超时集制：</p>
+<pre class="line-numbers language-none"><code class="language-none">std::timed_mutex mutex1;
+std::timed_mutex mutex2;
+
+void thread1() &#123;
+    auto start &#x3D; std::chrono::steady_clock::now();
+    while (true) &#123;
+    	&#x2F;&#x2F; 愿意花费500ms时间等待 
+        if (mutex1.try_lock_for(std::chrono::milliseconds(100))) &#123;
+        	&#x2F;&#x2F; 愿意花费500ms时间等待 
+            if (mutex2.try_lock_for(std::chrono::milliseconds(100))) &#123;
+            	&#x2F;&#x2F; works...
+                std::cout &lt;&lt; &quot;Thread 1 finished&quot; &lt;&lt; std::endl;
+                mutex2.unlock();
+                mutex1.unlock();
+                return;
+            &#125;
+            mutex1.unlock();
+        &#125;
+        &#x2F;&#x2F; 如果超过1s没有拿到锁，放弃，退到后面我们处理
+        if (std::chrono::steady_clock::now() - start &gt; std::chrono::seconds(1)) &#123;
+            std::cout &lt;&lt; &quot;Thread 1 timeout&quot; &lt;&lt; std::endl;
+            return;
+        &#125;
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h2 id="使用RAII来保证锁的恰当释放"><a href="#使用RAII来保证锁的恰当释放" class="headerlink" title="使用RAII来保证锁的恰当释放"></a>使用RAII来保证锁的恰当释放</h2><p>​    哎呀！很不小心的，我们写下了这段代码：</p>
+<pre class="line-numbers language-none"><code class="language-none">static int shared_value;
+std::mutex mtx;
+void worker() &#123;
+    for (int i &#x3D; 0; i &lt; 1000000; i++) &#123;
+        mtx.lock();
+        shared_value++;
+    &#125;
+&#125;
+
+int main() &#123;
+    auto thread1 &#x3D; std::thread(worker);
+    auto thread2 &#x3D; std::thread(worker);
+    thread1.join();
+    thread2.join();
+
+    std::print(&quot;value of shared is: &#123;&#125;\n&quot;, shared_value);
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    你看到问题了嘛？答案是——我们的锁忘记解锁了，再下一轮循环中，请求一个永远不可能解锁的锁！因为锁了锁的人是过去的他自己！</p>
+<p>​    麻烦了，这个倒还好，如果我们的逻辑非常复杂，如何保证我们自己还记得释放锁呢？答案是请出来万能的RAII机制。</p>
+<pre class="line-numbers language-c++" data-language="c++"><code class="language-c++"> &#x2F;** @brief A simple scoped lock type.
+   *
+   * A lock_guard controls mutex ownership within a scope, releasing
+   * ownership in the destructor.
+   *
+   * @headerfile mutex
+   * @since C++11
+   *&#x2F;
+  template&lt;typename _Mutex&gt;
+    class lock_guard
+    &#123;
+    public:
+      typedef _Mutex mutex_type;
+
+      [[__nodiscard__]]
+      explicit lock_guard(mutex_type&amp; __m) : _M_device(__m)
+      &#123; _M_device.lock(); &#125;
+
+      [[__nodiscard__]]
+      lock_guard(mutex_type&amp; __m, adopt_lock_t) noexcept : _M_device(__m)
+      &#123; &#125; &#x2F;&#x2F; calling thread owns mutex
+
+      ~lock_guard()
+      &#123; _M_device.unlock(); &#125;
+
+      lock_guard(const lock_guard&amp;) &#x3D; delete;
+      lock_guard&amp; operator&#x3D;(const lock_guard&amp;) &#x3D; delete;
+
+    private:
+      mutex_type&amp;  _M_device;
+    &#125;;
+
+  &#x2F;&#x2F;&#x2F; @&#125; group mutexes
+_GLIBCXX_END_NAMESPACE_VERSION
+&#125; &#x2F;&#x2F; namespace<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    看懂了嘛？这就是RAII思路设计的lock_guard。就是说，当我们构造了一个类lock_guard开始，我们就对他立马进行上锁，到出作用域，程序马上就要放手没法管住mutex的控制的时候，手动的进行释放处理操作，在这里，释放的操作就是将锁进行解锁（显然我们的锁必然已经被上锁了，因为锁在被lock_guard控制的一瞬间就调用了lock方法！）</p>
+<p>​    但是还是不够灵活，我们如果想自己控制锁的范围，办法是——使用unique_ptr的姊妹类——unique_lock</p>
+<ul>
+<li><code>unique_lock(mutex_type&amp; m, defer_lock_t) noexcept</code>：构造函数，使用给定的互斥量 <code>m</code> 进行初始化，但不对该互斥量进行加锁操作。</li>
+<li><code>unique_lock(mutex_type&amp; m, try_to_lock_t) noexcept</code>：构造函数，使用给定的互斥量 <code>m</code> 进行初始化，并尝试对该互斥量进行加锁操作。如果加锁失败，则创建的 <code>std::unique_lock</code> 对象不与任何互斥量关联。</li>
+<li><code>unique_lock(mutex_type&amp; m, adopt_lock_t) noexcept</code>：构造函数，使用给定的互斥量 <code>m</code> 进行初始化，并假设该互斥量已经被当前线程成功加锁。</li>
+</ul>
+<h1 id="高阶开发基础——快速入门C-并发编程4"><a href="#高阶开发基础——快速入门C-并发编程4" class="headerlink" title="高阶开发基础——快速入门C++并发编程4"></a>高阶开发基础——快速入门C++并发编程4</h1><h2 id="使用call-once来确保调用的唯一性"><a href="#使用call-once来确保调用的唯一性" class="headerlink" title="使用call_once来确保调用的唯一性"></a>使用call_once来确保调用的唯一性</h2><p>​    一个相似的概念是——单例模式，笔者找到的是stack_overflow的一个问答，如果不喜欢看英文，可以考虑看一下这个CSDN回答：</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://stackoverflow.com/questions/1008019/how-do-you-implement-the-singleton-design-pattern">c++ - How do you implement the Singleton design pattern? - Stack Overflow</a></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/unonoi/article/details/121138176">【C++】C++ 单例模式总结（5种单例实现方法）_单例模式c++实现-CSDN博客</a></p>
+</blockquote>
+<p>​    总而言之，单例模式就是保证在多线程中对象的唯一性。C++11预料了这样的场景，因为十分多见（比如说初始化日志和初始化单一数据库等等）</p>
+<p>​    所以，call_once就被用来保证在多个线程中只执行一次的用法。</p>
+<h3 id="先看我们的原始的单例模式"><a href="#先看我们的原始的单例模式" class="headerlink" title="先看我们的原始的单例模式"></a>先看我们的原始的单例模式</h3><pre class="line-numbers language-none"><code class="language-none">#include &lt;cstdio&gt;
+#include &lt;print&gt;
+#include &lt;mutex&gt;
+
+class Logger;
+Logger* global_logger_instance &#x3D; nullptr;
+
+class Logger
+&#123;
+public:
+    &#x2F;&#x2F; disable the copy
+    Logger(const Logger&amp;) &#x3D; delete;
+    Logger&amp; operator&#x3D;(const Logger&amp;) &#x3D; delete;
+
+    static Logger&amp; instance()&#123;
+        __pvt_init();
+        return *global_logger_instance;
+    &#125;
+
+    static void write_logger(const std::string&amp; info)&#123;
+        std::print(&quot;&#123;&#125;\n&quot;, info);
+    &#125;
+
+private:
+    static void __pvt_init()&#123;
+        if(!global_logger_instance)&#123;
+            global_logger_instance &#x3D; new Logger;
+            std::print(&quot;Logger is inited for once\n&quot;);
+        &#125;
+    &#125;
+    Logger() &#x3D; default;
+&#125;;
+
+void make_logging()
+&#123;
+    Logger::instance().write_logger(&quot;hello&quot;);
+    Logger::instance().write_logger(&quot;world&quot;);
+    Logger::instance().write_logger(&quot;It can be promised&quot;);
+    Logger::instance().write_logger(&quot;that the logger written only&quot;);
+    Logger::instance().write_logger(&quot;once!&quot;);
+&#125;
+
+
+int main()
+&#123;
+    make_logging();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    <strong>这是一种，非常线程不安全的实现</strong>，虽然这个代码在单线程中显然可以正确的工作，但是遗憾的是，只要放到多线程中，我们的初始化就会出现问题，很有可能导致潜在的双重初始化！</p>
+<p>​    所以，办法就是请出我们的call_once来解决我们多线程单一执行问题：</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;cstdio&gt;
+#include &lt;print&gt;
+#include &lt;mutex&gt;
+#include &lt;thread&gt;
+class Logger;
+Logger* global_logger_instance &#x3D; nullptr;
+std::once_flag promising_flag;
+
+class Logger
+&#123;
+public:
+    &#x2F;&#x2F; disable the copy
+    Logger(const Logger&amp;) &#x3D; delete;
+    Logger&amp; operator&#x3D;(const Logger&amp;) &#x3D; delete;
+
+    static Logger&amp; instance()&#123;
+        std::call_once(promising_flag, __pvt_init);
+        return *global_logger_instance;
+    &#125;
+
+    static void write_logger(const std::string&amp; info)&#123;
+        std::print(&quot;&#123;&#125;\n&quot;, info);
+    &#125;
+
+private:
+    static void __pvt_init()&#123;
+        if(!global_logger_instance)&#123;
+            global_logger_instance &#x3D; new Logger;
+            std::print(&quot;Logger is inited for once\n&quot;);
+        &#125;
+    &#125;
+    Logger() &#x3D; default;
+&#125;;
+
+void make_logging()
+&#123;
+    Logger::instance().write_logger(&quot;hello&quot;);
+    Logger::instance().write_logger(&quot;world&quot;);
+    Logger::instance().write_logger(&quot;It can be promised&quot;);
+    Logger::instance().write_logger(&quot;that the logger written only&quot;);
+    Logger::instance().write_logger(&quot;once!&quot;);
+&#125;
+
+
+int main()
+&#123;
+    std::thread pools[20];
+    for(int i &#x3D; 0; i &lt; 20; i++)&#123;
+        pools[i] &#x3D; std::thread&#123;make_logging&#125;;
+    &#125;
+
+    for(int i &#x3D; 0; i &lt; 20; i++)&#123;
+        pools[i].join();
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    现在，我们创建若干的线程并不会发生多重初始化的问题！</p>
+<h1 id="高阶开发基础——快速入门C-并发编程5-信号量的使用"><a href="#高阶开发基础——快速入门C-并发编程5-信号量的使用" class="headerlink" title="高阶开发基础——快速入门C++并发编程5 信号量的使用"></a>高阶开发基础——快速入门C++并发编程5 信号量的使用</h1><h2 id="简单说说condition-variable"><a href="#简单说说condition-variable" class="headerlink" title="简单说说condition_variable"></a>简单说说condition_variable</h2><p>​    condition_varaible是mutex的一个更加高阶的使用。它用来负责简化资源的请求和使用。或者说，他让多个线程对资源的使用变得有序。</p>
+<p>​    一个代表性的例子就是我们的消费生产模型。假设有两个线程，一个线程负责生产数据，另一个线程负责消费数据。生产线程需要等到消费线程处理完数据后才能继续生产，而消费线程需要等到有数据时才能开始消费。</p>
+<p>这时候就可以用 <code>condition_variable</code> 来实现：</p>
+<ol>
+<li><strong>等待条件</strong>：消费线程发现没有数据时，会调用 <code>condition_variable</code> 的 <code>wait()</code> 函数进入等待状态，直到生产线程通知它有数据了。</li>
+<li><strong>通知条件</strong>：生产线程生产完数据后，调用 <code>condition_variable</code> 的 <code>notify_one()</code> 或 <code>notify_all()</code> 函数，告诉消费线程“数据准备好了，可以开始消费了”。</li>
+</ol>
+<p>简单来说，<code>condition_variable</code> 就像是一个信号灯：</p>
+<ul>
+<li>线程可以在这个信号灯前等待（<code>wait()</code>），直到其他线程发出信号（<code>notify()</code>）。</li>
+<li>当信号发出后，等待的线程就会被唤醒，继续执行。</li>
+</ul>
+<p><strong>它的核心作用是避免线程忙等待（不断检查条件是否成立），从而节省 CPU 资源。</strong></p>
+<h2 id="一个例子"><a href="#一个例子" class="headerlink" title="一个例子"></a>一个例子</h2><p>​    我们就对上面的例子进行编程</p>
+<pre class="line-numbers language-none"><code class="language-none">#include &lt;chrono&gt;
+#include &lt;condition_variable&gt;
+#include &lt;mutex&gt;
+#include &lt;print&gt;
+#include &lt;queue&gt;
+#include &lt;thread&gt;
+std::mutex mtx;
+std::queue&lt;int&gt; global_working_queue;
+std::condition_variable global_con_var;
+
+bool shell_stop &#x3D; false;
+void producer() &#123;
+    for (int i &#x3D; 0; i &lt; 50; i++) &#123;
+        &#123;
+            std::unique_lock&lt;std::mutex&gt; locker(mtx);
+            global_working_queue.push(i);
+            global_con_var.notify_one();
+            std::print(&quot;we push &#123;&#125; into the task\n&quot;, i);
+        &#125;
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    &#125;
+    shell_stop &#x3D; true;
+&#125;
+
+void consumer() &#123;
+    while (!shell_stop) &#123;
+        std::unique_lock&lt;std::mutex&gt; locker(mtx);
+        &#x2F;&#x2F; if the queue is empty, we need to wait
+        global_con_var.wait(locker, []()&#123;return !global_working_queue.empty() || !shell_stop;&#125;);
+        if(global_working_queue.empty())&#123;
+            continue;
+        &#125;
+        
+        int value &#x3D; global_working_queue.front();
+        global_working_queue.pop();
+        std::print(&quot;Fetch the value in consumer &#123;&#125;\n&quot;, value);
+    &#125;
+&#125;
+
+int main() &#123;
+    auto pro &#x3D; std::thread(producer);
+    auto con &#x3D; std::thread(consumer);
+
+    pro.join();
+    con.join();
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    在这个例子中，笔者让一个消费者源源不断的往里塞入数据。每当我们塞好了数据，就会通知我们的线程取出数据。进行消费。对于生产者，则是每一次准备处理数据的时候，先向条件变量请示一下，我可不可以进行处理。条件变量依据我们的判断条件，当我们的输入不是队列空的时候，就不需要等待，直接处理队列内数据（wait的判断条件要求的是当为真的适合不去等待，假的时候（也就是资源此时不可以被请求，你要等待）的时候休眠，直到消费者线程提醒你你要起来处理数据）</p>
+<h1 id="高阶开发基础——快速入门C-并发编程6——大作业：实现一个超级迷你的线程池"><a href="#高阶开发基础——快速入门C-并发编程6——大作业：实现一个超级迷你的线程池" class="headerlink" title="高阶开发基础——快速入门C++并发编程6——大作业：实现一个超级迷你的线程池"></a>高阶开发基础——快速入门C++并发编程6——大作业：实现一个超级迷你的线程池</h1><h2 id="实现一个无返回的线程池"><a href="#实现一个无返回的线程池" class="headerlink" title="实现一个无返回的线程池"></a>实现一个无返回的线程池</h2><p>​    实现一个简单的线程池非常简单，我们首先聊一聊线程池的定义：</p>
+<p>​    <strong>线程池（Thread Pool）</strong> 是一种并发编程的设计模式，用于管理和复用多个线程，以提高程序的性能和资源利用率。它的核心思想是预先创建一组线程，并将任务分配给这些线程执行，而不是为每个任务单独创建和销毁线程。线程池广泛应用于需要处理大量短期任务的场景，例如 Web 服务器、数据库连接池、任务调度系统等。换而言之，线程池说白了就是一种饿汉思维——直接预先提供若干的线程，由线程池内部控制调度，确保我们可以只关心任务的提交以及完成。</p>
+<p>​    我们下面要做的是设计一个任务是不返回的线程池。所以，我们约束我们的函数是：</p>
+<pre class="line-numbers language-none"><code class="language-none">using supportive_task_type &#x3D; std::function&lt;void()&gt;;<span aria-hidden="true" class="line-numbers-rows"><span></span></span></code></pre>
+<p>​    下一步，就是构造我们的线程池的线程。注意的是——线程和任务是解耦合的，意味着我们需要一个中间函数解耦合任务派发。笔者决定，将任务派发分到一个私有函数完成：</p>
+<pre class="line-numbers language-none"><code class="language-none">CCThreadPool(const int workers_num) &#123;
+    for(int i &#x3D; 0; i &lt; workers_num; i++)&#123;
+        internal_threads.emplace_back(
+        [this]()&#123;
+            __scheduled();
+        &#125;
+    );
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    上面这个代码很简单，就是将每一个线程都分配一个调度函数，这个调度函数来委派分发任务，办法说简单也很简单：</p>
+<pre class="line-numbers language-none"><code class="language-none">void __scheduled()&#123;
+        while(1)&#123;
+        	&#x2F;&#x2F; sources protections
+            std::unique_lock&lt;std::mutex&gt; locker(internal_mutex);
+            &#x2F;&#x2F; waiting for the access of the task resources
+            controlling_cv.wait(locker, [this]&#123;
+                return thread_pool_status || !tasks_queue.empty();&#125;
+            );
+            &#x2F;&#x2F; quit if requried
+            if(thread_pool_status &amp;&amp; tasks_queue.empty())&#123;
+                return;
+            &#125;
+            
+            &#x2F;&#x2F; 现在我们可以取到任务执行了
+            supportive_task_type task(std::move(tasks_queue.front()));
+            tasks_queue.pop();
+            locker.unlock();
+            task();
+        &#125;
+    &#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    当析构的时候，我们也要通知所有线程的cv不要睡眠了，由于设置了<code>thread_pool_status</code>是true，直接线程跳出来结束全文。</p>
+<pre class="line-numbers language-none"><code class="language-none">~CCThreadPool()&#123;
+    thread_pool_status &#x3D; true;
+    controlling_cv.notify_all();
+    for(auto&amp; thread : internal_threads)&#123;
+        thread.join();
+    &#125;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<p>​    </p>
+<h2 id="完全代码实现"><a href="#完全代码实现" class="headerlink" title="完全代码实现"></a>完全代码实现</h2><pre class="line-numbers language-none"><code class="language-none">#include &lt;condition_variable&gt;
+#include &lt;functional&gt;
+#include &lt;mutex&gt;
+#include &lt;print&gt;
+#include &lt;queue&gt;
+#include &lt;thread&gt;
+#include &lt;utility&gt;
+#include &lt;vector&gt;
+
+class CCThreadPool &#123;
+  public:
+    CCThreadPool()                          &#x3D; delete;
+    CCThreadPool(const CCThreadPool &amp;)      &#x3D; delete;
+    CCThreadPool &amp;operator&#x3D;(CCThreadPool &amp;) &#x3D; delete;
+
+    CCThreadPool(const int workers_num) &#123;
+        for(int i &#x3D; 0; i &lt; workers_num; i++)&#123;
+            internal_threads.emplace_back(
+            [this]()&#123;
+                __scheduled();
+            &#125;
+        );
+        &#125;
+    &#125;
+
+    ~CCThreadPool()&#123;
+        thread_pool_status &#x3D; true;
+        controlling_cv.notify_all();
+        for(auto&amp; thread : internal_threads)&#123;
+            thread.join();
+        &#125;
+    &#125;
+
+    template&lt;typename F, typename... Args&gt;
+    void enTask(F&amp;&amp; f, Args&amp;&amp;... args)&#123;
+        supportive_task_type task(
+            std::bind(std::forward&lt;F&amp;&amp;&gt;(f), std::forward&lt;Args&amp;&amp;&gt;(args)...));
+        &#123;
+            std::unique_lock&lt;std::mutex&gt; locker(internal_mutex);
+            tasks_queue.emplace(std::move(task));
+        &#125;
+        controlling_cv.notify_one();
+    &#125;
+
+  private:
+    void __scheduled()&#123;
+        while(1)&#123;
+            std::unique_lock&lt;std::mutex&gt; locker(internal_mutex);
+            controlling_cv.wait(locker, [this]&#123;
+                return thread_pool_status || !tasks_queue.empty();&#125;
+            );
+            &#x2F;&#x2F; quit
+            if(thread_pool_status &amp;&amp; tasks_queue.empty())&#123;
+                return;
+            &#125;
+            supportive_task_type task(std::move(tasks_queue.front()));
+            tasks_queue.pop();
+            locker.unlock();
+            task();
+        &#125;
+    &#125;
+
+    using supportive_task_type &#x3D; std::function&lt;void()&gt;;
+    std::vector&lt;std::thread&gt; internal_threads;
+    std::queue&lt;supportive_task_type&gt; tasks_queue;
+    std::mutex internal_mutex;
+    std::condition_variable controlling_cv;
+    bool thread_pool_status &#x3D; false;
+&#125;;
+
+
+int main()
+&#123;
+    std::println(&quot;Task start&quot;);
+    CCThreadPool pool(4);
+    
+    for (int i &#x3D; 0; i &lt; 8; ++i) &#123;
+        pool.enTask([i] &#123;
+            std::println(&quot;Task &#123;&#125; is started at thread with id &#123;&#125;&quot;, i, std::this_thread::get_id());
+            std::this_thread::sleep_for(std::chrono::seconds(1));
+            std::println(&quot;Task &#123;&#125; is done&quot;, i);
+        &#125;);
+    &#125;
+    return 0;
+&#125;<span aria-hidden="true" class="line-numbers-rows"><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span><span></span></span></code></pre>
+<h1 id="Reference-1"><a href="#Reference-1" class="headerlink" title="Reference"></a>Reference</h1><blockquote>
+<p><a target="_blank" rel="noopener" href="http://www.seestudy.cn/?list_9/41.html">8. C++11 跨平台线程池-See的编程日记 (seestudy.cn)</a></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a target="_blank" rel="noopener" href="https://github.com/Charliechen114514">Charlie Chen</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://charliechen114514.github.io/2025/02/03/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">http://charliechen114514.github.io/2025/02/03/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">全体目光向我看齐，我宣布个事！是我Charliechen写的这篇文章！(?)</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/C-C/">C/C++</a><a class="post-meta__tags" href="/tags/%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/">并发编程</a></div><div class="post_share"><div class="social-share" data-image="/img/passagepage.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2025/01/30/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8%E9%9D%A2%E5%AF%B9%E5%AF%B9%E8%B1%A1C%E8%AF%AD%E8%A8%80%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8EOLED%E7%9A%84%E5%9B%BE%E5%BD%A2%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6/" title="从0开始使用面对对象C语言搭建一个基于OLED的图形显示框架"><img class="cover" src="/img/loading.gif" data-original="/img/passagepage.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">从0开始使用面对对象C语言搭建一个基于OLED的图形显示框架</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/01/29/Opencv490-MSVC-Mingw-WITHQT-OpencvContrib4-x%E7%BC%96%E8%AF%91%E6%95%99%E7%A8%8B/" title="Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程"><img class="cover" src="/img/loading.gif" data-original="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-01-29</div><div class="title">Opencv490+MSVC_Mingw+WITHQT+OpencvContrib4_x编译教程</div></div></a></div><div><a href="/2023/12/18/Visual-Studio%E7%BC%96%E8%AF%91%E9%9D%99%EF%BC%8C%E5%8A%A8%E6%80%81%E9%93%BE%E6%8E%A5%E5%BA%93%E6%8C%87%E5%8D%97%E5%A4%87%E5%BF%98/" title="Visual Studio编译静，动态链接库指南备忘"><img class="cover" src="/img/loading.gif" data-original="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-12-18</div><div class="title">Visual Studio编译静，动态链接库指南备忘</div></div></a></div><div><a href="/2024/07/27/%E5%85%B3%E4%BA%8E%E5%A6%82%E4%BD%95%E5%9C%A8Arch-Linux%E4%B8%8A%E7%BC%96%E5%86%99%E8%87%AA%E5%B7%B1%E7%9A%84%E7%AC%AC%E4%B8%80%E4%B8%AAmodule/" title="关于如何在Arch Linux上编写自己的第一个module"><img class="cover" src="/img/loading.gif" data-original="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-27</div><div class="title">关于如何在Arch Linux上编写自己的第一个module</div></div></a></div><div><a href="/2024/07/27/%E6%B7%B1%E5%85%A5%E7%A0%94%E7%A9%B6Qt-Meta-Object-System/" title="深入研究Qt Meta - Object System"><img class="cover" src="/img/loading.gif" data-original="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-07-27</div><div class="title">深入研究Qt Meta - Object System</div></div></a></div><div><a href="/2023/11/25/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F%E8%BF%98%E5%8E%9F%E7%9C%9F%E7%9B%B8%EF%BC%88%E8%B6%85%E9%95%BF%E8%AE%B0%E5%BD%95%E7%89%88%EF%BC%89/" title="操作系统还原真相（超长记录版）"><img class="cover" src="/img/loading.gif" data-original="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-11-25</div><div class="title">操作系统还原真相（超长记录版）</div></div></a></div><div><a href="/2024/12/13/%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8GDB%E8%B0%83%E8%AF%95%E8%BF%9C%E7%A8%8B%E4%B8%8B%E4%BD%8D%E6%9C%BA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%9A%84%E5%BA%94%E7%94%A8%E5%B1%82%E7%A8%8B%E5%BA%8F%E5%8A%9E%E6%B3%95-VSCode%E6%9B%B4%E5%A5%BD%E7%9A%84%E7%95%8C%E9%9D%A2%E8%B0%83%E8%AF%95%E4%BD%93%E9%AA%8C%E6%8F%90%E5%8D%87/" title="关于使用GDB调试远程下位机开发板的应用层程序办法 + VSCode更好的界面调试体验提升"><img class="cover" src="/img/loading.gif" data-original="/img/passagepage.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-12-13</div><div class="title">关于使用GDB调试远程下位机开发板的应用层程序办法 + VSCode更好的界面调试体验提升</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="/img/loading.gif" data-original="/img/webicon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">Charlie Chen</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">18</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">0</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/Charliechen114514"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/Charliechen114514" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="http://wpa.qq.com/msgrd?v=3&amp;uin=725610365&amp;site=qq&amp;menu=yes" target="_blank" title="QQ"><i class="fab fa-qq"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">大幅度精简了博客，余下的部分是我认为质量上课的；分离了笔记部分（我传到了额外的诸如CSDN的垃圾场（逃））。</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E9%98%B6%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B1"><span class="toc-number">1.</span> <span class="toc-text">高阶开发基础——快速入门C++并发编程1</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%89%8D%E8%A8%80"><span class="toc-number">1.1.</span> <span class="toc-text">前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B6%E5%8F%91%E4%B8%8E%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.2.</span> <span class="toc-text">并发与线程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%90%86%E8%A7%A3std-thread"><span class="toc-number">1.3.</span> <span class="toc-text">理解std::thread</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A8%E4%BB%8Bcpp-reference"><span class="toc-number">1.3.1.</span> <span class="toc-text">推介cpp reference</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BB%8Estd-thread%E5%BC%80%E5%A7%8B"><span class="toc-number">1.3.2.</span> <span class="toc-text">从std::thread开始</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E6%9E%84%E9%80%A0%E4%B8%80%E4%B8%AAstd-thread"><span class="toc-number">1.3.3.</span> <span class="toc-text">如何构造一个std::thread</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%A6%82%E4%BD%95%E7%A1%AE%E4%BF%9D%E6%AD%A3%E7%A1%AE%E7%9A%84%E7%BB%93%E6%9D%9F%E7%BA%BF%E7%A8%8B"><span class="toc-number">1.3.4.</span> <span class="toc-text">如何确保正确的结束线程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B3%A8%E6%84%8F"><span class="toc-number">1.3.4.1.</span> <span class="toc-text">注意</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Reference"><span class="toc-number">2.</span> <span class="toc-text">Reference</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E9%98%B6%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B2"><span class="toc-number">3.</span> <span class="toc-text">高阶开发基础——快速入门C++并发编程2</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81%E7%9A%84%E5%87%A0%E4%B8%AA%E7%BB%8F%E5%85%B8%E9%94%99%E8%AF%AF%E2%80%94%E2%80%941-%E5%85%B3%E4%BA%8E%E5%86%85%E5%AD%98%E8%AE%BF%E9%97%AE%E7%9A%84%E5%87%A0%E4%B8%AA%E7%BB%8F%E5%85%B8%E7%9A%84%E9%94%99%E8%AF%AF"><span class="toc-number">3.1.</span> <span class="toc-text">常见的几个经典错误——1: 关于内存访问的几个经典的错误</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E5%A4%9A%E7%BA%BF%E7%A8%8B%E6%B5%81%E5%AF%B9%E5%8D%95%E4%B8%80%E6%95%B0%E6%8D%AE%E7%9A%84%E5%86%99%E9%97%AE%E9%A2%98"><span class="toc-number">3.2.</span> <span class="toc-text">解决多线程流对单一数据的写问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#std-mutex"><span class="toc-number">3.3.</span> <span class="toc-text">std::mutex</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E9%98%B6%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B3"><span class="toc-number">4.</span> <span class="toc-text">高阶开发基础——快速入门C++并发编程3</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B3%E4%BA%8E%E4%BA%92%E6%96%A5%E9%87%8F%E6%AD%BB%E9%94%81"><span class="toc-number">4.1.</span> <span class="toc-text">关于互斥量死锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88"><span class="toc-number">4.2.</span> <span class="toc-text">解决方案</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A1%BA%E5%BA%8F%E4%B8%8A%E9%94%81%E3%80%82"><span class="toc-number">4.2.1.</span> <span class="toc-text">顺序上锁。</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B6%85%E6%97%B6%E6%9C%BA%E5%88%B6"><span class="toc-number">4.2.2.</span> <span class="toc-text">超时机制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8RAII%E6%9D%A5%E4%BF%9D%E8%AF%81%E9%94%81%E7%9A%84%E6%81%B0%E5%BD%93%E9%87%8A%E6%94%BE"><span class="toc-number">4.3.</span> <span class="toc-text">使用RAII来保证锁的恰当释放</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E9%98%B6%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B4"><span class="toc-number">5.</span> <span class="toc-text">高阶开发基础——快速入门C++并发编程4</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8call-once%E6%9D%A5%E7%A1%AE%E4%BF%9D%E8%B0%83%E7%94%A8%E7%9A%84%E5%94%AF%E4%B8%80%E6%80%A7"><span class="toc-number">5.1.</span> <span class="toc-text">使用call_once来确保调用的唯一性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%88%E7%9C%8B%E6%88%91%E4%BB%AC%E7%9A%84%E5%8E%9F%E5%A7%8B%E7%9A%84%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F"><span class="toc-number">5.1.1.</span> <span class="toc-text">先看我们的原始的单例模式</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E9%98%B6%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B5-%E4%BF%A1%E5%8F%B7%E9%87%8F%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-number">6.</span> <span class="toc-text">高阶开发基础——快速入门C++并发编程5 信号量的使用</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AE%80%E5%8D%95%E8%AF%B4%E8%AF%B4condition-variable"><span class="toc-number">6.1.</span> <span class="toc-text">简单说说condition_variable</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="toc-number">6.2.</span> <span class="toc-text">一个例子</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%AB%98%E9%98%B6%E5%BC%80%E5%8F%91%E5%9F%BA%E7%A1%80%E2%80%94%E2%80%94%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B6%E2%80%94%E2%80%94%E5%A4%A7%E4%BD%9C%E4%B8%9A%EF%BC%9A%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E8%B6%85%E7%BA%A7%E8%BF%B7%E4%BD%A0%E7%9A%84%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-number">7.</span> <span class="toc-text">高阶开发基础——快速入门C++并发编程6——大作业：实现一个超级迷你的线程池</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%9E%E7%8E%B0%E4%B8%80%E4%B8%AA%E6%97%A0%E8%BF%94%E5%9B%9E%E7%9A%84%E7%BA%BF%E7%A8%8B%E6%B1%A0"><span class="toc-number">7.1.</span> <span class="toc-text">实现一个无返回的线程池</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AE%8C%E5%85%A8%E4%BB%A3%E7%A0%81%E5%AE%9E%E7%8E%B0"><span class="toc-number">7.2.</span> <span class="toc-text">完全代码实现</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#Reference-1"><span class="toc-number">8.</span> <span class="toc-text">Reference</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/02/03/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" title="快速入门C++并发编程"><img src="/img/loading.gif" data-original="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="快速入门C++并发编程"/></a><div class="content"><a class="title" href="/2025/02/03/%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8C-%E5%B9%B6%E5%8F%91%E7%BC%96%E7%A8%8B/" title="快速入门C++并发编程">快速入门C++并发编程</a><time datetime="2025-02-03T10:42:25.000Z" title="发表于 2025-02-03 18:42:25">2025-02-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/01/30/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8%E9%9D%A2%E5%AF%B9%E5%AF%B9%E8%B1%A1C%E8%AF%AD%E8%A8%80%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8EOLED%E7%9A%84%E5%9B%BE%E5%BD%A2%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6/" title="从0开始使用面对对象C语言搭建一个基于OLED的图形显示框架"><img src="/img/loading.gif" data-original="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="从0开始使用面对对象C语言搭建一个基于OLED的图形显示框架"/></a><div class="content"><a class="title" href="/2025/01/30/%E4%BB%8E0%E5%BC%80%E5%A7%8B%E4%BD%BF%E7%94%A8%E9%9D%A2%E5%AF%B9%E5%AF%B9%E8%B1%A1C%E8%AF%AD%E8%A8%80%E6%90%AD%E5%BB%BA%E4%B8%80%E4%B8%AA%E5%9F%BA%E4%BA%8EOLED%E7%9A%84%E5%9B%BE%E5%BD%A2%E6%98%BE%E7%A4%BA%E6%A1%86%E6%9E%B6/" title="从0开始使用面对对象C语言搭建一个基于OLED的图形显示框架">从0开始使用面对对象C语言搭建一个基于OLED的图形显示框架</a><time datetime="2025-01-30T08:23:20.000Z" title="发表于 2025-01-30 16:23:20">2025-01-30</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/13/%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8GDB%E8%B0%83%E8%AF%95%E8%BF%9C%E7%A8%8B%E4%B8%8B%E4%BD%8D%E6%9C%BA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%9A%84%E5%BA%94%E7%94%A8%E5%B1%82%E7%A8%8B%E5%BA%8F%E5%8A%9E%E6%B3%95-VSCode%E6%9B%B4%E5%A5%BD%E7%9A%84%E7%95%8C%E9%9D%A2%E8%B0%83%E8%AF%95%E4%BD%93%E9%AA%8C%E6%8F%90%E5%8D%87/" title="关于使用GDB调试远程下位机开发板的应用层程序办法 + VSCode更好的界面调试体验提升"><img src="/img/loading.gif" data-original="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="关于使用GDB调试远程下位机开发板的应用层程序办法 + VSCode更好的界面调试体验提升"/></a><div class="content"><a class="title" href="/2024/12/13/%E5%85%B3%E4%BA%8E%E4%BD%BF%E7%94%A8GDB%E8%B0%83%E8%AF%95%E8%BF%9C%E7%A8%8B%E4%B8%8B%E4%BD%8D%E6%9C%BA%E5%BC%80%E5%8F%91%E6%9D%BF%E7%9A%84%E5%BA%94%E7%94%A8%E5%B1%82%E7%A8%8B%E5%BA%8F%E5%8A%9E%E6%B3%95-VSCode%E6%9B%B4%E5%A5%BD%E7%9A%84%E7%95%8C%E9%9D%A2%E8%B0%83%E8%AF%95%E4%BD%93%E9%AA%8C%E6%8F%90%E5%8D%87/" title="关于使用GDB调试远程下位机开发板的应用层程序办法 + VSCode更好的界面调试体验提升">关于使用GDB调试远程下位机开发板的应用层程序办法 + VSCode更好的界面调试体验提升</a><time datetime="2024-12-13T04:13:10.000Z" title="发表于 2024-12-13 12:13:10">2024-12-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/15/WSL2%E4%B8%8B%E4%BD%BF%E7%94%A8miniconda-cuda-cudnn%E6%96%B9%E6%A1%88%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%96%B9%E6%A1%88/" title="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案"><img src="/img/loading.gif" data-original="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案"/></a><div class="content"><a class="title" href="/2024/11/15/WSL2%E4%B8%8B%E4%BD%BF%E7%94%A8miniconda-cuda-cudnn%E6%96%B9%E6%A1%88%E8%BF%9B%E8%A1%8C%E6%9C%BA%E5%99%A8-%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE%E6%96%B9%E6%A1%88/" title="WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案">WSL2下使用miniconda+cuda+cudnn方案进行机器/深度学习环境配置方案</a><time datetime="2024-11-15T13:11:50.000Z" title="发表于 2024-11-15 21:11:50">2024-11-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/" title="STM32单片机之分析启动文件小论(II)"><img src="/img/loading.gif" data-original="/img/passagepage.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="STM32单片机之分析启动文件小论(II)"/></a><div class="content"><a class="title" href="/2024/11/15/STM32%E5%8D%95%E7%89%87%E6%9C%BA%E4%B9%8B%E5%88%86%E6%9E%90%E5%90%AF%E5%8A%A8%E6%96%87%E4%BB%B6%E5%B0%8F%E8%AE%BA-II/" title="STM32单片机之分析启动文件小论(II)">STM32单片机之分析启动文件小论(II)</a><time datetime="2024-11-15T13:05:50.000Z" title="发表于 2024-11-15 21:05:50">2024-11-15</time></div></div></div></div></div></div></main><footer id="footer" style="background: transparent"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By Charlie Chen</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.1
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container').forEach(node => {
+            if (node.hasAttribute('display')) {
+              btf.wrap(node, 'div', { class: 'mathjax-overflow' })
+            } else {
+              btf.wrap(node, 'span', { class: 'mathjax-overflow' })
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/fireworks.min.js"></script><script id="click-show-text" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/dist/click-show-text.min.js" data-mobile="false" data-text="哼啊啊啊啊啊啊啊啊啊啊啊啊,人民万岁！,兄啊，别点力" data-fontsize="15px" data-random="false" async="async"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div>
+        <style>
+            [bg-lazy] {
+                background-image: none !important;
+                background-color: #eee !important;
+            }
+        </style>
+        <script>
+            window.imageLazyLoadSetting = {
+                isSPA: false,
+                preloadRatio: 1,
+                processImages: null,
+            };
+        </script><script>window.addEventListener("load",function(){var t=/\.(gif|jpg|jpeg|tiff|png)$/i,r=/^data:image\/[a-z]+;base64,/;Array.prototype.slice.call(document.querySelectorAll("img[data-original]")).forEach(function(a){var e=a.parentNode;"A"===e.tagName&&(e.href.match(t)||e.href.match(r))&&(e.href=a.dataset.original)})});</script><script>(r=>{r.imageLazyLoadSetting.processImages=t;var a=r.imageLazyLoadSetting.isSPA,o=r.imageLazyLoadSetting.preloadRatio||1,d=i();function i(){var t=Array.prototype.slice.call(document.querySelectorAll("img[data-original]")),e=Array.prototype.slice.call(document.querySelectorAll("[bg-lazy]"));return t.concat(e)}function t(t){(a||t)&&(d=i());for(var e,n=0;n<d.length;n++)0<=(e=(e=d[n]).getBoundingClientRect()).bottom&&0<=e.left&&e.top<=(r.innerHeight*o||document.documentElement.clientHeight*o)&&(()=>{var t,e,a,o,i=d[n];e=function(){d=d.filter(function(t){return i!==t}),r.imageLazyLoadSetting.onImageLoaded&&r.imageLazyLoadSetting.onImageLoaded(i)},(t=i).dataset.loaded||(t.hasAttribute("bg-lazy")?(t.removeAttribute("bg-lazy"),e&&e()):(a=new Image,o=t.getAttribute("data-original"),a.onload=function(){t.src=o,t.removeAttribute("data-original"),t.setAttribute("data-loaded",!0),e&&e()},a.onerror=function(){t.removeAttribute("data-original"),t.setAttribute("data-loaded",!1),t.src=o},t.src!==o&&(a.src=o)))})()}function e(){clearTimeout(t.tId),t.tId=setTimeout(t,500)}t(),document.addEventListener("scroll",e),r.addEventListener("resize",e),r.addEventListener("orientationchange",e)})(this);</script></body></html>
